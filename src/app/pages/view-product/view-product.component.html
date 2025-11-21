@@ -1,0 +1,302 @@
+<!-- view-product.component.html -->
+<app-page-breadcrumb [pageTitle]="'Détails du produit'" />
+
+<div class="p-6">
+    <!-- En-tête avec actions -->
+    <div class="flex justify-between items-center mb-6">
+        <button (click)="goBack()" class="flex items-center gap-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Retour
+        </button>
+
+        <div class="flex gap-3">
+            <app-button variant="outline" (click)="handleEdit()">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Modifier
+            </app-button>
+
+            @if (product?.status === 'draft') {
+                <app-button variant="primary" (click)="handlePublish()">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Publier
+                </app-button>
+            }
+
+            @if (product?.status === 'published') {
+                <app-button variant="outline" (click)="handleArchive()">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                    </svg>
+                    Archiver
+                </app-button>
+            }
+
+            <app-button variant="outline" (click)="handleDelete()">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Supprimer
+            </app-button>
+        </div>
+    </div>
+
+    @if (isLoading) {
+        <div class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="mt-4 text-gray-600">Chargement du produit...</p>
+        </div>
+    } @else if (product) {
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <!-- Section Images -->
+            <div class="space-y-4">
+                <!-- Image principale -->
+                <div class="bg-gray-100 rounded-lg p-4">
+                    <img
+                            [src]="getAllImages()[selectedImageIndex]?.url || '/assets/images/default-product.jpg'"
+                            [alt]="product.product_name"
+                            class="w-full h-96 object-cover rounded-lg"
+                    />
+                </div>
+
+                <!-- Galerie d'images -->
+                @if (getAllImages().length > 1) {
+                    <div class="flex gap-2 overflow-x-auto">
+                        @for (image of getAllImages(); track $index; let i = $index) {
+                            <button
+                                    (click)="selectImage(i)"
+                                    class="flex-shrink-0 w-20 h-20 border-2 rounded-lg transition-all"
+                                    [class.border-blue-500]="selectedImageIndex === i"
+                                    [class.border-gray-300]="selectedImageIndex !== i"
+                            >
+                                <img
+                                        [src]="image.url"
+                                        [alt]="product.product_name"
+                                        class="w-full h-full object-cover rounded"
+                                />
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Section Informations -->
+            <div class="space-y-6">
+                <!-- En-tête produit -->
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-medium px-2 py-1 rounded-full"
+                  [ngClass]="getStockStatus().class">
+              {{ getStockStatus().text }}
+            </span>
+                        <span class="text-xs font-medium px-2 py-1 rounded-full"
+                              [ngClass]="{
+        'bg-gray-100 text-gray-800': product.status === 'draft',
+        'bg-green-100 text-green-800': product.status === 'published',
+        'bg-red-100 text-red-800': product.status === 'archived'
+      }">
+  {{ getStatusText(product.status) }}
+</span>
+                    </div>
+
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white first-letter:capitalize">{{ product.product_name }}</h1>
+                    <p class="text-gray-600 mt-2 first-letter:capitalize">{{ product?.description || 'Aucune description' }}</p>
+                </div>
+
+                <!-- Prix -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-4">
+            <span class="text-3xl font-bold text-gray-900 dark:text-white">
+              {{ formatPrice(product.regular_price) }}
+            </span>
+
+                        @if (product.is_promotion_enabled && product.promo_price) {
+                            <div class="flex items-center gap-2">
+                <span class="text-xl text-gray-500 line-through">
+                  {{ formatPrice(product.regular_price) }}
+                </span>
+                                <span class="bg-red-100 text-red-800 text-sm font-medium px-2 py-1 rounded-full">
+                  -{{ calculateDiscountPercentage() }}%
+                </span>
+                            </div>
+                        }
+                    </div>
+
+                    @if (product.is_promotion_enabled && product.promo_price) {
+                        <div class="text-sm text-gray-600">
+                            @if (isPromotionActive()) {
+                                <span class="text-green-600 font-medium">Promotion active</span>
+                            } @else {
+                                <span class="text-orange-600 font-medium">Promotion programmée</span>
+                            }
+                            du {{ formatDate(product.promo_start_date!) }} au {{ formatDate(product.promo_end_date!) }}
+                        </div>
+                    }
+                </div>
+
+                <!-- Informations de base -->
+                <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Catégorie</label>
+                        <p class="text-gray-900 font-medium">{{ product.category }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Qualité</label>
+                        <p class="text-gray-900 font-medium">{{ product.quality }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Unité</label>
+                        <p class="text-gray-900 font-medium">{{ product.unit }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Unité de prix</label>
+                        <p class="text-gray-900 font-medium">{{ product.price_unit }}</p>
+                    </div>
+                </div>
+
+                <!-- Stock et quantités -->
+                <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Stock disponible</label>
+                        <p class="text-2xl font-bold text-gray-900">{{ product.stock_quantity }} unités</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Quantité totale</label>
+                        <p class="text-2xl font-bold text-gray-900">{{ product.total_quantity }} unités</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Poids total</label>
+                        <p class="text-gray-900 font-medium">{{ product.total_weight }} kg</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Poids unitaire</label>
+                        <p class="text-gray-900 font-medium">{{ product.unit_weight }} kg</p>
+                    </div>
+                </div>
+
+                <!-- Dates importantes -->
+                <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Date de récolte</label>
+                        <p class="text-gray-900 font-medium">
+                            {{ product.harvest_date ? formatDate(product.harvest_date) : 'Non spécifiée' }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Date de création</label>
+                        <p class="text-gray-900 font-medium">{{ formatDate(product.created_at!) }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Dernière modification</label>
+                        <p class="text-gray-900 font-medium">{{ formatDate(product.updated_at!) }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Statut disponibilité</label>
+                        <p class="text-gray-900 font-medium first-letter:capitalize">{{ product.availability_status }}</p>
+                    </div>
+                </div>
+
+                <!-- Informations producteur -->
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <h3 class="font-semibold text-blue-900 mb-4">Informations du producteur</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <label class="text-blue-700 block mb-1">Profil créateur</label>
+                            <p class="text-blue-900 font-medium capitalize">{{ product.created_by_profile }}</p>
+                        </div>
+
+                        @if (getProducerDisplayInfo()) {
+                            <!-- Informations détaillées du producteur -->
+                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 pt-4 border-t border-blue-200">
+                                <div>
+                                    <label class="text-blue-700 block mb-1">Nom du producteur</label>
+                                    <p class="text-blue-900 font-medium">
+                                        {{ getProducerDisplayInfo().first_name }} {{ getProducerDisplayInfo().last_name }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label class="text-blue-700 block mb-1">Exploitation</label>
+                                    <p class="text-blue-900 font-medium">{{ getProducerDisplayInfo().farm_name }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="text-blue-700 block mb-1">Email</label>
+                                    <p class="text-blue-900">{{ getProducerDisplayInfo().email }}</p>
+                                </div>
+
+                                @if (getProducerDisplayInfo().phone) {
+                                    <div>
+                                        <label class="text-blue-700 block mb-1">Téléphone</label>
+                                        <p class="text-blue-900">{{ getProducerDisplayInfo().phone }}</p>
+                                    </div>
+                                }
+
+                                @if (getProducerDisplayInfo().location) {
+                                    <div>
+                                        <label class="text-blue-700 block mb-1">Localisation</label>
+                                        <p class="text-blue-900">{{ getProducerDisplayInfo().location }}</p>
+                                    </div>
+                                }
+
+                                @if (getProducerDisplayInfo().production_type) {
+                                    <div>
+                                        <label class="text-blue-700 block mb-1">Type de production</label>
+                                        <p class="text-blue-900 capitalize">
+                                            {{ formatProductionType(getProducerDisplayInfo().production_type) }}
+                                        </p>
+                                    </div>
+                                }
+
+                                <div>
+                                    <label class="text-blue-700 block mb-1">Statut du compte</label>
+                                    <span [class]="getProducerDisplayInfo().account_status === 'active'
+            ? 'bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium'
+            : 'bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium'">
+            {{ getProducerDisplayInfo().account_status === 'active' ? 'Actif' : 'Inactif' }}
+          </span>
+                                </div>
+                            </div>
+
+                            @if (getProducerDisplayInfo().description) {
+                                <div class="md:col-span-2 mt-2">
+                                    <label class="text-blue-700 block mb-1">Description</label>
+                                    <p class="text-blue-900 text-sm first-letter:capitalize">{{ getProducerDisplayInfo().description }}</p>
+                                </div>
+                            }
+
+                        } @else if (product.assigned_producer_id && product.created_by_profile === 'cooperative') {
+                            <!-- Fallback si on a seulement l'ID -->
+                            <div>
+                                <label class="text-blue-700">Producteur assigné</label>
+                                <p class="text-blue-900 font-medium">{{ product.assigned_producer_id }}</p>
+                                <p class="text-blue-600 text-xs mt-1">Chargement des informations...</p>
+                            </div>
+                        } @else {
+                            <div class="md:col-span-2">
+                                <p class="text-blue-600 text-sm">Aucune information de producteur disponible</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    } @else {
+        <div class="text-center py-12">
+            <svg class="w-16 h-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Produit non trouvé</h3>
+            <p class="mt-2 text-gray-500">Le produit que vous recherchez n'existe pas ou a été supprimé.</p>
+            <button (click)="goBack()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                Retour à la liste
+            </button>
+        </div>
+    }
+</div>

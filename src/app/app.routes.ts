@@ -27,6 +27,10 @@ import {TransactionHeaderComponent} from "./pages/transactions-orders/transactio
 import {OrderDetailsTableComponent} from "./pages/transactions-orders/order-details-table/order-details-table.component";
 import {AuthGuard} from "./core/guard/auth.guard";
 import {ComingSoonComponent} from "./pages/auth-pages/coming-soon/coming-soon.component";
+import {AddProducerComponent} from "./pages/add-producer/add-producer.component";
+import {ListProducersComponent} from "./pages/list-producers/list-producers.component";
+import {ViewProductComponent} from "./pages/view-product/view-product.component";
+import {EditProductComponent} from "./pages/edit-product/edit-product.component";
 
 export const routes: Routes = [
   {
@@ -136,6 +140,26 @@ export const routes: Routes = [
         path:'videos',
         component:VideosComponent,
         title:'Angular Videos Dashboard | Digicoop- Angular Admin Dashboard Template'
+      },
+      {
+        path:'add-producer',
+        component:AddProducerComponent,
+        title:'Tableau de bord DIGICOOP | Ajouter un producteur'
+      },
+      {
+        path:'list-producers',
+        component:ListProducersComponent,
+        title:'Tableau de bord DIGICOOP | Listes des producteurs'
+      },
+      {
+        path:'view-product/:id',
+        component:ViewProductComponent,
+        title:'Tableau de bord DIGICOOP | Voir le produit'
+      },
+      {
+        path:'edit-product/:id',
+        component:EditProductComponent,
+        title:'Tableau de bord DIGICOOP | Modifier un produit'
       },
     ],
     canActivate: [AuthGuard],

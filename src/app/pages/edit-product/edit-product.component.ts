@@ -17,6 +17,8 @@ import {
 } from "../../core/services/producer/agricultural-producer-management.service";
 import {ProductFormData, ProductManagementService} from "../../core/services/products/product-management.service";
 import {FormsModule} from "@angular/forms";
+import {AgriculturalProduct, ProductService} from "../../core/services/products/product.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 interface Producer {
@@ -33,7 +35,7 @@ interface Option {
 }
 
 @Component({
-  selector: 'app-add-product-form',
+  selector: 'app-edit-product',
   imports: [
     CommonModule,
     LabelComponent,
@@ -44,26 +46,34 @@ interface Option {
     PageBreadcrumbComponent,
     FormsModule,
   ],
-  templateUrl: './add-product-form.component.html',
+  templateUrl: './edit-product.component.html',
   styles: ``,
 
   standalone: true
 })
-export class AddProductFormComponent implements OnInit {
+export class EditProductComponent implements OnInit {
+
   private authService = inject(AuthService);
   private producerManagement = inject(AgriculturalProducerManagementService);
   private productManagement = inject(ProductManagementService);
+  private productService = inject(ProductService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   // Informations de l'utilisateur connecté
   currentUser: any = null;
   userProfile: 'personal' | 'cooperative' | null = null;
   isCooperative = false;
 
+  // Produit à éditer
+  productId: string = '';
+  originalProduct: AgriculturalProduct | null = null;
+
   // Liste des producteurs (seulement pour les coopératives)
   producers: Producer[] = [];
   selectedProducerId: string = '';
 
-  // Options du formulaire
+  // Options du formulaire (identique à add-product)
   categories: Option[] = [
     { value: 'fruits', label: 'Fruits' },
     { value: 'legumes', label: 'Légumes' },
@@ -115,7 +125,7 @@ export class AddProductFormComponent implements OnInit {
   description: string = '';
 
   // Propriétés pour la gestion des quantités
-  stockQuantity: number = 1;
+  stockQuantity: number = 0;
   totalQuantity: number = 0;
   totalWeight: number = 0;
   unitWeight: number = 0;
@@ -131,15 +141,24 @@ export class AddProductFormComponent implements OnInit {
   // Gestion des images
   mainImage: string | null = null;
   mainImageFile: File | null = null;
-  variantImages: { url: string; description: string; file?: File }[] = [];
+  variantImages: { url: string; description: string; file?: File; id?: number }[] = [];
 
   // États du composant
   isLoading = false;
+  isEditing = false;
   errorMessage = '';
   successMessage = '';
 
   async ngOnInit() {
+    this.productId = this.route.snapshot.paramMap.get('id') || '';
+
+    if (!this.productId) {
+      this.errorMessage = 'ID produit non trouvé';
+      return;
+    }
+
     await this.loadUserData();
+    await this.loadProductData();
     await this.loadProducersIfCooperative();
   }
 
@@ -167,6 +186,88 @@ export class AddProductFormComponent implements OnInit {
   }
 
   /**
+   * Charger les données du produit à éditer
+   */
+  private async loadProductData() {
+    console.log("this.originalProduct========================");
+
+    this.isLoading = true;
+    try {
+      this.originalProduct = await this.productService.getProductById(this.productId);
+      console.log("this.originalProduct========================");
+      console.log(this.originalProduct);
+
+      if (!this.originalProduct) {
+        this.errorMessage = 'Produit non trouvé';
+        return;
+      }
+
+      // Remplir le formulaire avec les données existantes
+      this.populateFormWithProductData();
+
+    } catch (error) {
+      console.error('Erreur chargement produit:', error);
+      this.errorMessage = 'Erreur lors du chargement du produit';
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * Remplir le formulaire avec les données du produit
+   */
+  private populateFormWithProductData() {
+    if (!this.originalProduct) return;
+    console.log('Données du produit à pré-remplir:', this.originalProduct);
+
+    this.productName = this.originalProduct.product_name;
+    this.selectedCategory = this.originalProduct.category;
+    this.selectedProducerId = this.originalProduct.assigned_producer_id || '';
+    this.selectedQuality = this.originalProduct.quality;
+    this.selectedUnit = this.originalProduct.unit;
+    this.selectedPriceUnit = this.originalProduct.price_unit;
+    this.selectedAvailability = this.originalProduct.availability_status;
+    this.description = this.originalProduct.description || '';
+
+
+    this.totalWeight = this.originalProduct.total_weight;
+    this.unitWeight = this.originalProduct.unit_weight;
+    this.totalQuantity = this.originalProduct.total_quantity;
+    this.stockQuantity = this.originalProduct.stock_quantity;
+
+    this.regularPrice = this.originalProduct.regular_price;
+    this.isPromotionEnabled = this.originalProduct.is_promotion_enabled;
+    this.promoPrice = this.originalProduct.promo_price || 0;
+    this.promoStartDate = this.originalProduct.promo_start_date || '';
+    this.promoEndDate = this.originalProduct.promo_end_date || '';
+    this.harvestDate = this.originalProduct.harvest_date || '';
+
+    // Images
+    if (this.originalProduct.main_image) {
+      this.mainImage = this.originalProduct.main_image.url;
+    }
+
+    if (this.originalProduct.variant_images) {
+      this.variantImages = this.originalProduct.variant_images.map((img: { url: any; description: any; id: any; }) => ({
+        url: img.url,
+        description: img.description || '',
+        id: img.id
+      }));
+    }
+
+    console.log('Valeurs après pré-remplissage:', {
+      category: this.selectedCategory,
+      quality: this.selectedQuality,
+      unit: this.selectedUnit,
+      priceUnit: this.selectedPriceUnit,
+      availability: this.selectedAvailability,
+      producerId: this.selectedProducerId,
+      description: this.description
+
+    });
+  }
+
+  /**
    * Charger les producteurs si l'utilisateur est une coopérative
    */
   private async loadProducersIfCooperative() {
@@ -182,7 +283,6 @@ export class AddProductFormComponent implements OnInit {
       }
 
       this.producers = producers;
-      console.log('Producteurs chargés:', this.producers.length);
     } catch (error) {
       console.error('Erreur inattendue:', error);
       this.errorMessage = 'Erreur lors du chargement des producteurs';
@@ -199,7 +299,8 @@ export class AddProductFormComponent implements OnInit {
     }));
   }
 
-  // Méthodes pour la gestion des sélections
+  // === MÉTHODES POUR LA GESTION DU FORMULAIRE (identique à add-product) ===
+
   handleSelectChange(value: string, field: string) {
     switch (field) {
       case 'category':
@@ -218,103 +319,63 @@ export class AddProductFormComponent implements OnInit {
         this.selectedAvailability = value;
         break;
     }
-    console.log(`${field} sélectionné:`, value);
   }
 
   handleProducerAssignment(producerId: string) {
     this.selectedProducerId = producerId;
-    console.log('Producteur assigné:', producerId);
   }
 
-  // Méthodes pour la gestion des quantités
-
   calculateQuantities() {
-    console.log('Calcul quantités - Poids total:', this.totalWeight, 'Poids par unité:', this.unitWeight);
-
     if (this.unitWeight > 0 && this.totalWeight > 0) {
-      // CORRECTION: Calcul correct
       this.totalQuantity = Math.floor(this.totalWeight / this.unitWeight);
 
-      console.log('Résultat calcul:', this.totalWeight + ' / ' + this.unitWeight + ' = ' + this.totalQuantity + ' unités');
-
-      // Si le résultat est 0, c'est que unitWeight > totalWeight
       if (this.totalQuantity === 0) {
-        console.log('ATTENTION: Le poids par unité est plus grand que le poids total');
-        this.totalQuantity = 1; // Au moins 1 unité
+        this.totalQuantity = 1;
       }
 
-      // Ajuster le stock automatiquement
       if (this.stockQuantity === 0 && this.totalQuantity > 0) {
-        this.stockQuantity = this.totalQuantity; // Par défaut, tout le stock est disponible
+        this.stockQuantity = this.totalQuantity;
       } else if (this.stockQuantity > this.totalQuantity) {
-        this.stockQuantity = this.totalQuantity; // Ne pas dépasser la quantité totale
+        this.stockQuantity = this.totalQuantity;
       }
     } else {
       this.totalQuantity = 0;
       this.stockQuantity = 0;
     }
-
-    console.log('Résultat final - Quantité totale:', this.totalQuantity, 'Stock disponible:', this.stockQuantity);
   }
 
-// Méthodes pour la gestion des quantités - AMÉLIORÉ
   onTotalWeightChange(value: any) {
     this.totalWeight = parseFloat(value) || 0;
-    console.log('Poids total changé:', this.totalWeight); // Debug
     this.calculateQuantities();
   }
 
   onUnitWeightChange(value: any) {
     this.unitWeight = parseFloat(value) || 0;
-    console.log('Poids unitaire changé:', this.unitWeight); // Debug
     this.calculateQuantities();
   }
 
-// Dans votre composant - AMÉLIORER LES MÉTHODES
   incrementStock() {
-    console.log("Bouton + cliqué - Stock actuel:", this.stockQuantity, "Max:", this.totalQuantity);
-
-    if (this.totalQuantity === 0) {
-      console.log("Quantité totale est 0, impossible d'incrémenter");
-      return;
-    }
-
+    if (this.totalQuantity === 0) return;
     if (this.stockQuantity < this.totalQuantity) {
       this.stockQuantity++;
-      console.log('Stock incrémenté:', this.stockQuantity);
-    } else {
-      console.log('Stock déjà au maximum');
     }
   }
 
   decrementStock() {
-    console.log("Bouton - cliqué - Stock actuel:", this.stockQuantity);
-
     if (this.stockQuantity > 0) {
       this.stockQuantity--;
-      console.log('Stock décrémenté:', this.stockQuantity);
-    } else {
-      console.log('Stock déjà au minimum');
     }
   }
 
   updateStockQuantity(value: any) {
-    console.log("Champ modifié - Nouvelle valeur:", value);
     const newStock = parseInt(value) || 0;
-
     if (this.totalQuantity > 0) {
       this.stockQuantity = Math.min(Math.max(0, newStock), this.totalQuantity);
     } else {
       this.stockQuantity = Math.max(0, newStock);
     }
-
-    console.log('Stock mis à jour:', this.stockQuantity);
   }
 
-
-
-
-  // Méthodes pour la gestion des prix et promotions
   onPriceChange(value: any) {
     this.regularPrice = parseFloat(value) || 0;
   }
@@ -322,7 +383,6 @@ export class AddProductFormComponent implements OnInit {
   onPromotionToggle(event: any) {
     this.isPromotionEnabled = event.target.checked;
     if (!this.isPromotionEnabled) {
-      // Réinitialiser les valeurs de promotion si désactivée
       this.promoPrice = 0;
       this.promoStartDate = '';
       this.promoEndDate = '';
@@ -356,15 +416,13 @@ export class AddProductFormComponent implements OnInit {
     if (!this.promoStartDate || !this.promoEndDate) {
       return false;
     }
-
     const today = new Date();
     const startDate = new Date(this.promoStartDate);
     const endDate = new Date(this.promoEndDate);
-
     return today >= startDate && today <= endDate;
   }
 
-  // Méthodes pour la gestion des images principales
+  // Méthodes pour la gestion des images
   onMainImageChange(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -382,7 +440,6 @@ export class AddProductFormComponent implements OnInit {
     this.mainImageFile = null;
   }
 
-  // Méthodes pour la gestion des images variantes
   onVariantImagesChange(event: any) {
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
@@ -397,7 +454,7 @@ export class AddProductFormComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
-    event.target.value = ''; // Reset input
+    event.target.value = '';
   }
 
   removeVariantImage(index: number) {
@@ -408,7 +465,11 @@ export class AddProductFormComponent implements OnInit {
     this.variantImages[index].description = description;
   }
 
-  // Validation du formulaire
+  // === MÉTHODES SPÉCIFIQUES À L'ÉDITION ===
+
+  /**
+   * Validation du formulaire
+   */
   private validateForm(): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -418,10 +479,6 @@ export class AddProductFormComponent implements OnInit {
 
     if (!this.selectedCategory) {
       errors.push('La catégorie est requise');
-    }
-
-    if (!this.selectedQuality) {
-      errors.push('La qualité est requise');
     }
 
     if (this.isCooperative && !this.selectedProducerId) {
@@ -472,8 +529,10 @@ export class AddProductFormComponent implements OnInit {
     };
   }
 
-  // Méthodes pour les actions
-  async onDraft() {
+  /**
+   * Sauvegarder les modifications
+   */
+  async onSave() {
     const validation = this.validateForm();
     if (!validation.isValid) {
       this.errorMessage = validation.errors.join(', ');
@@ -484,139 +543,87 @@ export class AddProductFormComponent implements OnInit {
     this.errorMessage = '';
 
     try {
-      const formData: ProductFormData = {
+      const updates: any = {
         product_name: this.productName,
         category: this.selectedCategory,
-        assigned_producer_id: this.isCooperative ? this.selectedProducerId : undefined, // CORRECTION ici aussi
+        assigned_producer_id: this.isCooperative ? this.selectedProducerId : null,
         quality: this.selectedQuality,
         total_weight: this.totalWeight,
         unit_weight: this.unitWeight,
         unit: this.selectedUnit,
-        description: this.description,
         regular_price: this.regularPrice,
         price_unit: this.selectedPriceUnit,
-        harvest_date: this.harvestDate || undefined,
+        harvest_date: this.harvestDate || null,
         availability_status: this.selectedAvailability,
+        description: this.description,
         is_promotion_enabled: this.isPromotionEnabled,
-        promo_price: this.isPromotionEnabled ? this.promoPrice : undefined,
-        promo_start_date: this.isPromotionEnabled ? this.promoStartDate : undefined,
-        promo_end_date: this.isPromotionEnabled ? this.promoEndDate : undefined
+        promo_price: this.isPromotionEnabled ? this.promoPrice : null,
+        promo_start_date: this.isPromotionEnabled ? this.promoStartDate : null,
+        promo_end_date: this.isPromotionEnabled ? this.promoEndDate : null,
+        total_quantity: this.totalQuantity,
+        stock_quantity: this.stockQuantity
       };
 
-      const variantFiles = this.variantImages.map(img => img.file!).filter(Boolean);
+      // Mettre à jour le produit
+      const updatedProduct = await this.productService.updateProduct(this.productId, updates);
 
-      // CORRECTION: Ajouter this.currentUser comme paramètre
-      await this.productManagement.createCompleteProduct(
-          formData,
-          this.currentUser, // AJOUT: passer l'utilisateur courant
-          this.mainImageFile || undefined,
-          variantFiles
-      );
+      // Gérer les images si modifiées
+      if (this.mainImageFile) {
+        await this.productManagement.syncProductImages(this.productId);
+      }
 
-      this.successMessage = 'Produit sauvegardé comme brouillon avec succès!';
+      this.successMessage = 'Produit modifié avec succès!';
 
       setTimeout(() => {
-        this.resetForm();
-        this.successMessage = '';
-      }, 3000);
+        this.router.navigate(['/dashboard/edit-product', this.productId]);
+      }, 2000);
 
     } catch (error) {
-      console.error('Erreur sauvegarde brouillon:', error);
-      this.errorMessage = 'Erreur lors de la sauvegarde du brouillon';
+      console.error('Erreur modification produit:', error);
+      this.errorMessage = 'Erreur lors de la modification du produit';
     } finally {
       this.isLoading = false;
     }
   }
 
+  /**
+   * Annuler et retourner à la vue du produit
+   */
+  onCancel() {
+    this.router.navigate(['/dashboard/edit-product', this.productId]);
+  }
+
+  /**
+   * Publier le produit
+   */
   async onPublish() {
-    const validation = this.validateForm();
-    if (!validation.isValid) {
-      this.errorMessage = validation.errors.join(', ');
-      return;
-    }
-
-    this.isLoading = true;
-    this.errorMessage = '';
-
     try {
-      const formData: ProductFormData = {
-        product_name: this.productName,
-        category: this.selectedCategory,
-        assigned_producer_id: this.isCooperative ? this.selectedProducerId : undefined, // CORRECTION: utiliser assigned_producer_id
-        quality: this.selectedQuality,
-        total_weight: this.totalWeight,
-        unit_weight: this.unitWeight,
-        unit: this.selectedUnit,
-        description: this.description,
-        regular_price: this.regularPrice,
-        price_unit: this.selectedPriceUnit,
-        harvest_date: this.harvestDate || undefined,
-        availability_status: this.selectedAvailability,
-        is_promotion_enabled: this.isPromotionEnabled,
-        promo_price: this.isPromotionEnabled ? this.promoPrice : undefined,
-        promo_start_date: this.isPromotionEnabled ? this.promoStartDate : undefined,
-        promo_end_date: this.isPromotionEnabled ? this.promoEndDate : undefined
-      };
-
-      const variantFiles = this.variantImages.map(img => img.file!).filter(Boolean);
-
-      // CORRECTION: Ajouter this.currentUser comme paramètre
-      const product = await this.productManagement.createCompleteProduct(
-          formData,
-          this.currentUser, // AJOUT: passer l'utilisateur courant
-          this.mainImageFile || undefined,
-          variantFiles
-      );
-
-      // Publier le produit
-      await this.productManagement.publishProduct(product.id!);
-
+      await this.productManagement.publishProduct(this.productId);
       this.successMessage = 'Produit publié avec succès!';
 
-      // Réinitialiser le formulaire après un délai
       setTimeout(() => {
-        this.resetForm();
-        this.successMessage = '';
-      }, 3000);
-
+        this.router.navigate(['/dashboard/edit-product', this.productId]);
+      }, 2000);
     } catch (error) {
-      console.error('Erreur publication produit:', error);
+      console.error('Erreur publication:', error);
       this.errorMessage = 'Erreur lors de la publication du produit';
-    } finally {
-      this.isLoading = false;
     }
   }
 
-  // Méthode utilitaire pour réinitialiser le formulaire
-  // Dans resetForm() - AMÉLIORER
-  resetForm() {
-    this.productName = '';
-    this.selectedCategory = '';
-    this.selectedProducerId = '';
-    this.selectedQuality = '';
-    this.selectedUnit = '';
-    this.selectedPriceUnit = '';
-    this.selectedAvailability = 'disponible';
-    this.description = '';
+  /**
+   * Mettre en brouillon
+   */
+  async onDraft() {
+    try {
+      await this.productService.updateProduct(this.productId, { status: 'draft' });
+      this.successMessage = 'Produit mis en brouillon avec succès!';
 
-    // CORRECTION: Mettre des valeurs plus logiques
-    this.stockQuantity = 0;
-    this.totalQuantity = 0;
-    this.totalWeight = 0;
-    this.unitWeight = 1; // Au moins 1 pour éviter division par zéro
-
-    this.regularPrice = 0;
-    this.isPromotionEnabled = false;
-    this.promoPrice = 0;
-    this.promoStartDate = '';
-    this.promoEndDate = '';
-    this.harvestDate = '';
-
-    this.mainImage = null;
-    this.mainImageFile = null;
-    this.variantImages = [];
-
-    this.errorMessage = '';
+      setTimeout(() => {
+        this.router.navigate(['/dashboard/edit-product', this.productId]);
+      }, 2000);
+    } catch (error) {
+      console.error('Erreur mise en brouillon:', error);
+      this.errorMessage = 'Erreur lors de la mise en brouillon du produit';
+    }
   }
-
 }

@@ -1,22 +1,17 @@
+// product-list-table.component.ts
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import {TableDropdownComponent} from "../../shared/components/common/table-dropdown/table-dropdown.component";
-import {ButtonComponent} from "../../shared/components/ui/button/button.component";
-import {PageBreadcrumbComponent} from "../../shared/components/common/page-breadcrumb/page-breadcrumb.component";
+import { Component, inject, OnInit } from '@angular/core';
+import {Router, RouterModule} from '@angular/router';
+import { TableDropdownComponent } from "../../shared/components/common/table-dropdown/table-dropdown.component";
+import { ButtonComponent } from "../../shared/components/ui/button/button.component";
+import { PageBreadcrumbComponent } from "../../shared/components/common/page-breadcrumb/page-breadcrumb.component";
+import { AgriculturalProduct, ProductService } from "../../core/services/products/product.service";
+import { AuthService } from "../../core/services/auth/auth.service";
+import { FormsModule } from '@angular/forms';
 
-interface Product {
-  id: number;
-  name: string;
-  image: string;
-  category: string;
-  brand: string;
-  price: string;
-  stock: string;
-  createdAt: string;
-}
+// Interface pour le tri - CORRECTION: utiliser les clés de AgriculturalProduct
 interface Sort {
-  key: keyof Product;
+  key: keyof AgriculturalProduct;
   asc: boolean;
 }
 
@@ -28,246 +23,119 @@ interface Sort {
     ButtonComponent,
     RouterModule,
     PageBreadcrumbComponent,
+    FormsModule // AJOUT: pour ngModel
   ],
   templateUrl: './product-list-table.component.html',
   styles: ``
 })
-export class ProductListTableComponent {
+export class ProductListTableComponent implements OnInit {
 
-  products = [
-    {
-      id: 1,
-      name: "Macbook pro M4",
-      image: "/images/product/product-01.jpg",
-      category: "Laptop",
-      brand: "Apple",
-      price: "$699",
-      stock: "In Stock",
-      createdAt: "12 Feb, 2027",
-    },
-    {
-      id: 2,
-      name: "Apple Watch Ultra",
-      image: "/images/product/product-02.jpg",
-      category: "Watch",
-      brand: "Apple",
-      price: "$1,579",
-      stock: "Out of Stock",
-      createdAt: "13 Mar, 2027",
-    },
-    {
-      id: 3,
-      name: "iPhone 15 Pro Max",
-      image: "/images/product/product-03.jpg",
-      category: "Phone",
-      brand: "Apple",
-      price: "$1,039",
-      stock: "In Stock",
-      createdAt: "19 Mar, 2027",
-    },
-    {
-      id: 4,
-      name: "iPad Pro 3rd Gen",
-      image: "/images/product/product-04.jpg",
-      category: "Electronics",
-      brand: "Apple",
-      price: "$43,999",
-      stock: "In Stock",
-      createdAt: "25 Apr, 2027",
-    },
-    {
-      id: 5,
-      name: "Samsung Galaxy S24 Ultra",
-      image: "/images/product/product-05.jpg",
-      category: "Phone",
-      brand: "Samsung",
-      price: "$699",
-      stock: "In Stock",
-      createdAt: "11 May, 2027",
-    },
-    {
-      id: 6,
-      name: "Airpods Pro 2nd Gen",
-      image: "/images/product/product-01.jpg",
-      category: "Accessories",
-      brand: "Apple",
-      price: "$839",
-      stock: "In Stock",
-      createdAt: "29 Jun, 2027",
-    },
-    {
-      id: 7,
-      name: "LG OLED & 4K Smart TV",
-      image: "/images/product/product-02.jpg",
-      category: "Electronics",
-      brand: "LG",
-      price: "$1,769",
-      stock: "Out of Stock",
-      createdAt: "22 Jul, 2027",
-    },
-    {
-      id: 8,
-      name: "Sony WH-1000XM5 Headphones",
-      image: "/images/product/product-03.jpg",
-      category: "Audio",
-      brand: "Sony",
-      price: "$399",
-      stock: "In Stock",
-      createdAt: "05 Aug, 2027",
-    },
-    {
-      id: 9,
-      name: "Dell XPS 13 Laptop",
-      image: "/images/product/product-04.jpg",
-      category: "Laptop",
-      brand: "Dell",
-      price: "$1,299",
-      stock: "In Stock",
-      createdAt: "18 Aug, 2027",
-    },
-    {
-      id: 10,
-      name: "Google Pixel 8 Pro",
-      image: "/images/product/product-05.jpg",
-      category: "Phone",
-      brand: "Google",
-      price: "$899",
-      stock: "Out of Stock",
-      createdAt: "02 Sep, 2027",
-    },
-    {
-      id: 11,
-      name: "Microsoft Surface Pro 9",
-      image: "/images/product/product-02.jpg",
-      category: "Tablet",
-      brand: "Microsoft",
-      price: "$1,099",
-      stock: "In Stock",
-      createdAt: "15 Sep, 2027",
-    },
-    {
-      id: 12,
-      name: "Canon EOS R5 Camera",
-      image: "/images/product/product-03.jpg",
-      category: "Camera",
-      brand: "Canon",
-      price: "$3,899",
-      stock: "In Stock",
-      createdAt: "28 Sep, 2027",
-    },
-    {
-      id: 13,
-      name: "Nintendo Switch OLED",
-      image: "/images/product/product-04.jpg",
-      category: "Gaming",
-      brand: "Nintendo",
-      price: "$349",
-      stock: "Out of Stock",
-      createdAt: "10 Oct, 2027",
-    },
-    {
-      id: 14,
-      name: "Razer DeathAdder V3 Mouse",
-      image: "/images/product/product-05.jpg",
-      category: "Accessories",
-      brand: "Razer",
-      price: "$89",
-      stock: "In Stock",
-      createdAt: "23 Oct, 2027",
-    },
-    {
-      id: 15,
-      name: "HP Envy 34 Monitor",
-      image: "/images/product/product-01.jpg",
-      category: "Monitor",
-      brand: "HP",
-      price: "$799",
-      stock: "In Stock",
-      createdAt: "05 Nov, 2027",
-    },
-    {
-      id: 16,
-      name: "Bose QuietComfort Earbuds",
-      image: "/images/product/product-02.jpg",
-      category: "Audio",
-      brand: "Bose",
-      price: "$279",
-      stock: "In Stock",
-      createdAt: "18 Nov, 2027",
-    },
-    {
-      id: 17,
-      name: "ASUS ROG Gaming Laptop",
-      image: "/images/product/product-03.jpg",
-      category: "Laptop",
-      brand: "ASUS",
-      price: "$2,199",
-      stock: "Out of Stock",
-      createdAt: "01 Dec, 2027",
-    },
-    {
-      id: 18,
-      name: "Logitech MX Master 3S",
-      image: "/images/product/product-04.jpg",
-      category: "Accessories",
-      brand: "Logitech",
-      price: "$119",
-      stock: "In Stock",
-      createdAt: "14 Dec, 2027",
-    },
-    {
-      id: 19,
-      name: "Steam Deck OLED",
-      image: "/images/product/product-05.jpg",
-      category: "Gaming",
-      brand: "Valve",
-      price: "$649",
-      stock: "In Stock",
-      createdAt: "27 Dec, 2027",
-    },
-    {
-      id: 20,
-      name: "Samsung 980 Pro SSD 2TB",
-      image: "/images/product/product-01.jpg",
-      category: "Storage",
-      brand: "Samsung",
-      price: "$299",
-      stock: "In Stock",
-      createdAt: "09 Jan, 2028",
-    },
-  ]
+  private productService = inject(ProductService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  selected: number[] = [];
-  sort: Sort = { key: 'name', asc: true };
+  products: AgriculturalProduct[] = [];
+  selected: string[] = [];
+  sort: Sort = { key: 'product_name', asc: true }; // CORRECTION: clé valide
   page: number = 1;
   perPage: number = 7;
   showFilter: boolean = false;
+  searchTerm: string = '';
+  categoryFilter: string = '';
+  statusFilter: string = '';
+
+  // Options pour les filtres
+  categories = [
+    { value: 'fruits', label: 'Fruits' },
+    { value: 'legumes', label: 'Légumes' },
+    { value: 'cereales', label: 'Céréales' },
+    { value: 'viandes', label: 'Viandes' },
+    { value: 'produits-laitiers', label: 'Produits laitiers' },
+    { value: 'autres', label: 'Autres' }
+  ];
+
+  statuses = [
+    { value: 'draft', label: 'Brouillon' },
+    { value: 'published', label: 'Publié' },
+    { value: 'archived', label: 'Archivé' }
+  ];
 
   ngOnInit() {
-    // Initialize component
+    this.loadProducts();
   }
 
-  sortedProducts(): Product[] {
-    return [...this.products].sort((a, b) => {
+  async loadProducts() {
+    try {
+      const { user } = await this.authService.getCurrentUser();
+      if (user) {
+        this.products = await this.productService.getProducts({ userId: user.id });
+      }
+    } catch (error) {
+      console.error('Erreur chargement produits:', error);
+    }
+  }
+
+  // Filtrer les produits
+  filteredProducts(): AgriculturalProduct[] {
+    let filtered = this.products;
+
+    // Filtre par recherche
+    if (this.searchTerm) {
+      filtered = filtered.filter(product =>
+          product.product_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          product.description?.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
+
+    // Filtre par catégorie
+    if (this.categoryFilter) {
+      filtered = filtered.filter(product => product.category === this.categoryFilter);
+    }
+
+    // Filtre par statut
+    if (this.statusFilter) {
+      filtered = filtered.filter(product => product.status === this.statusFilter);
+    }
+
+    return filtered;
+  }
+
+  // Tri des produits - CORRECTION: utilisation directe de this.sort.key
+  sortedProducts(): AgriculturalProduct[] {
+    return this.filteredProducts().sort((a, b) => {
       let valA: any = a[this.sort.key];
       let valB: any = b[this.sort.key];
-      if (this.sort.key === 'price') {
-        valA = parseFloat(valA.replace(/[^\d.]/g, ''));
-        valB = parseFloat(valB.replace(/[^\d.]/g, ''));
+
+      // Gestion des valeurs nulles
+      if (valA == null) valA = '';
+      if (valB == null) valB = '';
+
+      // Tri spécial pour les prix
+      if (this.sort.key === 'regular_price') {
+        valA = Number(valA);
+        valB = Number(valB);
       }
+
+      // Tri spécial pour les dates
+      if (this.sort.key === 'created_at' || this.sort.key === 'harvest_date') {
+        valA = new Date(valA).getTime();
+        valB = new Date(valB).getTime();
+      }
+
       if (valA < valB) return this.sort.asc ? -1 : 1;
       if (valA > valB) return this.sort.asc ? 1 : -1;
       return 0;
     });
   }
 
-  paginatedProducts(): Product[] {
+  // Pagination
+  paginatedProducts(): AgriculturalProduct[] {
     const start = (this.page - 1) * this.perPage;
     return this.sortedProducts().slice(start, start + this.perPage);
   }
 
   totalPages(): number {
-    return Math.ceil(this.products.length / this.perPage);
+    return Math.ceil(this.filteredProducts().length / this.perPage);
   }
 
   goToPage(n: number): void {
@@ -288,33 +156,37 @@ export class ProductListTableComponent {
     }
   }
 
-  toggleSelect(id: number): void {
+  // Sélection
+  toggleSelect(id: string): void {
     this.selected = this.selected.includes(id)
-      ? this.selected.filter((i) => i !== id)
-      : [...this.selected, id];
+        ? this.selected.filter((i) => i !== id)
+        : [...this.selected, id];
   }
 
   toggleAll(): void {
-    const ids = this.paginatedProducts().map((p) => p.id);
+    const ids = this.paginatedProducts().map((p) => p.id!);
     this.selected = this.isAllSelected()
-      ? this.selected.filter((id) => !ids.includes(id))
-      : [...new Set([...this.selected, ...ids])];
+        ? this.selected.filter((id) => !ids.includes(id))
+        : [...new Set([...this.selected, ...ids])];
   }
 
   isAllSelected(): boolean {
-    const ids = this.paginatedProducts().map((p) => p.id);
+    const ids = this.paginatedProducts().map((p) => p.id!);
     return ids.length > 0 && ids.every((id) => this.selected.includes(id));
   }
 
+  // Affichage des informations
   startItem(): number {
-    return this.products.length === 0 ? 0 : (this.page - 1) * this.perPage + 1;
+    const total = this.filteredProducts().length;
+    return total === 0 ? 0 : (this.page - 1) * this.perPage + 1;
   }
 
   endItem(): number {
-    return Math.min(this.page * this.perPage, this.products.length);
+    return Math.min(this.page * this.perPage, this.filteredProducts().length);
   }
 
-  sortBy(key: keyof Product): void {
+  // Tri - CORRECTION: type correct pour le paramètre
+  sortBy(key: keyof AgriculturalProduct): void {
     this.sort = {
       key,
       asc: this.sort.key === key ? !this.sort.asc : true,
@@ -325,13 +197,98 @@ export class ProductListTableComponent {
     this.showFilter = !this.showFilter;
   }
 
-   handleViewMore() {
-    console.log('View More clicked');
-    // Add your view more logic here
+  // Formater le prix
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'XOF'
+    }).format(price);
   }
 
-  handleDelete() {
-    console.log('Delete clicked');
-    // Add your delete logic here
+  // Formater la date
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
+  }
+
+  // Statut du stock
+  getStockStatus(product: AgriculturalProduct): { text: string, class: string } {
+    if (product.stock_quantity === 0) {
+      return { text: 'Rupture', class: 'bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-500' };
+    } else if (product.stock_quantity < 10) {
+      return { text: 'Stock limité', class: 'bg-orange-50 dark:bg-orange-500/15 text-orange-700 dark:text-orange-500' };
+    } else {
+      return { text: 'En stock', class: 'bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-500' };
+    }
+  }
+
+  // Statut du produit
+  getStatusText(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'draft': 'Brouillon',
+      'published': 'Publié',
+      'archived': 'Archivé'
+    };
+    return statusMap[status] || status;
+  }
+
+  getStatusClass(status: string): string {
+    const classMap: { [key: string]: string } = {
+      'draft': 'bg-gray-50 dark:bg-gray-500/15 text-gray-700 dark:text-gray-500',
+      'published': 'bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-500',
+      'archived': 'bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-500'
+    };
+    return classMap[status] || 'bg-gray-50 dark:bg-gray-500/15 text-gray-700 dark:text-gray-500';
+  }
+
+  // Actions - CORRECTION: ajout du paramètre product
+  handleViewMore(product: AgriculturalProduct) {
+    console.log('View More clicked for:', product.product_name);
+    // Navigation vers la page de détail
+    this.router.navigate(['/dashboard/view-product', product.id]);
+
+  }
+
+  async handleDelete(product: AgriculturalProduct) {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer "${product.product_name}" ?`)) {
+      try {
+        await this.productService.deleteProduct(product.id!);
+        await this.loadProducts(); // Recharger la liste
+      } catch (error) {
+        console.error('Erreur suppression:', error);
+      }
+    }
+  }
+
+  async handlePublish(product: AgriculturalProduct) {
+    try {
+      await this.productService.updateProduct(product.id!, { status: 'published' });
+      await this.loadProducts(); // Recharger la liste
+    } catch (error) {
+      console.error('Erreur publication:', error);
+    }
+  }
+
+  async handleArchive(product: AgriculturalProduct) {
+    try {
+      await this.productService.updateProduct(product.id!, { status: 'archived' });
+      await this.loadProducts(); // Recharger la liste
+    } catch (error) {
+      console.error('Erreur archivage:', error);
+    }
+  }
+
+  // Appliquer les filtres
+  applyFilters() {
+    this.page = 1; // Retour à la première page
+    this.showFilter = false;
+  }
+
+  // Réinitialiser les filtres
+  resetFilters() {
+    this.searchTerm = '';
+    this.categoryFilter = '';
+    this.statusFilter = '';
+    this.page = 1;
+    this.showFilter = false;
   }
 }

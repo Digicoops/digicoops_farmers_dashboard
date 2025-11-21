@@ -1,13 +1,11 @@
 // services/product-management.service.ts
-import { Injectable } from '@angular/core';
-import {AgriculturalProduct, ProductService} from "./product.service";
-import { CloudflareService } from '../cloudflare/cloudflare.service';
-
+import { inject, Injectable } from '@angular/core';
+import { AgriculturalProduct, ProductService } from "./product.service";
 
 export interface ProductFormData {
     product_name: string;
     category: string;
-    assigned_user_id: string;
+    assigned_producer_id?: string;
     quality: string;
     total_weight: number;
     unit_weight: number;
@@ -28,16 +26,14 @@ export interface ProductFormData {
 })
 export class ProductManagementService {
 
-    constructor(
-        private productService: ProductService,
-        private cloudflareService: CloudflareService
-    ) {}
+    private productService = inject(ProductService);
 
     /**
      * Créer un produit complet avec images
      */
     async createCompleteProduct(
         formData: ProductFormData,
+        currentUser: any, // AJOUT: utilisateur courant requis
         mainImageFile?: File,
         variantImageFiles: File[] = []
     ): Promise<AgriculturalProduct> {
@@ -46,27 +42,49 @@ export class ProductManagementService {
             const totalQuantity = Math.floor(formData.total_weight / formData.unit_weight);
             const stockQuantity = totalQuantity;
 
-            // 2. Créer le produit de base
+            // 2. Déterminer le profil utilisateur
+            const userProfile = currentUser.user_metadata?.profile || 'personal';
+
+            console.log('📝 Données du formulaire reçues:', {
+                product_name: formData.product_name,
+                description: formData.description, // AJOUT: log pour debug
+                category: formData.category
+            });
+
+            // 3. Préparer les données complètes du produit
             const productData: Omit<AgriculturalProduct, 'id' | 'created_at' | 'updated_at'> = {
-                ...formData,
+                product_name: formData.product_name,
+                category: formData.category,
+                assigned_producer_id: formData.assigned_producer_id,
+                created_by: currentUser.id, // AJOUT: champ requis
+                created_by_profile: userProfile as 'personal' | 'cooperative', // AJOUT: champ requis
+                quality: formData.quality,
+                total_weight: formData.total_weight,
+                unit_weight: formData.unit_weight,
+                unit: formData.unit,
+                description: formData.description,
+                regular_price: formData.regular_price,
+                price_unit: formData.price_unit,
+                harvest_date: formData.harvest_date,
+                availability_status: formData.availability_status,
+                is_promotion_enabled: formData.is_promotion_enabled,
+                promo_price: formData.promo_price,
+                promo_start_date: formData.promo_start_date,
+                promo_end_date: formData.promo_end_date,
                 total_quantity: totalQuantity,
                 stock_quantity: stockQuantity,
                 status: 'draft'
             };
 
-            const product = await this.productService.createProduct(productData);
+            // 4. Créer le produit avec images
+            const product = await this.productService.createProductWithImages(
+                productData,
+                mainImageFile,
+                variantImageFiles
+            );
 
-            // 3. Upload des images si fournies
-            if (mainImageFile) {
-                await this.productService.uploadMainImage(product.id!, mainImageFile);
-            }
+            return product;
 
-            if (variantImageFiles.length > 0) {
-                await this.productService.uploadVariantImages(product.id!, variantImageFiles);
-            }
-
-            // 4. Récupérer le produit final
-            return await this.productService.getProductById(product.id!);
         } catch (error) {
             console.error('Erreur création produit complet:', error);
             throw error;
@@ -105,7 +123,7 @@ export class ProductManagementService {
         let availabilityStatus = product.availability_status;
         if (newStock === 0) {
             availabilityStatus = 'rupture';
-        } else if (newStock < 10) { // Seuil arbitraire
+        } else if (newStock < 10) {
             availabilityStatus = 'limite';
         } else {
             availabilityStatus = 'disponible';
@@ -144,14 +162,13 @@ export class ProductManagementService {
     /**
      * Valider un produit pour publication
      */
-    /**
-     * Valider un produit pour publication
-     */
+
+    // Dans ProductManagementService - CORRIGER la validation
     private validateProductForPublishing(product: AgriculturalProduct): string[] {
         const errors: string[] = [];
 
         if (!product.product_name) errors.push('Nom du produit requis');
-        if (!product.assigned_user_id) errors.push('Utilisateur assigné requis');
+        if (!product.created_by) errors.push('Utilisateur créateur requis'); // CORRECTION: created_by au lieu de assigned_user_id
         if (product.total_quantity <= 0) errors.push('Quantité totale invalide');
         if (product.regular_price <= 0) errors.push('Prix régulier invalide');
         if (!product.main_image) errors.push('Image principale requise');
@@ -160,7 +177,6 @@ export class ProductManagementService {
             if (!product.promo_price || product.promo_price <= 0) errors.push('Prix promotionnel invalide');
             if (!product.promo_start_date || !product.promo_end_date) errors.push('Dates de promotion requises');
 
-            // Vérification sécurisée des dates
             if (product.promo_start_date && product.promo_end_date) {
                 const startDate = new Date(product.promo_start_date);
                 const endDate = new Date(product.promo_end_date);
@@ -169,8 +185,10 @@ export class ProductManagementService {
             }
         }
 
+        console.log('Validation errors:', errors); // AJOUT: pour debug
         return errors;
     }
+
 
     /**
      * Obtenir les statistiques des produits
@@ -196,11 +214,9 @@ export class ProductManagementService {
     /**
      * Dupliquer un produit
      */
-
     async duplicateProduct(productId: string): Promise<AgriculturalProduct> {
         const original = await this.productService.getProductById(productId);
 
-        // Créer un nouvel objet sans les propriétés à exclure
         const { id, created_at, updated_at, ...productData } = original;
 
         const duplicateData: Omit<AgriculturalProduct, 'id' | 'created_at' | 'updated_at'> = {
@@ -208,10 +224,31 @@ export class ProductManagementService {
             product_name: `${original.product_name} (Copie)`,
             stock_quantity: 0,
             status: 'draft',
-            main_image: undefined, // Ne pas dupliquer les images
+            main_image: undefined,
             variant_images: []
         };
 
         return await this.productService.createProduct(duplicateData);
+    }
+
+    /**
+     * Synchroniser les images d'un produit avec l'API Django
+     */
+    async syncProductImages(productId: string): Promise<AgriculturalProduct> {
+        return await this.productService.syncProductImages(productId);
+    }
+
+    /**
+     * Définir une image comme principale
+     */
+    async setImageAsMain(productId: string, imageId: number): Promise<AgriculturalProduct> {
+        return await this.productService.setImageAsMain(productId, imageId);
+    }
+
+    /**
+     * Supprimer une image variante
+     */
+    async deleteVariantImage(productId: string, imageIndex: number): Promise<AgriculturalProduct> {
+        return await this.productService.deleteVariantImage(productId, imageIndex);
     }
 }
