@@ -31,6 +31,7 @@ import {AddProducerComponent} from "./pages/add-producer/add-producer.component"
 import {ListProducersComponent} from "./pages/list-producers/list-producers.component";
 import {ViewProductComponent} from "./pages/view-product/view-product.component";
 import {EditProductComponent} from "./pages/edit-product/edit-product.component";
+import {SupportComponent} from "./pages/support/support.component";
 
 export const routes: Routes = [
   {
@@ -159,6 +160,11 @@ export const routes: Routes = [
       {
         path:'edit-product/:id',
         component:EditProductComponent,
+        title:'Tableau de bord DIGICOOP | Modifier un produit'
+      },
+      {
+        path:'support',
+        component:SupportComponent,
         title:'Tableau de bord DIGICOOP | Modifier un produit'
       },
     ],

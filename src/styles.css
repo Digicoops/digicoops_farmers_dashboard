@@ -197,7 +197,7 @@ layer(base);
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-success-500 dark:bg-brand-500/[0.12] dark:text-success-400;
 }
 
 @utility menu-item-inactive {
@@ -209,7 +209,7 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500 dark:text-brand-400;
+  @apply text-success-500 dark:text-success-400;
 }
 
 @utility menu-item-icon-size {
@@ -227,7 +227,7 @@ layer(base);
 }
 
 @utility menu-item-arrow-active {
-  @apply rotate-180 text-brand-500 dark:text-brand-400;
+  @apply rotate-180 text-success-500 dark:text-success-400;
 }
 
 @utility menu-item-arrow-inactive {
@@ -238,7 +238,7 @@ layer(base);
   @apply relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-theme-sm font-medium;
 }
 @utility menu-dropdown-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-success-500 dark:bg-brand-500/[0.12] dark:text-success-400;
 }
 
 @utility menu-dropdown-item-inactive {
@@ -258,7 +258,7 @@ layer(base);
 }
 
 @utility menu-dropdown-badge-pro {
-  @apply text-brand-600 dark:text-brand-500 block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase;
+  @apply text-success-600 dark:text-success-500 block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase;
 }
 
 @utility menu-dropdown-badge-pro-active {

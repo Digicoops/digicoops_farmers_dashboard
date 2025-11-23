@@ -155,8 +155,8 @@ export class SigninFormComponent implements OnInit {
 
       if (result.success) {
         console.log('Connexion réussie!');
-        // this.router.navigate(['/coming-soon']);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/coming-soon']);
+        // this.router.navigate(['/dashboard']);
       } else {
         this.errorMessage = result.error || 'Erreur de connexion';
       }

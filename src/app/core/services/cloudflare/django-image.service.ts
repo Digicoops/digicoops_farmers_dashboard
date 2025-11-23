@@ -20,7 +20,8 @@ export interface DjangoUploadResponse {
     providedIn: 'root'
 })
 export class DjangoImageService {
-    private readonly apiUrl = 'http://localhost:8000/api/v1/images/'; // Remplacez par votre URL Django
+    // private readonly apiUrl = 'http://localhost:8000/api/v1/images/';
+    private readonly apiUrl = 'https://digicoop-file-manager.onrender.com/api/v1/images/';
 
     private http = inject(HttpClient)
     /**
