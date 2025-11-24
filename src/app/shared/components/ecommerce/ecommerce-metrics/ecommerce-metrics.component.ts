@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { BadgeComponent } from '../../ui/badge/badge.component';
 import { SafeHtmlPipe } from '../../../pipe/safe-html.pipe';
 import {
   AgriculturalProducerManagementService
 } from "../../../../core/services/producer/agricultural-producer-management.service";
 import {NgIf} from "@angular/common";
+import {AuthService} from "../../../../core/services/auth/auth.service";
+import {ProductManagementService} from "../../../../core/services/products/product-management.service";
 
 @Component({
   selector: 'app-ecommerce-metrics',
@@ -31,20 +33,25 @@ export class EcommerceMetricsComponent implements OnInit {
   isLoading: boolean = true;
   producersPercentage: string = '0%';
   animatedProducersCount: number = 0;
+  currentUser: any = null;
+  userProfile: 'personal' | 'cooperative' | null = null;
+  isCooperative = false;
+  errorMessage = '';
 
-  constructor(
-      private producerManagementService: AgriculturalProducerManagementService
-  ) {}
+  private authService = inject(AuthService);
+  private producerManagement = inject(AgriculturalProducerManagementService);
+  private productManagement = inject(ProductManagementService);
 
   async ngOnInit() {
     await this.loadProducersCount();
+    this.loadUserData();
   }
 
   async loadProducersCount() {
     try {
       this.isLoading = true;
 
-      const result = await this.producerManagementService.getCooperativeProducers();
+      const result = await this.producerManagement.getCooperativeProducers();
 
       if (result.error) {
         console.error('Erreur lors du chargement des producteurs:', result.error);
@@ -88,6 +95,29 @@ export class EcommerceMetricsComponent implements OnInit {
     // Pour l'exemple, on utilise une valeur aléatoire positive
     const randomPercentage = (Math.random() * 20 + 5).toFixed(2);
     this.producersPercentage = `${randomPercentage}%`;
+  }
+
+  /**
+   * Charger les données de l'utilisateur connecté
+   */
+  private async loadUserData() {
+    try {
+      const { user } = await this.authService.getCurrentUser();
+
+      if (!user) {
+        this.errorMessage = 'Utilisateur non connecté';
+        return;
+      }
+
+      this.currentUser = user;
+      this.userProfile = user.user_metadata?.['profile'] || 'personal';
+      this.isCooperative = this.userProfile === 'cooperative';
+
+      console.log('Profil utilisateur:', this.userProfile);
+    } catch (error) {
+      console.error('Erreur chargement utilisateur:', error);
+      this.errorMessage = 'Erreur lors du chargement des données utilisateur';
+    }
   }
 
 }

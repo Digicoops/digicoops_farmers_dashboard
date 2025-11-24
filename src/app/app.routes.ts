@@ -32,6 +32,8 @@ import {ListProducersComponent} from "./pages/list-producers/list-producers.comp
 import {ViewProductComponent} from "./pages/view-product/view-product.component";
 import {EditProductComponent} from "./pages/edit-product/edit-product.component";
 import {SupportComponent} from "./pages/support/support.component";
+import {cooperativeGuard} from "./core/guard/cooperative.guard";
+import {ResetPasswordComponent} from "./pages/auth-pages/reset-password/reset-password.component";
 
 export const routes: Routes = [
   {
@@ -150,7 +152,8 @@ export const routes: Routes = [
       {
         path:'list-producers',
         component:ListProducersComponent,
-        title:'Tableau de bord DIGICOOP | Listes des producteurs'
+        title:'Tableau de bord DIGICOOP | Listes des producteurs',
+        canActivate: [cooperativeGuard],
       },
       {
         path:'view-product/:id',
@@ -175,6 +178,11 @@ export const routes: Routes = [
   {
     path:'login',
     component:SignInComponent,
+    title:'Angular Sign In Dashboard | Digicoop- Angular Admin Dashboard Template',
+  },
+  {
+    path:'reset-password',
+    component:ResetPasswordComponent,
     title:'Angular Sign In Dashboard | Digicoop- Angular Admin Dashboard Template',
   },
 

@@ -2,7 +2,7 @@
   <div class="relative flex flex-col justify-center w-full h-screen overflow-y-hidden lg:flex-row dark:bg-gray-900 sm:p-0">
 
     <div class="items-center hidden w-full h-full lg:w-1/2 bg-[#4CAF50] dark:bg-white/5 lg:grid relative bg-opacity-50"
-         style="background: url('/images/shape/auth-bg.jpg')no-repeat center center; background-size: cover">
+         style="background: url('/images/shape/auth-bg.webp')no-repeat center center; background-size: cover">
 
       <!-- Overlay avec dégradé pour améliorer la lisibilité -->
       <div class="absolute inset-0 bg-gradient-to-br from-green-900/70 to-green-600/40 mix-blend-multiply"></div>
@@ -20,7 +20,7 @@
         </a>
 
         <!-- Texte principal stylisé -->
-        <h2 class="text-2xl font-bold text-white my-2 font-serif tracking-wide">
+        <h2 class="text-xl font-bold text-white my-2 font-serif tracking-wide">
             <span id="typewriter"></span>
         </h2>
 
@@ -44,17 +44,20 @@
         </div>
       </div>
 
-      <!-- Élément décoratif en bas -->
-<!--      <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10">-->
-<!--        <div class="flex space-x-2">-->
-<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>-->
-<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>-->
-<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>-->
-<!--        </div>-->
-<!--      </div>-->
+
     </div>
 
-    <ng-content></ng-content>
+
+      <ng-content >
+
+          <div>
+              <a routerLink="/" class=" w-fit flex item-center justify-start mb-2 p-0 transform transition-transform duration-300 hover:scale-105">
+                  <img width="50" height="50" src="/images/logo/digicoop-icon.png"
+                       alt="Logo"
+                       class="drop-shadow-lg"/>
+              </a>
+          </div>
+      </ng-content>
 
   </div>
 </div>
@@ -62,6 +65,14 @@
 
 
 
+<!-- Élément décoratif en bas -->
+<!--      <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10">-->
+<!--        <div class="flex space-x-2">-->
+<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>-->
+<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>-->
+<!--          <div class="w-2 h-2 bg-white/60 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>-->
+<!--        </div>-->
+<!--      </div>-->
 
 
 <!--<div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">-->

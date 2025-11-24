@@ -1,11 +1,13 @@
 <div class="flex flex-col justify-center flex-1 w-full max-w-xl mx-auto sm:pt-10">
     <div>
         <!-- Logo avec animation subtle -->
-        <a routerLink="/" class="block flex item-center justify-start w-full mb-2 p-0 transform transition-transform duration-300 hover:scale-105">
-            <img width="50" height="50" src="/images/logo/digicoop-icon.png"
-                 alt="Logo"
-                 class="drop-shadow-lg"/>
-        </a>
+        <div>
+            <a routerLink="/" class="flex item-center justify-start w-fit mb-4 p-0 transform transition-transform duration-300 hover:scale-105">
+                <img width="50" height="50" src="/images/logo/digicoop-icon.png"
+                     alt="Logo"
+                     class="drop-shadow-lg"/>
+            </a>
+        </div>
 
         <div class="mb-5 sm:mb-8">
             <h1 class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
@@ -150,14 +152,16 @@
 
                 <!-- Téléphone -->
                 <div>
-                    <app-label>Téléphone</app-label>
+                    <app-label>
+                        Numéro de téléphone <span class="text-error-500">*</span>
+                    </app-label>
                     <app-phone-input
                             [selectPosition]="'start'"
                             [countries]="countries"
-                            placeholder="+221771234567"
+                            placeholder="77 123 45 67"
                             (phoneChange)="handlePhoneNumberChange($event)"
                     />
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Saisissez votre numéro WhatsApp. Exemple: +221771234567</p>
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Saisissez votre numéro WhatsApp. Exemple: 77 123 45 67</p>
                 </div>
 
                 <!-- Mot de passe -->

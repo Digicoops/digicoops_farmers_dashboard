@@ -96,18 +96,32 @@ layer(base);
   --color-orange-900: #7e2410;
   --color-orange-950: #511c10;
 
-  --color-success-25: #f6fef9;
-  --color-success-50: #ecfdf3;
-  --color-success-100: #d1fadf;
-  --color-success-200: #a6f4c5;
-  --color-success-300: #6ce9a6;
-  --color-success-400: #32d583;
-  --color-success-500: #12b76a;
-  --color-success-600: #039855;
-  --color-success-700: #027a48;
-  --color-success-800: #05603a;
-  --color-success-900: #054f31;
-  --color-success-950: #053321;
+  /*--color-success-25: #f6fef9;*/
+  /*--color-success-50: #ecfdf3;*/
+  /*--color-success-100: #d1fadf;*/
+  /*--color-success-200: #a6f4c5;*/
+  /*--color-success-300: #6ce9a6;*/
+  /*--color-success-400: #32d583;*/
+  /*--color-success-500: #12b76a;*/
+  /*--color-success-600: #039855;*/
+  /*--color-success-700: #027a48;*/
+  /*--color-success-800: #05603a;*/
+  /*--color-success-900: #054f31;*/
+  /*--color-success-950: #053321;*/
+
+  --color-success-25:  #d3ecbd;
+  --color-success-50:  #b9e095;
+  --color-success-100: #9fd56e;
+  --color-success-200: #85c946;
+  --color-success-300: #6cab31;
+  --color-success-400: #60982c;  /* ta couleur base */
+  --color-success-500: #538426;
+  --color-success-600: #477020;
+  --color-success-700: #3a5c1a;
+  --color-success-800: #2e4815;
+  --color-success-900: #21350f;
+  --color-success-950: #152109;
+
 
   --color-error-25: #fffbfa;
   --color-error-50: #fef3f2;

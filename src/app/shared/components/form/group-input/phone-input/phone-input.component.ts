@@ -17,7 +17,7 @@ export interface CountryCode {
 export class PhoneInputComponent {
 
   @Input() countries: CountryCode[] = [];
-  @Input() placeholder: string = '+1 (555) 000-0000';
+  @Input() placeholder: string = '77 660 61 06';
   @Input() selectPosition: 'start' | 'end' = 'start';
   @Output() phoneChange = new EventEmitter<string>();
 
@@ -49,10 +49,11 @@ export class PhoneInputComponent {
   }
 
   private emitFullPhoneNumber() {
-    const countryCode = this.countryCodes[this.selectedCountry] || '';
-    const fullPhoneNumber = countryCode + this.phoneNumber;
+    // Format strict: "77 660 61 06" (sans indicatif pays)
+    const formattedPhone = this.phoneNumber.replace(/\s+/g, ''); // Supprime les espaces existants
+    const finalPhone = formattedPhone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
 
-    console.log('PhoneInput - Emission du numéro:', fullPhoneNumber);
-    this.phoneChange.emit(fullPhoneNumber); // Émet avec le +
+    console.log('PhoneInput - Emission du numéro:', finalPhone);
+    this.phoneChange.emit(finalPhone); // Émet strictement "77 660 61 06"
   }
 }

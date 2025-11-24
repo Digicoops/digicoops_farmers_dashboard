@@ -18,13 +18,13 @@ export class AuthPageLayoutComponent implements OnInit{
   ngOnInit(): void {
     new Typewriter('#typewriter', {
       strings: [
-        'Un marché digital à portée de main',
-        'Connectez vos produits au monde',
-        // 'Digitalisez votre activité en quelques clics'
+        'Un marché digital à portée de main.',
+        'Connectez vos produits au monde.',
       ],
       autoStart: true,
       loop: true,
       delay: 45,
+
     });
 
   }

@@ -1,5 +1,14 @@
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, inject} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    QueryList,
+    ViewChildren,
+    ChangeDetectorRef,
+    inject,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {SidebarService} from '../../services/sidebar.service';
 import {NavigationEnd, Router, RouterModule} from '@angular/router';
 import {SafeHtmlPipe} from '../../pipe/safe-html.pipe';
@@ -25,9 +34,11 @@ type NavItem = {
     ],
     templateUrl: './app-sidebar.component.html',
 })
-export class AppSidebarComponent {
+export class AppSidebarComponent implements OnInit, OnDestroy{
 
     private authManagement = inject(AuthManagementService)
+    userProfile: any;
+    isCooperative = false;
 
     // Main nav items
     navItems: NavItem[] = [
@@ -64,25 +75,6 @@ export class AppSidebarComponent {
             ],
         },
 
-        {
-            name: "Producteurs",
-            icon: `<svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg"><!--Boxicons v3.0.4 https://boxicons.com | License  https://docs.boxicons.com/free--><path d="m12,11c1.71,0,3-1.29,3-3s-1.29-3-3-3-3,1.29-3,3,1.29,3,3,3Zm0-4c.6,0,1,.4,1,1s-.4,1-1,1-1-.4-1-1,.4-1,1-1Z"></path><path d="m13,12h-2c-2.76,0-5,2.24-5,5v.5c0,.83.67,1.5,1.5,1.5h9c.83,0,1.5-.67,1.5-1.5v-.5c0-2.76-2.24-5-5-5Zm-5,5c0-1.65,1.35-3,3-3h2c1.65,0,3,1.35,3,3h-8Z"></path><path d="m6.5,11c.47,0,.9-.12,1.27-.33-.48-.77-.77-1.68-.77-2.67,0-.66.13-1.28.35-1.85-.26-.09-.55-.15-.85-.15-1.44,0-2.5,1.06-2.5,2.5s1.06,2.5,2.5,2.5Z"></path><path d="m6.11,12h-.61c-1.93,0-3.5,1.57-3.5,3.5v1c0,.28.22.5.5.5h1.5c0-1.96.81-3.73,2.11-5Z"></path><path d="m17.5,11c1.44,0,2.5-1.06,2.5-2.5s-1.06-2.5-2.5-2.5c-.31,0-.59.06-.85.15.22.57.35,1.19.35,1.85,0,.99-.29,1.9-.77,2.67.37.21.79.33,1.27.33Z"></path><path d="m18.5,12h-.61c1.3,1.27,2.11,3.04,2.11,5h1.5c.28,0,.5-.22.5-.5v-1c0-1.93-1.57-3.5-3.5-3.5Z"></path></svg>`,
-            subItems: [
-                {
-                    name: "Ajouter un producteur",
-                    icon: `<svg width="1em" height="1em" xmlns="http://www.w3.org/2000/svg" 
-fill="currentColor" viewBox="0 0 24 24" >
-<path d="M22 11h-3V8h-2v3h-3v2h3v3h2v-3h3zM4 8c0 2.28 1.72 4 4 4s4-1.72 4-4-1.72-4-4-4-4 1.72-4 4m6 0c0 1.18-.82 2-2 2s-2-.82-2-2 .82-2 2-2 2 .82 2 2M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1m4-5h2c1.65 0 3 1.35 3 3H4c0-1.65 1.35-3 3-3"></path>
-</svg>`,
-                    path: '/dashboard/add-producer'
-                },
-                {
-                    name: "Liste des producteurs",
-                    icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H18.5001C19.7427 20.75 20.7501 19.7426 20.7501 18.5V5.5C20.7501 4.25736 19.7427 3.25 18.5001 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H18.5001C18.9143 4.75 19.2501 5.08579 19.2501 5.5V18.5C19.2501 18.9142 18.9143 19.25 18.5001 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V5.5ZM6.25005 9.7143C6.25005 9.30008 6.58583 8.9643 7.00005 8.9643L17 8.96429C17.4143 8.96429 17.75 9.30008 17.75 9.71429C17.75 10.1285 17.4143 10.4643 17 10.4643L7.00005 10.4643C6.58583 10.4643 6.25005 10.1285 6.25005 9.7143ZM6.25005 14.2857C6.25005 13.8715 6.58583 13.5357 7.00005 13.5357H17C17.4143 13.5357 17.75 13.8715 17.75 14.2857C17.75 14.6999 17.4143 15.0357 17 15.0357H7.00005C6.58583 15.0357 6.25005 14.6999 6.25005 14.2857Z" fill="currentColor"></path></svg>`,
-                    path: '/dashboard/list-producers'
-                },
-            ],
-        },
         // {
         //   name: "Facturations",
         //   icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 5.5C3.25 4.25736 4.25736 3.25 5.5 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V18.5C20.75 19.7426 19.7426 20.75 18.5 20.75H5.5C4.25736 20.75 3.25 19.7426 3.25 18.5V5.5ZM5.5 4.75C5.08579 4.75 4.75 5.08579 4.75 5.5V8.58325L19.25 8.58325V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H5.5ZM19.25 10.0833H15.416V13.9165H19.25V10.0833ZM13.916 10.0833L10.083 10.0833V13.9165L13.916 13.9165V10.0833ZM8.58301 10.0833H4.75V13.9165H8.58301V10.0833ZM4.75 18.5V15.4165H8.58301V19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5ZM10.083 19.25V15.4165L13.916 15.4165V19.25H10.083ZM15.416 19.25V15.4165H19.25V18.5C19.25 18.9142 18.9142 19.25 18.5 19.25H15.416Z" fill="currentColor"></path></svg>`,
@@ -182,7 +174,7 @@ fill="currentColor" viewBox="0 0 24 24" >
         this.isHovered$ = this.sidebarService.isHovered$;
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         // Subscribe to router events
         this.subscription.add(
             this.router.events.subscribe(event => {
@@ -212,7 +204,46 @@ fill="currentColor" viewBox="0 0 24 24" >
 
         // Initial load
         this.setActiveMenuFromRoute(this.router.url);
+
+        // Filtre dans le menue
+        await this.loadUserProfile();
+
+        // Ajouter le menu Producteurs seulement si PAS coopérative
+        if (!this.isCooperative) {
+            this.navItems.push(
+                {
+                    name: "Producteurs",
+                    icon: `<svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24" transform="" id="injected-svg"><!--Boxicons v3.0.4 https://boxicons.com | License  https://docs.boxicons.com/free--><path d="m12,11c1.71,0,3-1.29,3-3s-1.29-3-3-3-3,1.29-3,3,1.29,3,3,3Zm0-4c.6,0,1,.4,1,1s-.4,1-1,1-1-.4-1-1,.4-1,1-1Z"></path><path d="m13,12h-2c-2.76,0-5,2.24-5,5v.5c0,.83.67,1.5,1.5,1.5h9c.83,0,1.5-.67,1.5-1.5v-.5c0-2.76-2.24-5-5-5Zm-5,5c0-1.65,1.35-3,3-3h2c1.65,0,3,1.35,3,3h-8Z"></path><path d="m6.5,11c.47,0,.9-.12,1.27-.33-.48-.77-.77-1.68-.77-2.67,0-.66.13-1.28.35-1.85-.26-.09-.55-.15-.85-.15-1.44,0-2.5,1.06-2.5,2.5s1.06,2.5,2.5,2.5Z"></path><path d="m6.11,12h-.61c-1.93,0-3.5,1.57-3.5,3.5v1c0,.28.22.5.5.5h1.5c0-1.96.81-3.73,2.11-5Z"></path><path d="m17.5,11c1.44,0,2.5-1.06,2.5-2.5s-1.06-2.5-2.5-2.5c-.31,0-.59.06-.85.15.22.57.35,1.19.35,1.85,0,.99-.29,1.9-.77,2.67.37.21.79.33,1.27.33Z"></path><path d="m18.5,12h-.61c1.3,1.27,2.11,3.04,2.11,5h1.5c.28,0,.5-.22.5-.5v-1c0-1.93-1.57-3.5-3.5-3.5Z"></path></svg>`,
+                    subItems: [
+                        {
+                            name: "Ajouter un producteur",
+                            icon: `<svg width="1em" height="1em" xmlns="http://www.w3.org/2000/svg" 
+fill="currentColor" viewBox="0 0 24 24" >
+<path d="M22 11h-3V8h-2v3h-3v2h3v3h2v-3h3zM4 8c0 2.28 1.72 4 4 4s4-1.72 4-4-1.72-4-4-4-4 1.72-4 4m6 0c0 1.18-.82 2-2 2s-2-.82-2-2 .82-2 2-2 2 .82 2 2M3 20h10c.55 0 1-.45 1-1v-1c0-2.76-2.24-5-5-5H7c-2.76 0-5 2.24-5 5v1c0 .55.45 1 1 1m4-5h2c1.65 0 3 1.35 3 3H4c0-1.65 1.35-3 3-3"></path>
+</svg>`,
+                            path: '/dashboard/add-producer'
+                        },
+                        {
+                            name: "Liste des producteurs",
+                            icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H18.5001C19.7427 20.75 20.7501 19.7426 20.7501 18.5V5.5C20.7501 4.25736 19.7427 3.25 18.5001 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H18.5001C18.9143 4.75 19.2501 5.08579 19.2501 5.5V18.5C19.2501 18.9142 18.9143 19.25 18.5001 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V5.5ZM6.25005 9.7143C6.25005 9.30008 6.58583 8.9643 7.00005 8.9643L17 8.96429C17.4143 8.96429 17.75 9.30008 17.75 9.71429C17.75 10.1285 17.4143 10.4643 17 10.4643L7.00005 10.4643C6.58583 10.4643 6.25005 10.1285 6.25005 9.7143ZM6.25005 14.2857C6.25005 13.8715 6.58583 13.5357 7.00005 13.5357H17C17.4143 13.5357 17.75 13.8715 17.75 14.2857C17.75 14.6999 17.4143 15.0357 17 15.0357H7.00005C6.58583 15.0357 6.25005 14.6999 6.25005 14.2857Z" fill="currentColor"></path></svg>`,
+                            path: '/dashboard/list-producers'
+                        },
+                    ],
+                },
+            );
+        }
     }
+
+    private async loadUserProfile() {
+        try {
+            const { profile } = await this.authManagement.getUserProfile();
+            this.userProfile = profile;
+            this.isCooperative = this.userProfile?.profile === 'cooperative';
+        } catch (error) {
+            console.error('Erreur chargement profil:', error);
+        }
+    }
+
 
     ngOnDestroy() {
         // Clean up subscriptions
@@ -287,10 +318,4 @@ fill="currentColor" viewBox="0 0 24 24" >
         }).unsubscribe();
     }
 
-
-    logout() {
-        this.authManagement.logout().then(() => {
-
-        })
-    }
 }

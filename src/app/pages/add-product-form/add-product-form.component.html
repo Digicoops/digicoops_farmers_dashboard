@@ -7,36 +7,39 @@
             Création de produit agricole
         </h3>
 
-        <!-- Tooltip Icon -->
-        <div class="group relative inline-block">
-            <button type="button" class=" text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-                </svg>
-            </button>
+        <div class="">
+            <!-- Tooltip Icon -->
+            <div class="group relative  flex items-center justify-end w-[200px]">
+                <button type="button" class="m-0 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 w-fit">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                    </svg>
+                </button>
 
-            <!-- Tooltip Content -->
-            <div class="absolute right-[8px] z-20 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div class="relative top-2 w-80 rounded-lg bg-gray-900 px-4 py-3 text-sm text-white shadow-lg dark:bg-gray-700">
-                    <div class="mb-2 font-semibold">📊 Comment calculer les quantités ?</div>
-                    <div class="space-y-2 text-xs">
-                        <div><strong>Poids total du lot</strong> = Le poids TOTAL de tout le stock</div>
-                        <div><strong>Poids par unité</strong> = Le poids d'UNE SEULE unité</div>
-                        <div><strong>Quantité totale</strong> = Poids total ÷ Poids par unité</div>
-                        <div class="mt-2 border-t border-gray-600 pt-2">
-                            <strong>Exemple :</strong><br>
-                            Poids total du lot = 100 kg<br>
-                            Poids par unité = 2 kg<br>
-                            Quantité totale = 100 ÷ 2 = <strong>50 unités</strong>
+                <!-- Tooltip Content -->
+                <div class="absolute left-[0px] z-20 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div class="relative top-2 w-80 rounded-lg bg-gray-900 px-4 py-3 text-sm text-white shadow-lg dark:bg-gray-700">
+                        <div class="mb-2 font-semibold">📊 Comment calculer les quantités ?</div>
+                        <div class="space-y-2 text-xs">
+                            <div><strong>Poids total du lot</strong> = Le poids TOTAL de tout le stock</div>
+                            <div><strong>Poids par unité</strong> = Le poids d'UNE SEULE unité</div>
+                            <div><strong>Quantité totale</strong> = Poids total ÷ Poids par unité</div>
+                            <div class="mt-2 border-t border-gray-600 pt-2">
+                                <strong>Exemple :</strong><br>
+                                Poids total du lot = 100 kg<br>
+                                Poids par unité = 2 kg<br>
+                                Quantité totale = 100 ÷ 2 = <strong>50 unités</strong>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Tooltip arrow -->
-                    <div class="absolute -top-1 left-1/2 -translate-x-1/2 transform">
-                        <div class="h-2 w-2 rotate-45 bg-gray-900 dark:bg-gray-700"></div>
+                        <!-- Tooltip arrow -->
+                        <div class="absolute -top-1 left-1/2 -translate-x-1/2 transform">
+                            <div class="h-2 w-2 rotate-45 bg-gray-900 dark:bg-gray-700"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
 
@@ -89,28 +92,23 @@
                                         [options]="producerOptions"
                                         placeholder="Sélectionnez un producteur"
                                         (valueChange)="handleProducerAssignment($event)"
-                                        
+
                                 ></app-select>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                     Choisissez le producteur responsable de ce produit
                                 </p>
                             </div>
 
-                            <!-- Message pour les particuliers -->
-                            <div *ngIf="!isCooperative" class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                                <p class="text-sm text-blue-700 dark:text-blue-300">
-                                    <strong>Information :</strong> En tant que particulier, ce produit vous sera automatiquement attribué.
-                                </p>
-                            </div>
 
-                            <div>
+
+                            <div [class]="isCooperative ? '' : '!col-span-full'">
                                 <app-label for="quality">Qualité <span class="text-error-500">*</span></app-label>
                                 <app-select
                                         id="quality"
                                         [options]="qualities"
                                         placeholder="Sélectionnez la qualité"
                                         (valueChange)="handleSelectChange($event, 'quality')"
-                                        
+
                                 ></app-select>
                             </div>
 
@@ -369,7 +367,7 @@
                     </div>
                     <label
                             for="main-image"
-                            class="shadow-theme-xs group hover:border-brand-500 block cursor-pointer rounded-lg border-2 border-dashed border-gray-300 transition dark:hover:border-brand-400 dark:border-gray-800"
+                            class="shadow-theme-xs group hover:border-success-500 block cursor-pointer rounded-lg border-2 border-dashed border-gray-300 transition dark:hover:border-success-400 dark:border-gray-800"
                             [class.opacity-50]="isLoading"
                     >
                         <div class="flex justify-center p-10">
@@ -446,7 +444,7 @@
                     <!-- Variant Images Upload -->
                     <label
                             for="variant-images"
-                            class="shadow-theme-xs group hover:border-brand-500 mb-6 block cursor-pointer rounded-lg border-2 border-dashed border-gray-300 transition dark:hover:border-brand-400 dark:border-gray-800"
+                            class="shadow-theme-xs group hover:border-success-500 mb-6 block cursor-pointer rounded-lg border-2 border-dashed border-gray-300 transition dark:hover:border-success-400 dark:border-gray-800"
                             [class.opacity-50]="isLoading"
                     >
                         <div class="flex justify-center p-6">
@@ -530,7 +528,7 @@
                     </svg>
                     Sauvegarde...
                 </span>
-                    <span *ngIf="!isLoading">Brouillon</span>
+                    <span *ngIf="!isLoading">Mettre  au  brouillon</span>
                 </app-button>
                 <app-button
                         variant="primary"

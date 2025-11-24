@@ -166,6 +166,8 @@ export class AddProductFormComponent implements OnInit {
     }
   }
 
+
+
   /**
    * Charger les producteurs si l'utilisateur est une coopérative
    */

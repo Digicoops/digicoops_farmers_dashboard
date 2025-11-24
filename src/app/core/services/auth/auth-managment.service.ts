@@ -176,4 +176,28 @@ export class AuthManagementService {
     async isAuthenticated(): Promise<boolean> {
         return await this.authService.isAuthenticated();
     }
+
+    // Récupérer seulement les métadonnées (plus léger)
+    async getUserMetadata() {
+        const metadata = await this.authService.getUserMetadata();
+        console.log('Métadonnées:', metadata);
+        return metadata;
+    }
+
+    // Ajouter cette méthode dans AuthManagementService
+    async resetPassword(email: string): Promise<{ success: boolean; error?: string }> {
+        try {
+            const { error } = await this.authService.resetPassword(email);
+
+            if (error) {
+                console.error('Erreur reset password:', error.message);
+                return { success: false, error: error.message };
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error('Erreur reset password:', error);
+            return { success: false, error: 'Erreur lors de la réinitialisation' };
+        }
+    }
 }

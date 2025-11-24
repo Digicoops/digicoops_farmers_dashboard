@@ -18,7 +18,7 @@
 <!--                            <path d="M16.667 13.3333V15.4166C16.667 16.1069 16.1074 16.6666 15.417 16.6666H4.58295C3.89259 16.6666 3.33295 16.1069 3.33295 15.4166V13.3333M10.0013 13.3333L10.0013 3.33325M6.14547 9.47942L9.99951 13.331L13.8538 9.47942" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>-->
 <!--                        </svg>-->
 <!--                    </app-button>-->
-                    <a routerLink="/dashboard/add-producer" class="bg-brand-500 shadow-sm hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition hover:bg-brand-600">
+                    <a routerLink="/dashboard/add-producer" class="bg-success-500 shadow-sm hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition hover:bg-success-600">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
@@ -41,7 +41,7 @@
                                 placeholder="Rechercher un producteur..."
                                 [(ngModel)]="searchTerm"
                                 (input)="onSearch()"
-                                class="shadow-sm focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-none sm:w-[300px] sm:min-w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                class="shadow-sm focus:border-success-300 focus:ring-success-500/10 dark:focus:border-success-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-none sm:w-[300px] sm:min-w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                         />
                     </div>
                     <div class="relative" #filterRef>
@@ -58,7 +58,7 @@
                                     <select
                                             [(ngModel)]="selectedProductionType"
                                             (change)="applyFilters()"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-success-300 focus:ring-success-500/10 dark:focus:border-success-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                     >
                                         <option value="">Tous les types</option>
                                         <option value="vegetables">Légumes</option>
@@ -76,7 +76,7 @@
                                     <select
                                             [(ngModel)]="selectedStatus"
                                             (change)="applyFilters()"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-success-300 focus:ring-success-500/10 dark:focus:border-success-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                     >
                                         <option value="">Tous les statuts</option>
                                         <option value="active">Actif</option>
@@ -104,7 +104,7 @@
                         <th class="lg:w-14 px-5 py-4 text-left whitespace-nowrap">
                             <label class="cursor-pointer text-sm font-medium text-gray-700 select-none dark:text-gray-400">
                                 <input type="checkbox" class="sr-only" (change)="toggleAll()" [checked]="isAllSelected()"/>
-                                <span class="flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px]" [ngClass]="{'border-brand-500 bg-brand-500': isAllSelected(), 'bg-transparent border-gray-300 dark:border-gray-700': !isAllSelected()}">
+                                <span class="flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px]" [ngClass]="{'border-success-500 bg-success-500': isAllSelected(), 'bg-transparent border-gray-300 dark:border-gray-700': !isAllSelected()}">
                                     <span [ngClass]="{'opacity-0': !isAllSelected()}">
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="1.6666" strokeLinecap="round" strokeLinejoin="round"/>
@@ -199,7 +199,7 @@
                                         </p>
                                         @if (!searchTerm && !selectedProductionType && !selectedStatus) {
                                             <div class="mt-6">
-                                                <a routerLink="/add-producer" class="bg-brand-500 inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white hover:bg-brand-600">
+                                                <a routerLink="/add-producer" class="bg-success-500 inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white hover:bg-success-600">
                                                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                                     </svg>
@@ -217,7 +217,7 @@
                                     <td class="lg:w-14 px-5 py-4 whitespace-nowrap">
                                         <label class="cursor-pointer text-sm font-medium text-gray-700 select-none dark:text-gray-400">
                                             <input type="checkbox" class="sr-only" [checked]="selected.includes(producer.id)" (change)="toggleSelect(producer.id)"/>
-                                            <span class="flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px]" [ngClass]="{'border-brand-500 bg-brand-500': selected.includes(producer.id), 'bg-transparent border-gray-300 dark:border-gray-700': !selected.includes(producer.id)}">
+                                            <span class="flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px]" [ngClass]="{'border-success-500 bg-success-500': selected.includes(producer.id), 'bg-transparent border-gray-300 dark:border-gray-700': !selected.includes(producer.id)}">
                                                 <span [ngClass]="{'opacity-0': !selected.includes(producer.id)}">
                                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="1.6666" strokeLinecap="round" strokeLinejoin="round"/>
@@ -228,7 +228,7 @@
                                     </td>
                                     <td class="px-5 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
-                                            <div class="h-10 w-10 rounded-full bg-gradient-to-r from-brand-400 to-brand-600 flex items-center justify-center text-white font-semibold text-sm">
+                                            <div class="h-10 w-10 rounded-full bg-gradient-to-r from-success-400 to-success-600 flex items-center justify-center text-white font-semibold text-sm">
                                                 {{producer.first_name.charAt(0)}}{{producer.last_name.charAt(0)}}
                                             </div>
                                             <div>
@@ -327,7 +327,7 @@
                     <ul class="hidden items-center gap-0.5 sm:flex">
                         @for (n of [].constructor(totalPages()); track $index; let i = $index) {
                             <li>
-                                <a href="#" (click)="goToPage(i + 1); $event.preventDefault()" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium" [ngClass]="{'bg-brand-500 text-white': page === i + 1, 'text-gray-700 dark:text-gray-400 hover:bg-brand-500 hover:text-white dark:hover:text-white': page !== i + 1}">
+                                <a href="#" (click)="goToPage(i + 1); $event.preventDefault()" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium" [ngClass]="{'bg-success-500 text-white': page === i + 1, 'text-gray-700 dark:text-gray-400 hover:bg-success-500 hover:text-white dark:hover:text-white': page !== i + 1}">
                                     <span>{{i + 1}}</span>
                                 </a>
                             </li>

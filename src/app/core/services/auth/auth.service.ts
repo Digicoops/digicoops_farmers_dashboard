@@ -401,4 +401,13 @@ export class AuthService {
         const { user } = await this.getCurrentUser();
         return !!user;
     }
+
+    // Ajouter cette méthode dans AuthService
+    async resetPassword(email: string): Promise<{ error: AuthError | null }> {
+        const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/update-password`
+        });
+
+        return { error };
+    }
 }

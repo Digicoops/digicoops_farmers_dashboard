@@ -67,6 +67,7 @@ export class SignupFormComponent implements OnInit {
   }
 
   handlePhoneNumberChange(phoneNumber: string) {
+    // Format reçu: "77 660 61 06" - on le conserve tel quel
     this.phone = phoneNumber;
   }
 
@@ -98,7 +99,7 @@ export class SignupFormComponent implements OnInit {
       profile: this.selectedValue,
       email: this.email.trim(),
       password: this.password,
-      phone: this.phone || ''
+      phone: this.phone // Format déjà "77 660 61 06"
     };
 
     try {

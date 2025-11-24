@@ -52,44 +52,24 @@ export class SigninFormComponent implements OnInit {
   }
 
   /** Nettoyer et valider le numéro de téléphone */
-  /** Nettoyer et valider le numéro de téléphone */
   private validateAndCleanPhone(phone: string): { isValid: boolean; cleanPhone: string; error?: string } {
-    // Supprimer tous les + et les espaces
-    let cleanPhone = phone.replace(/\+/g, '').replace(/\s+/g, '');
+    // Le phone arrive déjà formaté "77 660 61 06", on supprime juste les espaces
+    let cleanPhone = phone.replace(/\s+/g, '');
 
-    console.log('Phone après suppression + et espaces:', cleanPhone);
+    console.log('Phone après suppression espaces:', cleanPhone);
 
-    // Vérifier et supprimer les doublons de 221
-    if (cleanPhone.startsWith('221221')) {
-      cleanPhone = cleanPhone.substring(3); // Supprimer un seul 221
-      console.log('Phone après suppression doublon 221:', cleanPhone);
-    }
-
-    // Vérifier si c'est un numéro Sénégalais
-    if (!cleanPhone.startsWith('221')) {
+    // Vérifier la longueur (9 chiffres)
+    if (cleanPhone.length !== 9) {
       return {
         isValid: false,
         cleanPhone: '',
-        error: 'Le numéro doit être Sénégalais (+221)'
-      };
-    }
-
-    // Supprimer le préfixe 221 pour avoir juste les chiffres
-    const numberWithoutPrefix = cleanPhone.substring(3);
-    console.log('Numéro sans préfixe 221:', numberWithoutPrefix);
-
-    // Vérifier la longueur (9 chiffres après 221)
-    if (numberWithoutPrefix.length !== 9) {
-      return {
-        isValid: false,
-        cleanPhone: '',
-        error: 'Le numéro doit avoir 9 chiffres après le +221'
+        error: 'Le numéro doit avoir 9 chiffres'
       };
     }
 
     // Vérifier le format Sénégalais (76, 77, 78, 70)
     const validPrefixes = ['76', '77', '78', '70'];
-    const prefix = numberWithoutPrefix.substring(0, 2);
+    const prefix = cleanPhone.substring(0, 2);
 
     if (!validPrefixes.includes(prefix)) {
       return {
@@ -100,7 +80,7 @@ export class SigninFormComponent implements OnInit {
     }
 
     // Vérifier que c'est bien un nombre
-    if (!/^\d+$/.test(numberWithoutPrefix)) {
+    if (!/^\d+$/.test(cleanPhone)) {
       return {
         isValid: false,
         cleanPhone: '',
@@ -110,12 +90,9 @@ export class SigninFormComponent implements OnInit {
 
     return {
       isValid: true,
-      cleanPhone: numberWithoutPrefix // Retourner sans le 221, juste 77...
+      cleanPhone: cleanPhone // Retourner juste "776606106" (sans espaces)
     };
   }
-
-
-
 
   async onSignIn() {
     console.log("onSignIn appelé !");
@@ -150,7 +127,7 @@ export class SigninFormComponent implements OnInit {
     });
 
     try {
-      // Login avec téléphone nettoyé (sans le 221)
+      // Login avec téléphone nettoyé (sans espaces)
       const result = await this.authManagement.loginWithPhone(phoneValidation.cleanPhone, this.password);
 
       if (result.success) {
