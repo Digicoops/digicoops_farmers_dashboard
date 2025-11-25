@@ -200,7 +200,7 @@ export const routes: Routes = [
   {
     path:'update-password',
     component:ChangePasswordComponent,
-    title:'Angular Sign Up Dashboard | Digicoop - Angular Admin Dashboard Template'
+    title:'Angular Change password Dashboard | Digicoop - Angular Admin Dashboard Template'
   },
   {
     path:'coming-soon',
