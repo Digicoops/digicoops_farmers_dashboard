@@ -23,6 +23,7 @@ import {PhoneFormatPipe} from "../../../../core/pipe/phone-format.pipe";
     SelectComponent,
     PhoneInputComponent,
     ButtonComponent,
+    PhoneFormatPipe // Ajouté dans imports, PAS dans providers
   ],
   templateUrl: './signup-form.component.html',
   styles: ``
@@ -41,7 +42,7 @@ export class SignupFormComponent implements OnInit {
   email = '';
   password = '';
   phone = '';
-  displayPhone = ''; // Ajoutez cette variable pour l'affichage formaté
+  displayPhone = '';
 
   @Input() options: Option[] = [
     { value: 'personal', label: 'Particulier' },
@@ -54,7 +55,7 @@ export class SignupFormComponent implements OnInit {
   constructor(
       private authManagement: AuthManagementService,
       private router: Router,
-      private phoneFormatPipe: PhoneFormatPipe // Injectez le pipe
+      // RETIREZ l'injection du pipe ici
   ) {}
 
   ngOnInit() {}
@@ -75,9 +76,23 @@ export class SignupFormComponent implements OnInit {
     this.displayPhone = phoneNumber; // Garder la version formatée pour l'affichage
   }
 
-  // Nouvelle méthode pour formater le téléphone si besoin ailleurs
+  // Méthode pour formater le téléphone sans injection du pipe
   formatPhoneNumber(phone: string): string {
-    return this.phoneFormatPipe.transform(phone, 'SN');
+    // Logique de formatage directe sans pipe
+    if (!phone) return '';
+
+    const cleanPhone = phone.replace(/\D/g, '');
+
+    // Format Sénégal: 77 660 61 06
+    if (cleanPhone.length <= 2) {
+      return cleanPhone;
+    } else if (cleanPhone.length <= 5) {
+      return `${cleanPhone.substring(0, 2)} ${cleanPhone.substring(2)}`;
+    } else if (cleanPhone.length <= 7) {
+      return `${cleanPhone.substring(0, 2)} ${cleanPhone.substring(2, 5)} ${cleanPhone.substring(5)}`;
+    } else {
+      return `${cleanPhone.substring(0, 2)} ${cleanPhone.substring(2, 5)} ${cleanPhone.substring(5, 7)} ${cleanPhone.substring(7, 9)}`;
+    }
   }
 
   // Méthode pour gérer le changement direct si vous avez un input séparé
