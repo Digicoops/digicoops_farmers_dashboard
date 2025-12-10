@@ -1,5 +1,7 @@
+// phone-input.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {PhoneFormatPipe} from "../../../../../core/pipe/phone-format.pipe";
 
 export interface CountryCode {
   code: string;
@@ -10,12 +12,12 @@ export interface CountryCode {
   selector: 'app-phone-input',
   imports: [
     CommonModule,
+    PhoneFormatPipe // Ajoutez le pipe aux imports
   ],
   templateUrl: './phone-input.component.html',
-  styles: ``
+  styles: ``,
 })
 export class PhoneInputComponent {
-
   @Input() countries: CountryCode[] = [];
   @Input() placeholder: string = '77 660 61 06';
   @Input() selectPosition: 'start' | 'end' = 'start';
@@ -23,6 +25,7 @@ export class PhoneInputComponent {
 
   selectedCountry: string = '';
   phoneNumber: string = '';
+  displayPhoneNumber: string = ''; // Nouvelle variable pour l'affichage formaté
 
   countryCodes: { [key: string]: string } = {};
 
@@ -43,17 +46,62 @@ export class PhoneInputComponent {
   }
 
   handlePhoneInputChange(event: Event) {
-    const newPhoneNumber = (event.target as HTMLInputElement).value;
-    this.phoneNumber = newPhoneNumber;
+    const input = event.target as HTMLInputElement;
+    const rawValue = input.value;
+
+    // Nettoyer pour garder uniquement les chiffres
+    const cleanValue = rawValue.replace(/\D/g, '');
+
+    // Limiter à 9 chiffres pour le Sénégal
+    const limitedValue = cleanValue.slice(0, 9);
+
+    // Stocker la version non formatée
+    this.phoneNumber = limitedValue;
+
+    // Mettre à jour l'affichage avec le format
+    this.displayPhoneNumber = this.formatPhoneForDisplay(limitedValue);
+
+    // Mettre à jour la valeur de l'input
+    input.value = this.displayPhoneNumber;
+
     this.emitFullPhoneNumber();
   }
 
-  private emitFullPhoneNumber() {
-    // Format strict: "77 660 61 06" (sans indicatif pays)
-    const formattedPhone = this.phoneNumber.replace(/\s+/g, ''); // Supprime les espaces existants
-    const finalPhone = formattedPhone.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+  private formatPhoneForDisplay(phone: string): string {
+    // Utiliser le format sénégalais par défaut
+    if (phone.length <= 2) {
+      return phone;
+    } else if (phone.length <= 5) {
+      return `${phone.substring(0, 2)} ${phone.substring(2)}`;
+    } else if (phone.length <= 7) {
+      return `${phone.substring(0, 2)} ${phone.substring(2, 5)} ${phone.substring(5)}`;
+    } else {
+      return `${phone.substring(0, 2)} ${phone.substring(2, 5)} ${phone.substring(5, 7)} ${phone.substring(7, 9)}`;
+    }
+  }
 
-    console.log('PhoneInput - Emission du numéro:', finalPhone);
-    this.phoneChange.emit(finalPhone); // Émet strictement "77 660 61 06"
+  private emitFullPhoneNumber() {
+    // Émettre le numéro nettoyé (sans espaces)
+    const formattedPhone = this.phoneNumber;
+    console.log('PhoneInput - Emission du numéro:', formattedPhone);
+    this.phoneChange.emit(formattedPhone);
+  }
+
+  // Méthode pour gérer le backspace et la navigation
+  handleKeyDown(event: KeyboardEvent) {
+    // Permettre les touches de navigation
+    const allowedKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+      'Tab', 'Home', 'End'
+    ];
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    // Empêcher la saisie si ce n'est pas un chiffre
+    if (!/^\d$/.test(event.key)) {
+      event.preventDefault();
+    }
   }
 }
