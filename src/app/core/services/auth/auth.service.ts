@@ -162,7 +162,8 @@ export class AuthService {
     async getEmailByPhone(phone: string): Promise<{ email: string | null; error: AuthServiceError | null }> {
         try {
             // Reconstituer le numéro complet avec +221
-            const fullPhone = `+221${phone}`;
+            // const fullPhone = `+221${phone}`;
+            const fullPhone = phone;
 
             console.log('Recherche du téléphone:', fullPhone);
 
