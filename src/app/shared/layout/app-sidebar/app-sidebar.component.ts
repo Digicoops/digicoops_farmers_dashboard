@@ -209,7 +209,7 @@ export class AppSidebarComponent implements OnInit, OnDestroy{
         await this.loadUserProfile();
 
         // Ajouter le menu Producteurs seulement si PAS coopérative
-        if (this.isCooperative) {
+        if (!this.isCooperative) {
             this.navItems.push(
                 {
                     name: "Producteurs",
