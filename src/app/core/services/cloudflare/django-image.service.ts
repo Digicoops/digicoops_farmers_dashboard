@@ -1,6 +1,7 @@
 // services/django-image.service.ts
 import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {environment} from "../../../../environments/environment.development";
 
 export interface DjangoImageResponse {
     id: number;
@@ -21,7 +22,8 @@ export interface DjangoUploadResponse {
 })
 export class DjangoImageService {
     // private readonly apiUrl = 'http://localhost:8000/api/v1/images/';
-    private readonly apiUrl = 'https://digicoop-file-manager.onrender.com/api/v1/images/';
+    // private readonly apiUrl = 'https://digicoop-file-manager.onrender.com/api/v1/images/';
+    private readonly apiUrl = environment.django.apiUrl;
 
     private http = inject(HttpClient)
     /**

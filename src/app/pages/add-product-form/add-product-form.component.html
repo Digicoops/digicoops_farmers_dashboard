@@ -127,6 +127,19 @@
                                         <p class="mt-1 text-xs text-gray-500">Poids total de tout votre stock</p>
                                     </div>
                                     <div>
+                                        <app-label for="unit">Unité de vente <span class="text-error-500">*</span></app-label>
+                                        <app-select
+                                                id="unit"
+                                                [options]="units"
+                                                placeholder="Sélectionnez l'unité"
+                                                (valueChange)="handleSelectChange($event, 'unit')"
+
+                                        ></app-select>
+                                        <p
+                                                class="mt-1 text-xs text-gray-500">Poids d'une seule unité de vente</p>
+                                    </div>
+
+                                    <div>
                                         <app-label for="unit-weight">Poids par unité (KG) <span class="text-error-500">*</span></app-label>
                                         <app-input-field
                                                 id="unit-weight"
@@ -138,17 +151,8 @@
                                         ></app-input-field>
                                         <p class="mt-1 text-xs text-gray-500">Poids d'une unité de vente</p>
                                     </div>
-                                    <div>
-                                        <app-label for="unit">Unité de vente <span class="text-error-500">*</span></app-label>
-                                        <app-select
-                                                id="unit"
-                                                [options]="units"
-                                                placeholder="Sélectionnez l'unité"
-                                                (valueChange)="handleSelectChange($event, 'unit')"
-                                                
-                                        ></app-select>
-                                        <p class="mt-1 text-xs text-gray-500">Poids d'une seule unité de vente</p>
-                                    </div>
+
+
                                     <div class="col-span-full">
                                         <app-label for="description">Description</app-label>
                                         <app-text-area

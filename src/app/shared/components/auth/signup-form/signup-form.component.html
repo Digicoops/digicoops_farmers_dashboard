@@ -135,6 +135,20 @@
                             [disabled]="isLoading" />
                 </div>
 
+                <!-- Adresse boutique -->
+                <div>
+                    <app-label>
+                        Adresse de votre boutique <span class="text-error-500">*</span>
+                    </app-label>
+                    <app-input-field
+                            type="text"
+                            [(value)]="shopAdresse"
+                            id="shopAdresse"
+                            name="shopName"
+                            placeholder="Entrez l'adresse de votre boutique"
+                            [disabled]="isLoading" />
+                </div>
+
                 <!-- Profil -->
                 <div>
                     <app-label>

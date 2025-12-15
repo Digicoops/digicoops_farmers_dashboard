@@ -8,6 +8,7 @@ export interface SignUpData {
     first_name: string;
     last_name: string;
     shop_name: string;
+    shop_adresse: string;
     profile: string;
     email: string;
     password: string;
@@ -102,6 +103,7 @@ export class AuthService {
                     first_name: signUpData.first_name,
                     last_name: signUpData.last_name,
                     shop_name: signUpData.shop_name,
+                    shop_adresse: signUpData.shop_adresse,
                     profile: signUpData.profile,
                     phone: signUpData.phone
                 },
@@ -123,6 +125,7 @@ export class AuthService {
                     first_name: signUpData.first_name,
                     last_name: signUpData.last_name,
                     shop_name: signUpData.shop_name,
+                    shop_adresse: signUpData.shop_adresse,
                     profile: signUpData.profile,
                     email: signUpData.email,
                     phone: signUpData.phone,
@@ -353,6 +356,7 @@ export class AuthService {
                 first_name: profileData.first_name,
                 last_name: profileData.last_name,
                 shop_name: profileData.shop_name,
+                shop_adresse: profileData.shop_adresse,
                 profile: profileData.profile
             }
         });

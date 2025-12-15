@@ -39,6 +39,7 @@ export class SignupFormComponent implements OnInit {
   fname = '';
   lname = '';
   shopName = '';
+  shopAdresse = '';
   email = '';
   password = '';
   phone = '';
@@ -131,6 +132,7 @@ export class SignupFormComponent implements OnInit {
         !!this.lname?.trim() &&
         !!this.email?.trim() &&
         !!this.shopName?.trim() &&
+        !!this.shopAdresse?.trim() &&
         !!this.password &&
         this.password.length >= 8 &&
         this.isChecked &&
@@ -155,6 +157,7 @@ export class SignupFormComponent implements OnInit {
       first_name: this.fname.trim(),
       last_name: this.lname.trim(),
       shop_name: this.shopName.trim(),
+      shop_adresse: this.shopAdresse.trim(),
       profile: this.selectedValue,
       email: this.email.trim(),
       password: this.password,

@@ -36,6 +36,7 @@ import {cooperativeGuard} from "./core/guard/cooperative.guard";
 import {ResetPasswordComponent} from "./pages/auth-pages/reset-password/reset-password.component";
 import {ChangePasswordComponent} from "./pages/auth-pages/change-password/change-password.component";
 import {SendLinkMessageComponent} from "./pages/auth-pages/send-link-password/send-link-message.component";
+import {AddCustomProductForm} from "./pages/add-custom-product-form/add-custom-product-form.component";
 
 export const routes: Routes = [
   {
@@ -108,6 +109,11 @@ export const routes: Routes = [
       {
         path:'add-product',
         component:AddProductFormComponent,
+        title:'Angular Sign Up Dashboard | Digicoop- Angular Admin Dashboard Template'
+      },
+      {
+        path:'add-custom-product',
+        component:AddCustomProductForm,
         title:'Angular Sign Up Dashboard | Digicoop- Angular Admin Dashboard Template'
       },
       {

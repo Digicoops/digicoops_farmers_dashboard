@@ -1,6 +1,6 @@
 // services/product-management.service.ts
 import { inject, Injectable } from '@angular/core';
-import { AgriculturalProduct, ProductService } from "./product.service";
+import {AgriculturalProduct, CustomProduct, ProductService} from "./product.service";
 
 export interface ProductFormData {
     product_name: string;
@@ -250,5 +250,106 @@ export class ProductManagementService {
      */
     async deleteVariantImage(productId: string, imageIndex: number): Promise<AgriculturalProduct> {
         return await this.productService.deleteVariantImage(productId, imageIndex);
+    }
+
+
+
+    // Dans ProductManagementService - AJOUTEZ ces méthodes
+
+    /**
+     * Créer un produit personnalisé complet (Service ou Équipement)
+     */
+    async createCustomProduct(
+        productData: any, // Données brutes du formulaire
+        mainImageFile?: File,
+        variantImageFiles: File[] = []
+    ): Promise<any> {
+        try {
+            // 1. Préparer les données pour l'insertion
+            const customProductData: Omit<CustomProduct, 'id' | 'created_at' | 'updated_at'> = {
+                product_name: productData.product_name,
+                product_type: productData.product_type,
+                description: productData.description || '',
+                created_by: productData.created_by,
+                created_by_profile: productData.created_by_profile,
+                assigned_producer_id: productData.assigned_producer_id,
+                regular_price: productData.regular_price,
+                price_unit: productData.price_unit,
+                is_promotion_enabled: productData.is_promotion_enabled || false,
+                promo_price: productData.promo_price,
+                promo_start_date: productData.promo_start_date,
+                promo_end_date: productData.promo_end_date,
+                discount_percentage: productData.discount_percentage,
+                availability_status: productData.availability_status || 'disponible',
+                stock_quantity: productData.stock_quantity || 0,
+                status: productData.status || 'draft',
+                specific_fields: productData.specific_fields || {}
+            };
+
+            // 2. Utiliser la méthode du ProductService
+            // Note: Vous devez injecter ProductService dans le constructeur si ce n'est pas déjà fait
+            // private productService = inject(ProductService);
+
+            return await this.productService.createCustomProduct(
+                customProductData,
+                mainImageFile,
+                variantImageFiles
+            );
+
+        } catch (error) {
+            console.error('Erreur création produit personnalisé:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Publier un produit personnalisé
+     */
+    async publishCustomProduct(productId: string): Promise<any> {
+        // Validation avant publication
+        const product = await this.productService.getCustomProductById(productId);
+
+        const validationErrors = this.validateCustomProductForPublishing(product);
+        if (validationErrors.length > 0) {
+            throw new Error(`Produit non valide: ${validationErrors.join(', ')}`);
+        }
+
+        return await this.productService.updateCustomProduct(productId, {
+            status: 'published',
+            availability_status: 'disponible'
+        });
+    }
+
+    /**
+     * Valider un produit personnalisé pour publication
+     */
+    private validateCustomProductForPublishing(product: any): string[] {
+        const errors: string[] = [];
+
+        if (!product.product_name) errors.push('Nom du produit requis');
+        if (!product.created_by) errors.push('Utilisateur créateur requis');
+        if (product.regular_price <= 0) errors.push('Prix régulier invalide');
+        if (!product.main_image) errors.push('Image principale requise');
+        if (!product.product_type) errors.push('Type de produit requis');
+
+        // Validation spécifique par type
+        if (product.product_type === 'equipment') {
+            if (product.stock_quantity < 0) errors.push('Quantité de stock invalide');
+        }
+
+        if (product.is_promotion_enabled) {
+            if (!product.promo_price || product.promo_price <= 0) errors.push('Prix promotionnel invalide');
+            if (!product.promo_start_date || !product.promo_end_date) errors.push('Dates de promotion requises');
+
+            if (product.promo_start_date && product.promo_end_date) {
+                const startDate = new Date(product.promo_start_date);
+                const endDate = new Date(product.promo_end_date);
+
+                if (startDate > endDate) errors.push('Dates de promotion invalides');
+            }
+        }
+
+        console.log('Validation custom errors:', errors);
+        return errors;
     }
 }

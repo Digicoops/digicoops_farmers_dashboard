@@ -60,6 +60,83 @@ export interface ProductImage {
     is_main?: boolean;
 }
 
+// Dans product.service.ts - AJOUTEZ cette interface
+// Mettez à jour l'interface CustomProduct avec des champs plus spécifiques
+export interface CustomProduct {
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+    product_name: string;
+    product_type: 'service' | 'equipment' | 'agricultural_product';
+    description?: string;
+    created_by: string;
+    created_by_profile: 'personal' | 'cooperative';
+    assigned_producer_id?: string;
+    regular_price: number;
+    price_unit: string;
+    is_promotion_enabled: boolean;
+    promo_price?: number;
+    promo_start_date?: string;
+    promo_end_date?: string;
+    discount_percentage?: number;
+    main_image?: any;
+    variant_images?: any[];
+    availability_status: 'disponible' | 'rupture' | 'limite' | 'precommande';
+    stock_quantity?: number;
+    status: 'draft' | 'published' | 'archived';
+
+    // Champs spécifiques structurés
+    specific_fields?: {
+        // Champs communs optionnels
+        category?: string;
+        quality?: string;
+        total_weight?: number;
+        unit_weight?: number;
+        unit?: string;
+        harvest_date?: string;
+
+        // Champs pour services
+        service_category?: string;
+        service_type?: string;
+        duration?: string;
+        equipment_included?: boolean;
+        service_area?: string;
+        availability_schedule?: string;
+
+        // Champs pour équipements
+        equipment_category?: string;
+        brand?: string;
+        model?: string;
+        condition?: string;
+        warranty?: string;
+        delivery_included?: boolean;
+        installation_service?: boolean;
+        technical_specs?: string;
+
+        // Autres champs dynamiques
+        [key: string]: any;
+    };
+
+    metadata?: Record<string, any>;
+}
+
+// Interface pour les données de formulaire
+export interface CustomProductFormData {
+    product_name: string;
+    product_type: 'service' | 'equipment';
+    description: string;
+    regular_price: number;
+    price_unit: string;
+    is_promotion_enabled: boolean;
+    promo_price?: number;
+    promo_start_date?: string;
+    promo_end_date?: string;
+    availability_status: string;
+    assigned_producer_id?: string;
+    stock_quantity?: number;
+    specific_fields: Record<string, any>;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -377,5 +454,207 @@ export class ProductService {
             console.error('Erreur récupération produit avec infos producteur:', error);
             return await this.getProductById(productId); // Retourner le produit sans infos producteur
         }
+    }
+
+
+
+    // Custom product (service et materiaux)
+
+    /**
+     * Créer un produit personnalisé (Service ou Équipement)
+     */
+    // Dans ProductService - méthode mise à jour
+    /**
+     * Créer un produit personnalisé (Service ou Équipement)
+     */
+    async createCustomProduct(
+        productData: Omit<CustomProduct, 'id' | 'created_at' | 'updated_at'>,
+        mainImageFile?: File,
+        variantImageFiles: File[] = []
+    ): Promise<CustomProduct> {
+        try {
+            // 1. Upload des images
+            let mainImage: ProductImage | undefined;
+            let variantImages: ProductImage[] = [];
+
+            if (mainImageFile || variantImageFiles.length > 0) {
+                const uploadResponse = await this.djangoImageService.uploadImages(
+                    productData.created_by,
+                    'temp',
+                    mainImageFile,
+                    variantImageFiles
+                );
+
+                mainImage = uploadResponse.main_image ? this.mapDjangoImageToProductImage(uploadResponse.main_image) : undefined;
+                variantImages = uploadResponse.variant_images.map((img: any) => this.mapDjangoImageToProductImage(img));
+            }
+
+            // 2. Calculer le pourcentage de réduction
+            if (productData.is_promotion_enabled && productData.promo_price && productData.regular_price) {
+                productData.discount_percentage = Math.round(
+                    ((productData.regular_price - productData.promo_price) / productData.regular_price) * 100
+                );
+            }
+
+            // 3. Préparer les données spécifiques par type
+            const baseData: any = {
+                product_name: productData.product_name,
+                description: productData.description || '',
+                created_by: productData.created_by,
+                created_by_profile: productData.created_by_profile,
+                assigned_producer_id: productData.assigned_producer_id,
+                regular_price: productData.regular_price,
+                price_unit: productData.price_unit,
+                is_promotion_enabled: productData.is_promotion_enabled || false,
+                promo_price: productData.promo_price,
+                promo_start_date: productData.promo_start_date,
+                promo_end_date: productData.promo_end_date,
+                discount_percentage: productData.discount_percentage,
+                availability_status: productData.availability_status || 'disponible',
+                stock_quantity: productData.stock_quantity || 0,
+                status: productData.status || 'draft',
+                product_type: productData.product_type,
+                specific_fields: productData.specific_fields || {},
+                main_image: mainImage,
+                variant_images: variantImages
+            };
+
+            // 4. Ajouter les champs spécifiques selon le type (utilisation de la notation entre crochets)
+            if (productData.product_type === 'service') {
+                // Pour les services
+                baseData.category = 'service';
+                baseData.quality = 'standard';
+                baseData.unit = 'service';
+                baseData.total_weight = 0;
+                baseData.unit_weight = 0;
+                baseData.total_quantity = 0;
+
+                // Stocker les champs spécifiques du service - utilisation de ['field']
+                if (productData.specific_fields) {
+                    baseData.specific_fields = {
+                        ...productData.specific_fields,
+                        service_category: productData.specific_fields['service_category'],
+                        service_type: productData.specific_fields['service_type'],
+                        duration: productData.specific_fields['duration'],
+                        equipment_included: productData.specific_fields['equipment_included'] || false,
+                        service_area: productData.specific_fields['service_area'],
+                        availability_schedule: productData.specific_fields['availability_schedule']
+                    };
+                }
+
+            } else if (productData.product_type === 'equipment') {
+                // Pour les équipements
+                baseData.category = productData.specific_fields?.['equipment_category'] || 'equipment';
+                baseData.quality = 'standard';
+                baseData.unit = 'unit';
+                baseData.total_weight = 0;
+                baseData.unit_weight = 0;
+                baseData.total_quantity = productData.stock_quantity || 0;
+
+                // Stocker les champs spécifiques des équipements - utilisation de ['field']
+                if (productData.specific_fields) {
+                    baseData.specific_fields = {
+                        ...productData.specific_fields,
+                        equipment_category: productData.specific_fields['equipment_category'],
+                        brand: productData.specific_fields['brand'],
+                        model: productData.specific_fields['model'],
+                        condition: productData.specific_fields['condition'],
+                        warranty: productData.specific_fields['warranty'],
+                        delivery_included: productData.specific_fields['delivery_included'] || false,
+                        installation_service: productData.specific_fields['installation_service'] || false,
+                        technical_specs: productData.specific_fields['technical_specs']
+                    };
+                }
+
+            } else {
+                // Pour les produits agricoles traditionnels
+                if (productData.specific_fields) {
+                    baseData.category = productData.specific_fields['category'];
+                    baseData.quality = productData.specific_fields['quality'];
+                    baseData.total_weight = productData.specific_fields['total_weight'] || 0;
+                    baseData.unit_weight = productData.specific_fields['unit_weight'] || 0;
+                    baseData.unit = productData.specific_fields['unit'];
+                    baseData.total_quantity = Math.floor(
+                        (productData.specific_fields['total_weight'] || 0) / (productData.specific_fields['unit_weight'] || 1)
+                    );
+                    baseData.harvest_date = productData.specific_fields['harvest_date'];
+                }
+            }
+
+            // 5. Insérer dans la base de données
+            const { data, error } = await this.supabase
+                .from('agricultural_products')
+                .insert([baseData])
+                .select()
+                .single();
+
+            if (error) {
+                console.error('Erreur création produit personnalisé:', error);
+                throw error;
+            }
+
+            return data as CustomProduct;
+
+        } catch (error) {
+            console.error('Erreur création produit personnalisé avec images:', error);
+            throw error;
+        }
+    }
+    
+    /**
+     * Récupérer les produits personnalisés
+     */
+    async getCustomProducts(filters?: {
+        status?: string;
+        product_type?: string;
+        userId?: string;
+    }): Promise<CustomProduct[]> {
+        let query = this.supabase
+            .from('agricultural_products') // Ou 'agricultural_products'
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (filters?.status) query = query.eq('status', filters.status);
+        if (filters?.product_type) query = query.eq('product_type', filters.product_type);
+        if (filters?.userId) query = query.eq('created_by', filters.userId);
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+    }
+
+    /**
+     * Récupérer un produit personnalisé par ID
+     */
+    async getCustomProductById(id: string): Promise<CustomProduct> {
+        const { data, error } = await this.supabase
+            .from('agricultural_products') // Ou 'agricultural_products'
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+        return data;
+    }
+
+    /**
+     * Mettre à jour un produit personnalisé
+     */
+    async updateCustomProduct(id: string, updates: Partial<CustomProduct>): Promise<CustomProduct> {
+        if (updates.is_promotion_enabled && updates.promo_price && updates.regular_price) {
+            updates.discount_percentage = Math.round(
+                ((updates.regular_price - updates.promo_price) / updates.regular_price) * 100
+            );
+        }
+
+        const { data, error } = await this.supabase
+            .from('agricultural_products') // Ou 'agricultural_products'
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return data;
     }
 }

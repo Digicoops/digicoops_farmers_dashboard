@@ -87,8 +87,12 @@ export class SendLinkMessageFormComponent implements OnInit {
   // Ouvrir le client email
   openEmailClient() {
     // Ouvrir le client email par défaut
-    window.location.href = 'mailto:';
+    // window.location.href = 'mailto:';
+    window.open('https://mail.google.com/mail/u/0/', '_blank');
+
   }
+
+
 
   // Renvoyer le lien d'activation
   resendActivationLink() {
