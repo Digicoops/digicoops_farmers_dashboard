@@ -240,10 +240,10 @@ export class ProductListTableComponent implements OnInit {
     return classMap[status] || 'bg-gray-50 dark:bg-gray-500/15 text-gray-700 dark:text-gray-500';
   }
 
-  // Actions - CORRECTION: ajout du paramètre product
+  // Actions -  Navigation vers la page de détail
   handleViewMore(product: AgriculturalProduct) {
     console.log('View More clicked for:', product.product_name);
-    // Navigation vers la page de détail
+    console.log('View More clicked for:', product.category);
     this.router.navigate(['/dashboard/view-product', product.id]);
 
   }

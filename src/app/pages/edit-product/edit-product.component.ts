@@ -6,11 +6,6 @@ import {SelectComponent} from "../../shared/components/form/select/select.compon
 import {TextAreaComponent} from "../../shared/components/form/input/text-area.component";
 import {ButtonComponent} from "../../shared/components/ui/button/button.component";
 import {PageBreadcrumbComponent} from "../../shared/components/common/page-breadcrumb/page-breadcrumb.component";
-import {
-  UserAddressCardComponent
-} from "../../shared/components/user-profile/user-address-card/user-address-card.component";
-import {UserInfoCardComponent} from "../../shared/components/user-profile/user-info-card/user-info-card.component";
-import {UserMetaCardComponent} from "../../shared/components/user-profile/user-meta-card/user-meta-card.component";
 import {AuthService} from "../../core/services/auth/auth.service";
 import {
   AgriculturalProducerManagementService

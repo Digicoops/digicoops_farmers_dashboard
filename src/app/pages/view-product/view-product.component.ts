@@ -160,7 +160,10 @@ export class ViewProductComponent implements OnInit {
   // Actions
   async handleEdit() {
     if (this.product) {
-      this.router.navigate(['/dashboard/edit-product', this.product.id]);
+      if (this.product.category === 'service' || this.product.category === 'tools')
+        this.router.navigate(['/dashboard/edit-custom-product', this.product.id]);
+      else
+        this.router.navigate(['/dashboard/edit-product', this.product.id]);
     }
   }
 

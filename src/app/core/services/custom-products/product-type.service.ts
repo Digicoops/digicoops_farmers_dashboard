@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 export enum ProductType {
     SERVICE = 'service',
-    EQUIPMENT = 'equipment'
+    EQUIPMENT = 'tools'
 }
 
 export interface ProductTypeConfig {

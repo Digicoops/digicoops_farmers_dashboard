@@ -37,6 +37,7 @@ import {ResetPasswordComponent} from "./pages/auth-pages/reset-password/reset-pa
 import {ChangePasswordComponent} from "./pages/auth-pages/change-password/change-password.component";
 import {SendLinkMessageComponent} from "./pages/auth-pages/send-link-password/send-link-message.component";
 import {AddCustomProductForm} from "./pages/add-custom-product-form/add-custom-product-form.component";
+import {EditCustomProduct} from "./pages/edit-custom-product/edit-custom-product.component";
 
 export const routes: Routes = [
   {
@@ -171,6 +172,11 @@ export const routes: Routes = [
       {
         path:'edit-product/:id',
         component:EditProductComponent,
+        title:'Tableau de bord DIGICOOP | Modifier un produit'
+      },
+      {
+        path:'edit-custom-product/:id',
+        component:EditCustomProduct,
         title:'Tableau de bord DIGICOOP | Modifier un produit'
       },
       {
