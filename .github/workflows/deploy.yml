@@ -1,4 +1,4 @@
-name: Deploy Admin Management Front
+name: Deploy Digicoop Management Front
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy-management:
+  deploy-digicoop-management:
     runs-on: ubuntu-latest
 
     steps:
