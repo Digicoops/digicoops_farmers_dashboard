@@ -34,4 +34,4 @@ jobs:
           rsync -avz --delete \
             -e "ssh -p 2222 -o StrictHostKeyChecking=no" \
             dist/digicoop-management/ \
-            octus@vps117773.serveur-vps.net: /var/www/digicoop/front/digicoop-management/
+            octus@vps117773.serveur-vps.net:/var/www/digicoop/front/digicoop-management/
