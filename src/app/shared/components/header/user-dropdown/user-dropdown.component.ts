@@ -19,7 +19,7 @@ export class UserDropdownComponent implements OnInit {
   errorMessage = '';
   currentUser: any = null;
   userProfile: any = null;
-  userType: 'personal' | 'cooperative' | 'producer' | null = null;
+  userType: 'personal' | 'cooperative' | 'admin' | null = null;
   isCooperative = false;
 
   private authService = inject(AuthService);

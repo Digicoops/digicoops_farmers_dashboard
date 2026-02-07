@@ -1,15 +1,15 @@
-// producer.guard.ts
+// admin.guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import {AuthManagementService} from "../services/auth/auth-managment.service";
 
-export const producerGuard: CanActivateFn = async () => {
+export const adminGuard: CanActivateFn = async () => {
     const authManagement = inject(AuthManagementService);
     const router = inject(Router);
 
     const { profile } = await authManagement.getUserProfile();
 
-    if (profile?.profile === 'producer') {
+    if (profile?.profile === 'admin') {
         return true;
     }
 

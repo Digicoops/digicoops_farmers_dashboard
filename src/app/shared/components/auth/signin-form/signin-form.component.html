@@ -14,8 +14,53 @@
                 Se connecter
             </h1>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-                Connectez-vous avec votre téléphone
+                Choisissez votre méthode de connexion
             </p>
+        </div>
+
+        <!-- Onglets de connexion style Ionic segments -->
+        <div class="mb-6">
+            <div class="relative flex w-full rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+                <!-- Slider indicator -->
+                <div 
+                    class="absolute top-1 left-1 h-[calc(100%-0.5rem)] w-1/2 rounded-md bg-white dark:bg-gray-700 shadow-theme-sm transition-transform duration-300 ease-out"
+                    [style.transform]="activeTab === 'phone' ? 'translateX(0)' : 'translateX(100%)'"
+                ></div>
+                
+                <!-- Bouton Téléphone -->
+                <button
+                    type="button"
+                    (click)="switchTab('phone')"
+                    class="relative z-10 flex-1 py-2.5 px-4 text-sm font-medium transition-colors duration-200 rounded-md"
+                    [class]="activeTab === 'phone' ? 
+                        'text-success-600 dark:text-success-400' : 
+                        'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                >
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                        Téléphone
+                    </span>
+                </button>
+                
+                <!-- Bouton Email -->
+                <button
+                    type="button"
+                    (click)="switchTab('email')"
+                    class="relative z-10 flex-1 py-2.5 px-4 text-sm font-medium transition-colors duration-200 rounded-md"
+                    [class]="activeTab === 'email' ? 
+                        'text-success-600 dark:text-success-400' : 
+                        'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                >
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Email
+                    </span>
+                </button>
+            </div>
         </div>
 
         <!-- OAuth Buttons -->
@@ -36,7 +81,7 @@
                             d="M10.1789 4.63331C11.8554 4.63331 12.9864 5.34303 13.6312 5.93612L16.1511 3.525C14.6035 2.11528 12.5895 1.25 10.1789 1.25C6.68676 1.25 3.67088 3.21387 2.20264 6.07218L5.08953 8.26943C5.81381 6.15972 7.81776 4.63331 10.1789 4.63331Z"
                             fill="#EB4335" />
                 </svg>
-                Sign up with Google
+                Se connecter avec Google
             </button>
         </div>
 
@@ -46,18 +91,11 @@
             {{ errorMessage }}
         </div>
 
-        <!-- Debug -->
-<!--        <div class="p-2 mb-4 text-xs bg-blue-100 rounded">-->
-<!--            <p><strong>Debug:</strong></p>-->
-<!--            <p>Téléphone: {{ phone || 'Non défini' }}</p>-->
-<!--            <p>Mot de passe: {{ password || 'Non défini' }}</p>-->
-<!--        </div>-->
-
         <!-- Form -->
         <form (ngSubmit)="onSignIn()" #loginForm="ngForm" class="space-y-6">
 
-            <!-- Téléphone -->
-            <div>
+            <!-- Champ selon l'onglet actif -->
+            <div *ngIf="activeTab === 'phone'">
                 <app-label>Numéro de téléphone <span class="text-error-500">*</span></app-label>
                 <app-phone-input
                         type="tel"
@@ -67,7 +105,19 @@
                         (phoneChange)="handlePhoneNumberChange($event)"
                 />
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 mt-2"><u>Exemple</u>: 77 660 61 06</p>
+            </div>
 
+            <div *ngIf="activeTab === 'email'">
+                <app-label>Adresse email <span class="text-error-500">*</span></app-label>
+                <app-input-field
+                        type="email"
+                        placeholder="exemple@email.com"
+                        [(value)]="email"
+                        (valueChange)="handleEmailChange($event)"
+                        name="email"
+                        class="form-input"
+                        required
+                />
             </div>
 
             <!-- Password -->
@@ -90,12 +140,16 @@
                             <svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
                                  class="fill-gray-500 dark:fill-gray-400 size-5">
                                 <!-- Icône œil ouvert -->
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                             </svg>
                         </ng-container>
                         <ng-template #eyeClosed>
                             <svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"
                                  class="fill-gray-500 dark:fill-gray-400 size-5">
                                 <!-- Icône œil fermé -->
+                                <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/>
+                                <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
                             </svg>
                         </ng-template>
                     </span>
@@ -116,7 +170,6 @@
                     Mot de passe oublié?
                 </a>
             </div>
-
 
             <app-button
                     (btnClick)="onSignIn()"

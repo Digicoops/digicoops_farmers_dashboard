@@ -1,6 +1,7 @@
-<div class="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
-  <div class="relative flex flex-col justify-center w-full h-screen overflow-y-hidden lg:flex-row dark:bg-gray-900 sm:p-0">
-
+<div class="relative bg-white dark:bg-gray-900">
+  <div class="flex flex-col lg:flex-row h-screen">
+    
+    <!-- Partie gauche : Fixe, pas de scroll -->
     <div class="items-center hidden w-full h-full lg:w-1/2 bg-[#4CAF50] dark:bg-white/5 lg:grid relative bg-opacity-50"
          style="background: url('/images/shape/auth-bg.webp')no-repeat center center; background-size: cover">
 
@@ -10,54 +11,57 @@
       <div class="flex items-center justify-center z-10 relative h-full">
         <div class="h-full mb-14 flex flex-col items-center justify-end max-w-md text-center space-y-4">
 
+          <div class="backdrop-blur-sm p-4 rounded-xl">
+            <!-- Logo avec animation subtle -->
+            <a routerLink="/" class="block flex item-center justify-center w-full mb-2 transform transition-transform duration-300 hover:scale-105">
+              <img width="240" height="40" src="/images/logo/digicoop-logo.png"
+                   alt="Logo"
+                   class="drop-shadow-lg"/>
+            </a>
 
-      <div class="backdrop-blur-sm p-4 rounded-xl  ">
-        <!-- Logo avec animation subtle -->
-        <a routerLink="/" class="block flex item-center justify-center w-full mb-2 transform transition-transform duration-300 hover:scale-105">
-          <img width="240" height="40" src="/images/logo/digicoop-logo.png"
-               alt="Logo"
-               class="drop-shadow-lg"/>
-        </a>
+            <!-- Texte principal stylisé -->
+            <h2 class="text-xl font-bold text-white my-2 font-serif tracking-wide">
+              <span id="typewriter"></span>
+            </h2>
 
-        <!-- Texte principal stylisé -->
-        <h2 class="text-xl font-bold text-white my-2 font-serif tracking-wide">
-            <span id="typewriter"></span>
-        </h2>
-
-        <!-- Slogan existant amélioré -->
-        <p class="text-base text-white/90 leading-relaxed font-light  ">
-          Reprenez le contrôle de vos échanges : connectez-vous pour publier vos produits, trouver des acheteurs et développer votre activité.
-        </p>
-      </div>
+            <!-- Slogan existant amélioré -->
+            <p class="text-base text-white/90 leading-relaxed font-light">
+              Reprenez le contrôle de vos échanges : connectez-vous pour publier vos produits, trouver des acheteurs et développer votre activité.
+            </p>
+          </div>
 
           <!-- Séparateur décoratif -->
           <div class="w-16 h-1 bg-white/60 rounded-full my-2"></div>
 
-
           <!-- Badge ou indicateur visuel -->
           <div class="mt-6 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
-<!--            <span class="text-white text-sm font-medium">♻️ Innovation et coopération au service des agriculteurs</span>-->
-            <blockquote class="text-white text-sm  italic">
+            <blockquote class="text-white text-sm italic">
               ♻️ Innovation et coopération au service des agriculteurs.
             </blockquote>
           </div>
         </div>
       </div>
 
-
     </div>
 
+    <!-- Partie droite : Scrollable -->
+    <div class="w-full lg:w-1/2 h-screen overflow-y-auto bg-white dark:bg-gray-900">
+      <div class="flex flex-col justify-center min-h-full py-12 px-6 sm:px-8 lg:px-12">
+        
+        <!-- Logo mobile seulement -->
+        <div class="lg:hidden mb-8">
+          <a routerLink="/" class="flex item-center justify-start w-fit mb-4 p-0 transform transition-transform duration-300 hover:scale-105">
+            <img width="50" height="50" src="/images/logo/digicoop-icon.png"
+                 alt="Logo"
+                 class="drop-shadow-lg"/>
+          </a>
+        </div>
 
-      <ng-content >
-
-          <div>
-              <a routerLink="/" class=" w-fit flex item-center justify-start mb-2 p-0 transform transition-transform duration-300 hover:scale-105">
-                  <img width="50" height="50" src="/images/logo/digicoop-icon.png"
-                       alt="Logo"
-                       class="drop-shadow-lg"/>
-              </a>
-          </div>
-      </ng-content>
+        <!-- Contenu injecté (formulaire) -->
+        <ng-content></ng-content>
+        
+      </div>
+    </div>
 
   </div>
 </div>

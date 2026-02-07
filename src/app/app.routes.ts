@@ -38,6 +38,8 @@ import {ChangePasswordComponent} from "./pages/auth-pages/change-password/change
 import {SendLinkMessageComponent} from "./pages/auth-pages/send-link-password/send-link-message.component";
 import {AddCustomProductForm} from "./pages/add-custom-product-form/add-custom-product-form.component";
 import {EditCustomProduct} from "./pages/edit-custom-product/edit-custom-product.component";
+import {AdminSignInComponent} from "./pages/admin-auth/admin-sign-in/admin-sign-in.component";
+import {AdminSignUpComponent} from "./pages/admin-auth/admin-sign-up/admin-sign-up.component";
 
 export const routes: Routes = [
   {
@@ -197,6 +199,25 @@ export const routes: Routes = [
     path:'reset-password',
     component:ResetPasswordComponent,
     title:'Angular Sign In Dashboard | Digicoop- Angular Admin Dashboard Template',
+  },
+  // Routes Admin
+  {
+    path:'admin/login',
+    component:AdminSignInComponent,
+    title:'Admin Login | Digicoop- Angular Admin Dashboard Template'
+  },
+  {
+    path:'admin/register',
+    component:AdminSignUpComponent,
+    title:'Admin Register | Digicoop- Angular Admin Dashboard Template'
+  },
+  {
+    path: 'admin/account-created',
+    component: SendLinkMessageComponent,
+    data: {
+      messageType: 'account-created',
+      title: 'Compte admin créé avec succès'
+    }
   },
 
   {

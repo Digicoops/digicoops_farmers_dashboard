@@ -28,8 +28,16 @@ export class SigninFormComponent implements OnInit {
   showPassword = false;
   isChecked = false;
 
-  password = '';
+  // Onglets actifs
+  activeTab: 'phone' | 'email' = 'phone';
+
+  // Champs pour connexion par téléphone
   phone = '';
+  
+  // Champs pour connexion par email
+  email = '';
+  
+  password = '';
   isLoading = false;
   errorMessage = '';
 
@@ -42,6 +50,17 @@ export class SigninFormComponent implements OnInit {
       private router: Router
   ) {}
 
+  ngOnInit(): void {
+    // Optionnel: déconnexion au chargement pour forcer une nouvelle connexion
+    // this.authManagement.logout();
+  }
+
+  // Gestion des onglets
+  switchTab(tab: 'phone' | 'email') {
+    this.activeTab = tab;
+    this.errorMessage = ''; // Réinitialiser les erreurs lors du changement d'onglet
+  }
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -49,6 +68,10 @@ export class SigninFormComponent implements OnInit {
   handlePhoneNumberChange(phoneNumber: string) {
     console.log('Updated phone number:', phoneNumber);
     this.phone = phoneNumber;
+  }
+
+  handleEmailChange(email: string | number) {
+    this.email = String(email);
   }
 
   /** Nettoyer et valider le numéro de téléphone */
@@ -100,7 +123,16 @@ export class SigninFormComponent implements OnInit {
     // Reset error message
     this.errorMessage = '';
 
-    // Validation de base
+    // Validation selon l'onglet actif
+    if (this.activeTab === 'phone') {
+      await this.signInWithPhone();
+    } else {
+      await this.signInWithEmail();
+    }
+  }
+
+  private async signInWithPhone() {
+    // Validation pour connexion par téléphone
     if (!this.phone) {
       this.errorMessage = 'Veuillez entrer un numéro de téléphone';
       return;
@@ -120,26 +152,58 @@ export class SigninFormComponent implements OnInit {
 
     this.isLoading = true;
 
-    console.log('Tentative de connexion avec:', {
-      phoneOriginal: this.phone,
-      phoneCleaned: phoneValidation.cleanPhone,
-      password: this.password
-    });
-
     try {
       // Login avec téléphone nettoyé (sans espaces)
       const result = await this.authManagement.loginWithPhone(phoneValidation.cleanPhone, this.password);
 
       if (result.success) {
-        console.log('Connexion réussie!');
-        // this.router.navigate(['/coming-soon']);
+        console.log('Connexion réussie par téléphone!');
         this.router.navigate(['/dashboard']);
       } else {
         this.errorMessage = result.error || 'Erreur de connexion';
       }
     } catch (error) {
       this.errorMessage = 'Une erreur est survenue lors de la connexion';
-      console.error('Erreur connexion:', error);
+      console.error('Erreur connexion téléphone:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private async signInWithEmail() {
+    // Validation pour connexion par email
+    if (!this.email) {
+      this.errorMessage = 'Veuillez entrer une adresse email';
+      return;
+    }
+
+    if (!this.password) {
+      this.errorMessage = 'Veuillez entrer un mot de passe';
+      return;
+    }
+
+    // Validation basique de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.errorMessage = 'Veuillez entrer une adresse email valide';
+      return;
+    }
+
+    this.isLoading = true;
+
+    try {
+      // Login avec email et mot de passe
+      const result = await this.authManagement.login({ email: this.email, password: this.password });
+
+      if (result.success) {
+        console.log('Connexion réussie par email!');
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.errorMessage = result.error || 'Erreur de connexion';
+      }
+    } catch (error) {
+      this.errorMessage = 'Une erreur est survenue lors de la connexion';
+      console.error('Erreur connexion email:', error);
     } finally {
       this.isLoading = false;
     }
@@ -153,9 +217,5 @@ export class SigninFormComponent implements OnInit {
 
   onGoogleSignIn() {
     console.log('Google sign in clicked');
-  }
-
-  ngOnInit(): void {
-    this.authManagement.logout()
   }
 }

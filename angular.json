@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/digicoop-marketplace",
+            "outputPath": "dist/digicoop-management",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -71,10 +71,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "digicoop-marketplace:build:production"
+              "buildTarget": "digicoop-management:build:production"
             },
             "development": {
-              "buildTarget": "digicoop-marketplace:build:development"
+              "buildTarget": "digicoop-management:build:development"
             }
           },
           "defaultConfiguration": "development"

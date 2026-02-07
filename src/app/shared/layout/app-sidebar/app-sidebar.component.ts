@@ -44,6 +44,7 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
 
     userProfile!: User;
     isCooperative = false;
+    isAdmin = false;
     navItems: NavItem[] = []; // Utiliser un tableau simple, pas un observable
 
     private readonly baseNavItems: NavItem[] = [
@@ -156,12 +157,14 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
             // 2. Récupérer le profil COMPLET depuis la base de données
             const { profile, error: profileError } = await this.authManagement.getUserProfile();
 
-            this.isCooperative = this.userProfile.user_metadata?.['profile'] ==='cooperative' ;
+            this.isCooperative = this.userProfile.user_metadata?.['profile'] === 'cooperative';
+            this.isAdmin = this.userProfile.user_metadata?.['profile'] === 'admin';
 
-            console.log('Profil chargé:', this.userProfile.user_metadata?.['profile'], 'isCooperative:', this.isCooperative);
+            console.log('Profil chargé:', this.userProfile.user_metadata?.['profile'], 'isCooperative:', this.isCooperative, 'isAdmin:', this.isAdmin);
         } catch (error) {
             console.error('Erreur chargement profil:', error);
-            this.isCooperative = false; // Par défaut, afficher le menu Producteurs
+            this.isCooperative = false; // Par défaut, afficher le menu Personal
+            this.isAdmin = false;
         }
     }
 
@@ -169,12 +172,12 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
         // Toujours commencer avec les menus de base
         this.navItems = [...this.baseNavItems];
 
-        // Ajouter le menu Producteurs seulement si PAS coopérative
-        if (this.isCooperative) {
-            console.log('Ajout du menu Producteurs');
+        // Ajouter le menu Producteurs seulement pour Cooperative et Admin
+        if (this.isCooperative || this.isAdmin) {
+            console.log('Ajout du menu Producteurs (Cooperative/Admin)');
             this.navItems.push(this.producerMenu);
         } else {
-            console.log('Menu Producteurs NON ajouté (coopérative)');
+            console.log('Menu Producteurs NON ajouté (Personal)');
         }
 
         console.log('Menus finaux:', this.navItems);
