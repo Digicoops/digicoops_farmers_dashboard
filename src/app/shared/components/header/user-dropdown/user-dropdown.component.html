@@ -2,12 +2,15 @@
     <button (click)="toggleDropdown()" class="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400">
     <span class="mr-3 overflow-hidden rounded-full h-11 w-11">
       <!-- Avatar avec image par défaut ou initiales -->
-      <img
+      <!-- <img
               *ngIf="!userProfile?.avatar_url; else avatarInitials"
               src="/images/user/owner.png"
               alt="User"
               class="w-full h-full object-cover"
-      />
+      /> -->
+       <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+        {{ getUserInitials() }}
+    </div>
   <ng-template #avatarInitials>
     <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg">
         {{ getUserInitials() }}
