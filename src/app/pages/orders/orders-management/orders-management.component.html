@@ -1,6 +1,6 @@
 <div class="space-y-6">
   <!-- Header -->
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Gestion des commandes</h2>
       <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -8,63 +8,205 @@
       </p>
     </div>
     <div class="flex items-center gap-3">
+      <button (click)="exportOrders()" class="px-4 py-2 bg-success-600 hover:bg-success-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        Exporter
+      </button>
       <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
         {{ filteredOrders.length }} commande(s)
       </span>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <!-- Search -->
-      <div class="md:col-span-2">
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          (input)="onSearch()"
-          placeholder="Rechercher par numéro, client..."
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
-        />
-      </div>
-
-      <!-- Status Filter -->
-      <div>
-        <select
-          [(ngModel)]="selectedStatus"
-          (change)="applyFilters()"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
-        >
-          <option *ngFor="let option of statusOptions" [value]="option.value">
-            {{ option.label }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Payment Status Filter -->
-      <div>
-        <select
-          [(ngModel)]="selectedPaymentStatus"
-          (change)="applyFilters()"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
-        >
-          <option *ngFor="let option of paymentStatusOptions" [value]="option.value">
-            {{ option.label }}
-          </option>
-        </select>
+  <!-- Statistiques rapides -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total commandes</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ getOrderStats().total }}</p>
+        </div>
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+        </div>
       </div>
     </div>
 
-    <div class="mt-4 flex items-center justify-between">
-      <p class="text-sm text-gray-600 dark:text-gray-400">
-        {{ filteredOrders.length }} commande(s) trouvée(s)
-      </p>
-      <button
-        (click)="clearFilters()"
-        class="text-sm text-success-600 dark:text-success-400 hover:underline"
-      >
-        Réinitialiser les filtres
-      </button>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">En attente</p>
+          <p class="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1">{{ getOrderStats().pending }}</p>
+        </div>
+        <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Livrées</p>
+          <p class="text-2xl font-bold text-success-600 dark:text-success-400 mt-1">{{ getOrderStats().delivered }}</p>
+        </div>
+        <div class="p-3 bg-success-100 dark:bg-success-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Revenu total</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ getOrderStats().totalRevenue | number:'1.0-0' }} FCFA</p>
+        </div>
+        <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="space-y-4">
+      <!-- Première ligne de filtres -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rechercher</label>
+          <div class="relative">
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (input)="onSearch()"
+              placeholder="Numéro, client, email..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            />
+            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Statut</label>
+          <select
+            [(ngModel)]="selectedStatus"
+            (change)="applyFilters()"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          >
+            <option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Payment Status Filter -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Paiement</label>
+          <select
+            [(ngModel)]="selectedPaymentStatus"
+            (change)="applyFilters()"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          >
+            <option *ngFor="let option of paymentStatusOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Deuxième ligne de filtres -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Date de début -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date début</label>
+          <input
+            type="date"
+            [(ngModel)]="startDate"
+            (change)="applyFilters()"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Date de fin -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date fin</label>
+          <input
+            type="date"
+            [(ngModel)]="endDate"
+            (change)="applyFilters()"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Montant min -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Montant min</label>
+          <input
+            type="number"
+            [(ngModel)]="minAmount"
+            (input)="applyFilters()"
+            placeholder="0"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Montant max -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Montant max</label>
+          <input
+            type="number"
+            [(ngModel)]="maxAmount"
+            (input)="applyFilters()"
+            placeholder="999999"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          />
+        </div>
+      </div>
+
+      <!-- Barre d'actions -->
+      <div class="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-4">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            <span class="font-semibold text-gray-900 dark:text-white">{{ filteredOrders.length }}</span> commande(s) trouvée(s)
+          </p>
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-gray-600 dark:text-gray-400">Trier par:</label>
+            <select
+              [(ngModel)]="sortBy"
+              (change)="applySorting()"
+              class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            >
+              <option value="date-desc">Date (plus récent)</option>
+              <option value="date-asc">Date (plus ancien)</option>
+              <option value="amount-desc">Montant (décroissant)</option>
+              <option value="amount-asc">Montant (croissant)</option>
+              <option value="status">Statut</option>
+            </select>
+          </div>
+        </div>
+        <button
+          (click)="clearFilters()"
+          class="text-sm text-success-600 dark:text-success-400 hover:underline font-medium"
+        >
+          Réinitialiser tous les filtres
+        </button>
+      </div>
     </div>
   </div>
 
@@ -122,13 +264,19 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Date
             </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" class="rounded border-gray-300 text-success-600 focus:ring-success-500" />
+            </th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <tr *ngFor="let order of filteredOrders" class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+          <tr *ngFor="let order of paginatedOrders" class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <input type="checkbox" [(ngModel)]="order.selected" class="rounded border-gray-300 text-success-600 focus:ring-success-500" />
+            </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900 dark:text-white">{{ order.orderNumber }}</div>
             </td>
@@ -182,6 +330,62 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Afficher</span>
+        <select [(ngModel)]="itemsPerPage" (change)="onPageSizeChange()" class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+          <option [value]="100">100</option>
+        </select>
+        <span class="text-sm text-gray-600 dark:text-gray-400">par page</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
+          Page {{ currentPage }} sur {{ totalPages }}
+        </span>
+        <div class="flex gap-1">
+          <button (click)="goToPage(1)" [disabled]="currentPage === 1" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            ««
+          </button>
+          <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            «
+          </button>
+          <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            »
+          </button>
+          <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            »»
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions groupées -->
+  <div *ngIf="getSelectedOrders().length > 0" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-800 text-white rounded-lg shadow-xl px-6 py-4 flex items-center gap-4 z-50">
+    <span class="text-sm font-medium">{{ getSelectedOrders().length }} commande(s) sélectionnée(s)</span>
+    <div class="flex items-center gap-2">
+      <button (click)="bulkUpdateStatus('confirmed')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors">
+        Confirmer
+      </button>
+      <button (click)="bulkUpdateStatus('shipped')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-sm transition-colors">
+        Expédier
+      </button>
+      <button (click)="bulkUpdateStatus('delivered')" class="px-3 py-1 bg-success-600 hover:bg-success-700 rounded text-sm transition-colors">
+        Livrer
+      </button>
+      <button (click)="bulkExport()" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors">
+        Exporter
+      </button>
+      <button (click)="clearSelection()" class="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm transition-colors">
+        Annuler
+      </button>
     </div>
   </div>
 </div>

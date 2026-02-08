@@ -14,6 +14,7 @@ interface Order {
   paymentStatus: 'pending' | 'paid' | 'failed';
   itemsCount: number;
   createdAt: string;
+  selected?: boolean;
 }
 
 @Component({
@@ -27,11 +28,29 @@ export class OrdersManagementComponent implements OnInit {
 
   orders: Order[] = [];
   filteredOrders: Order[] = [];
+  paginatedOrders: Order[] = [];
   isLoading = true;
   searchTerm = '';
   selectedStatus = '';
   selectedPaymentStatus = '';
   userRole: 'admin' | 'cooperative' | 'personal' = 'personal';
+  
+  // Filtres avancés
+  startDate = '';
+  endDate = '';
+  minAmount: number | null = null;
+  maxAmount: number | null = null;
+  
+  // Tri
+  sortBy = 'date-desc';
+  
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 25;
+  totalPages = 1;
+  
+  // Sélection
+  selectAll = false;
 
   statusOptions = [
     { value: '', label: 'Tous les statuts' },
@@ -91,6 +110,7 @@ export class OrdersManagementComponent implements OnInit {
   applyFilters() {
     let filtered = [...this.orders];
 
+    // Recherche texte
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(order =>
@@ -100,15 +120,35 @@ export class OrdersManagementComponent implements OnInit {
       );
     }
 
+    // Filtre statut
     if (this.selectedStatus) {
       filtered = filtered.filter(order => order.status === this.selectedStatus);
     }
 
+    // Filtre paiement
     if (this.selectedPaymentStatus) {
       filtered = filtered.filter(order => order.paymentStatus === this.selectedPaymentStatus);
     }
 
+    // Filtre dates
+    if (this.startDate) {
+      filtered = filtered.filter(order => new Date(order.createdAt) >= new Date(this.startDate));
+    }
+    if (this.endDate) {
+      filtered = filtered.filter(order => new Date(order.createdAt) <= new Date(this.endDate));
+    }
+
+    // Filtre montants
+    if (this.minAmount !== null && this.minAmount > 0) {
+      filtered = filtered.filter(order => order.totalAmount >= this.minAmount!);
+    }
+    if (this.maxAmount !== null && this.maxAmount > 0) {
+      filtered = filtered.filter(order => order.totalAmount <= this.maxAmount!);
+    }
+
     this.filteredOrders = filtered;
+    this.applySorting();
+    this.updatePagination();
   }
 
   onSearch() {
@@ -119,6 +159,11 @@ export class OrdersManagementComponent implements OnInit {
     this.searchTerm = '';
     this.selectedStatus = '';
     this.selectedPaymentStatus = '';
+    this.startDate = '';
+    this.endDate = '';
+    this.minAmount = null;
+    this.maxAmount = null;
+    this.sortBy = 'date-desc';
     this.applyFilters();
   }
 
@@ -184,5 +229,95 @@ export class OrdersManagementComponent implements OnInit {
     if (confirm(`Êtes-vous sûr de vouloir annuler la commande ${order.orderNumber} ?`)) {
       console.log('Cancel order:', order);
     }
+  }
+
+  applySorting() {
+    switch (this.sortBy) {
+      case 'date-desc':
+        this.filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      case 'date-asc':
+        this.filteredOrders.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        break;
+      case 'amount-desc':
+        this.filteredOrders.sort((a, b) => b.totalAmount - a.totalAmount);
+        break;
+      case 'amount-asc':
+        this.filteredOrders.sort((a, b) => a.totalAmount - b.totalAmount);
+        break;
+      case 'status':
+        this.filteredOrders.sort((a, b) => a.status.localeCompare(b.status));
+        break;
+    }
+    this.updatePagination();
+  }
+
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredOrders.length / this.itemsPerPage) || 1;
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedOrders = this.filteredOrders.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+    }
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  toggleSelectAll() {
+    this.paginatedOrders.forEach(order => order.selected = this.selectAll);
+  }
+
+  getSelectedOrders(): Order[] {
+    return this.orders.filter(order => order.selected);
+  }
+
+  clearSelection() {
+    this.orders.forEach(order => order.selected = false);
+    this.selectAll = false;
+  }
+
+  bulkUpdateStatus(newStatus: string) {
+    const selected = this.getSelectedOrders();
+    if (selected.length === 0) return;
+    
+    if (confirm(`Mettre à jour ${selected.length} commande(s) au statut "${this.getStatusLabel(newStatus)}" ?`)) {
+      console.log('Bulk update status:', newStatus, selected);
+      // TODO: Implémenter la mise à jour en masse
+      alert(`${selected.length} commande(s) mise(s) à jour.\n\nFonctionnalité à implémenter.`);
+      this.clearSelection();
+    }
+  }
+
+  bulkExport() {
+    const selected = this.getSelectedOrders();
+    if (selected.length === 0) return;
+    
+    console.log('Bulk export:', selected);
+    alert(`Export de ${selected.length} commande(s).\n\nFonctionnalité à implémenter.`);
+  }
+
+  exportOrders() {
+    console.log('Export all orders:', this.filteredOrders);
+    alert(`Export de ${this.filteredOrders.length} commande(s).\n\nFonctionnalité à implémenter.`);
+  }
+
+  getOrderStats() {
+    return {
+      total: this.orders.length,
+      pending: this.orders.filter(o => o.status === 'pending').length,
+      delivered: this.orders.filter(o => o.status === 'delivered').length,
+      totalRevenue: this.orders.reduce((sum, o) => sum + o.totalAmount, 0)
+    };
   }
 }

@@ -1,18 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../../shared/components/ui/button/button.component';
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  icon: string;
-  productsCount: number;
-  isActive: boolean;
-  createdAt: string;
-}
+import { CategoryService, Category, CreateCategoryDto, UpdateCategoryDto } from '../../../core/services/categories/category.service';
 
 @Component({
   selector: 'app-category-management',
@@ -21,6 +11,8 @@ interface Category {
   templateUrl: './category-management.component.html'
 })
 export class CategoryManagementComponent implements OnInit {
+  private categoryService = inject(CategoryService);
+
   categories: Category[] = [];
   filteredCategories: Category[] = [];
   isLoading = false;
@@ -28,90 +20,36 @@ export class CategoryManagementComponent implements OnInit {
   showAddModal = false;
   showRightSidebar = false;
   selectedCategory: Category | null = null;
+  errorMessage = '';
+  successMessage = '';
 
   newCategory = {
     name: '',
     slug: '',
     description: '',
     icon: '📦',
-    isActive: true
+    is_active: true
   };
 
   categoryIcons = ['🍎', '🥕', '🌾', '🥩', '🥛', '🛠️', '🚜', '🌱', '🍇', '🥬', '🌽', '🍞', '🧀', '🥚', '🐟'];
 
-  ngOnInit() {
-    this.loadCategories();
+  async ngOnInit() {
+    await this.loadCategories();
   }
 
-  private loadCategories() {
-    this.isLoading = true;
-    
-    // TODO: Remplacer par vraie API
-    this.categories = [
-      {
-        id: '1',
-        name: 'Fruits',
-        slug: 'fruits',
-        description: 'Fruits frais de saison',
-        icon: '🍎',
-        productsCount: 45,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '2',
-        name: 'Légumes',
-        slug: 'legumes',
-        description: 'Légumes bio et locaux',
-        icon: '🥕',
-        productsCount: 67,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '3',
-        name: 'Céréales',
-        slug: 'cereales',
-        description: 'Céréales et grains',
-        icon: '🌾',
-        productsCount: 23,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '4',
-        name: 'Viandes',
-        slug: 'viandes',
-        description: 'Viandes et volailles',
-        icon: '🥩',
-        productsCount: 34,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '5',
-        name: 'Produits laitiers',
-        slug: 'produits-laitiers',
-        description: 'Lait, fromages et dérivés',
-        icon: '🥛',
-        productsCount: 28,
-        isActive: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: '6',
-        name: 'Équipements',
-        slug: 'equipements',
-        description: 'Outils et matériel agricole',
-        icon: '🛠️',
-        productsCount: 12,
-        isActive: false,
-        createdAt: new Date().toISOString()
-      }
-    ];
-
-    this.applyFilters();
-    this.isLoading = false;
+  private async loadCategories() {
+    try {
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      this.categories = await this.categoryService.getCategoriesWithProductCount();
+      this.applyFilters();
+    } catch (error) {
+      console.error('Erreur chargement catégories:', error);
+      this.errorMessage = 'Erreur lors du chargement des catégories';
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   applyFilters() {
@@ -119,7 +57,7 @@ export class CategoryManagementComponent implements OnInit {
       const term = this.searchTerm.toLowerCase();
       this.filteredCategories = this.categories.filter(cat =>
         cat.name.toLowerCase().includes(term) ||
-        cat.description.toLowerCase().includes(term)
+        (cat.description?.toLowerCase().includes(term) || false)
       );
     } else {
       this.filteredCategories = [...this.categories];
@@ -136,7 +74,7 @@ export class CategoryManagementComponent implements OnInit {
       slug: '',
       description: '',
       icon: '📦',
-      isActive: true
+      is_active: true
     };
     this.showAddModal = true;
   }
@@ -156,47 +94,135 @@ export class CategoryManagementComponent implements OnInit {
   }
 
   generateSlug(name: string) {
-    this.newCategory.slug = name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    this.newCategory.slug = this.categoryService.generateSlug(name);
   }
 
-  saveCategory() {
-    console.log('Nouvelle catégorie:', this.newCategory);
-    // TODO: Implémenter sauvegarde API
-    this.closeAddModal();
-    this.loadCategories();
+  async saveCategory() {
+    try {
+      this.errorMessage = '';
+      this.successMessage = '';
+
+      // Validation
+      if (!this.newCategory.name.trim()) {
+        this.errorMessage = 'Le nom est requis';
+        return;
+      }
+
+      if (!this.newCategory.slug.trim()) {
+        this.errorMessage = 'Le slug est requis';
+        return;
+      }
+
+      // Vérifier si le slug existe déjà
+      const slugExists = await this.categoryService.slugExists(this.newCategory.slug);
+      if (slugExists) {
+        this.errorMessage = 'Ce slug existe déjà. Veuillez en choisir un autre.';
+        return;
+      }
+
+      const dto: CreateCategoryDto = {
+        name: this.newCategory.name,
+        slug: this.newCategory.slug,
+        description: this.newCategory.description,
+        icon: this.newCategory.icon,
+        is_active: this.newCategory.is_active
+      };
+
+      await this.categoryService.createCategory(dto);
+      this.successMessage = 'Catégorie créée avec succès';
+      this.closeAddModal();
+      await this.loadCategories();
+    } catch (error: any) {
+      console.error('Erreur création catégorie:', error);
+      this.errorMessage = error.message || 'Erreur lors de la création de la catégorie';
+    }
   }
 
-  updateCategory() {
-    console.log('Mise à jour catégorie:', this.selectedCategory);
-    // TODO: Implémenter mise à jour API
-    this.closeEditSidebar();
-    this.loadCategories();
+  async updateCategory() {
+    if (!this.selectedCategory) return;
+
+    try {
+      this.errorMessage = '';
+      this.successMessage = '';
+
+      // Validation
+      if (!this.selectedCategory.name.trim()) {
+        this.errorMessage = 'Le nom est requis';
+        return;
+      }
+
+      if (!this.selectedCategory.slug.trim()) {
+        this.errorMessage = 'Le slug est requis';
+        return;
+      }
+
+      // Vérifier si le slug existe déjà (en excluant la catégorie actuelle)
+      const slugExists = await this.categoryService.slugExists(
+        this.selectedCategory.slug,
+        this.selectedCategory.id
+      );
+      if (slugExists) {
+        this.errorMessage = 'Ce slug existe déjà. Veuillez en choisir un autre.';
+        return;
+      }
+
+      const dto: UpdateCategoryDto = {
+        name: this.selectedCategory.name,
+        slug: this.selectedCategory.slug,
+        description: this.selectedCategory.description,
+        icon: this.selectedCategory.icon,
+        is_active: this.selectedCategory.is_active
+      };
+
+      await this.categoryService.updateCategory(this.selectedCategory.id, dto);
+      this.successMessage = 'Catégorie mise à jour avec succès';
+      this.closeEditSidebar();
+      await this.loadCategories();
+    } catch (error: any) {
+      console.error('Erreur mise à jour catégorie:', error);
+      this.errorMessage = error.message || 'Erreur lors de la mise à jour de la catégorie';
+    }
   }
 
-  toggleStatus(category: Category) {
-    category.isActive = !category.isActive;
-    console.log('Toggle status:', category);
-    // TODO: Implémenter mise à jour API
+  async toggleStatus(category: Category) {
+    try {
+      this.errorMessage = '';
+      await this.categoryService.toggleCategoryStatus(category.id);
+      await this.loadCategories();
+    } catch (error: any) {
+      console.error('Erreur toggle status:', error);
+      this.errorMessage = error.message || 'Erreur lors du changement de statut';
+    }
   }
 
-  deleteCategory(category: Category) {
+  async deleteCategory(category: Category) {
     if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${category.name}" ?`)) {
-      console.log('Suppression catégorie:', category);
-      // TODO: Implémenter suppression API
-      this.loadCategories();
+      try {
+        this.errorMessage = '';
+        await this.categoryService.deleteCategory(category.id);
+        this.successMessage = 'Catégorie supprimée avec succès';
+        await this.loadCategories();
+      } catch (error: any) {
+        console.error('Erreur suppression catégorie:', error);
+        this.errorMessage = error.message || 'Erreur lors de la suppression de la catégorie';
+      }
     }
   }
 
   getTotalProducts(): number {
-    return this.categories.reduce((sum, cat) => sum + cat.productsCount, 0);
+    return this.categories.reduce((sum, cat) => sum + (cat.products_count || 0), 0);
   }
 
   getActiveCategories(): number {
-    return this.categories.filter(cat => cat.isActive).length;
+    return this.categories.filter(cat => cat.is_active).length;
+  }
+
+  async refreshCategories() {
+    await this.loadCategories();
+  }
+
+  clearMessages() {
+    this.errorMessage = '';
+    this.successMessage = '';
   }
 }

@@ -250,6 +250,21 @@ export class ListProducersComponent{
     this.page = page;
   }
 
+  // Stats methods
+  getProducerStats() {
+    const total = this.producers.length;
+    const active = this.producers.filter(p => p.account_status === 'active').length;
+    const inactive = this.producers.filter(p => p.account_status === 'inactive').length;
+    const pending = this.producers.filter(p => p.account_status === 'pending').length;
+
+    return {
+      total,
+      active,
+      inactive,
+      pending
+    };
+  }
+
   // Utility methods
   getProductionTypeLabel(type: string | undefined): string {
     return type ? this.productionTypeLabels[type] || type : 'Non spécifié';

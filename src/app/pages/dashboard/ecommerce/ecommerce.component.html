@@ -15,7 +15,7 @@
     <p class="text-red-800 dark:text-red-400">{{ errorMessage }}</p>
   </div>
 
-  <!-- Stats Content -->
+  <!-- Dashboard Content -->
   <div *ngIf="!isLoading && stats" class="space-y-6">
     <!-- Header with Role Badge -->
     <div class="flex items-center justify-between">
@@ -43,29 +43,81 @@
       </div>
     </div>
 
+    <!-- CTA Rapides -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Créer un produit -->
+      <a routerLink="/dashboard/products/create" class="group relative overflow-hidden bg-gradient-to-br from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Créer un produit</h3>
+            <p class="text-sm opacity-90">Ajouter un nouveau produit</p>
+          </div>
+          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Liste des commandes -->
+      <a routerLink="/dashboard/orders" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Commandes</h3>
+            <p class="text-sm opacity-90">Gérer vos commandes</p>
+          </div>
+          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Paramètres -->
+      <a href="http://localhost:4200/dashboard/profile" class="group relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Paramètres</h3>
+            <p class="text-sm opacity-90">Configurer votre profil</p>
+          </div>
+          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Rapport d'activité -->
+      <button (click)="openReportModal()" class="group relative overflow-hidden bg-gradient-to-br from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white text-left">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Rapport d'activité</h3>
+            <p class="text-sm opacity-90">Télécharger un rapport</p>
+          </div>
+          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+        </div>
+      </button>
+    </div>
+
     <!-- Stats Cards Grid -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Total Products -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Produits totaux</p>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ stats.totalProducts }}</p>
-            <div class="flex items-center mt-2">
-              <span [class]="stats.productsGrowth >= 0 ? 'text-success-600 dark:text-success-400' : 'text-red-600 dark:text-red-400'" class="text-sm font-medium flex items-center">
-                <svg *ngIf="stats.productsGrowth >= 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                <svg *ngIf="stats.productsGrowth < 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                {{ stats.productsGrowth >= 0 ? '+' : '' }}{{ stats.productsGrowth }}%
-              </span>
-              <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">vs mois dernier</span>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Produits totaux</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.totalProducts }}</p>
           </div>
-          <div class="p-3 bg-success-100 dark:bg-success-900/30 rounded-lg">
-            <svg class="w-8 h-8 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
           </div>
@@ -73,17 +125,15 @@
       </div>
 
       <!-- Published Products -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Produits publiés</p>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ stats.publishedProducts }}</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              {{ stats.draftProducts }} brouillon(s)
-            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Produits publiés</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.publishedProducts }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ stats.draftProducts }} brouillon(s)</p>
           </div>
-          <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="p-3 bg-success-100 dark:bg-success-900/30 rounded-lg">
+            <svg class="w-6 h-6 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
@@ -91,25 +141,15 @@
       </div>
 
       <!-- Total Revenue -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Revenu total</p>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ stats.totalRevenue | number:'1.0-0' }} FCFA</p>
-            <div class="flex items-center mt-2">
-              <span [class]="stats.revenueGrowth >= 0 ? 'text-success-600 dark:text-success-400' : 'text-red-600 dark:text-red-400'" class="text-sm font-medium flex items-center">
-                <svg *ngIf="stats.revenueGrowth >= 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                <svg *ngIf="stats.revenueGrowth < 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                {{ stats.revenueGrowth >= 0 ? '+' : '' }}{{ stats.revenueGrowth }}%
-              </span>
-            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Revenu total</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ stats.totalRevenue | number:'1.0-0' }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">FCFA</p>
           </div>
           <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
@@ -117,32 +157,21 @@
       </div>
 
       <!-- Total Orders or Producers -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
               {{ userRole === 'cooperative' || userRole === 'admin' ? 'Producteurs' : 'Commandes' }}
             </p>
-            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
               {{ userRole === 'cooperative' || userRole === 'admin' ? stats.totalProducers : stats.totalOrders }}
             </p>
-            <div *ngIf="userRole !== 'cooperative' && userRole !== 'admin'" class="flex items-center mt-2">
-              <span [class]="stats.ordersGrowth >= 0 ? 'text-success-600 dark:text-success-400' : 'text-red-600 dark:text-red-400'" class="text-sm font-medium flex items-center">
-                <svg *ngIf="stats.ordersGrowth >= 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                <svg *ngIf="stats.ordersGrowth < 0" class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                {{ stats.ordersGrowth >= 0 ? '+' : '' }}{{ stats.ordersGrowth }}%
-              </span>
-            </div>
           </div>
           <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-            <svg *ngIf="userRole === 'cooperative' || userRole === 'admin'" class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg *ngIf="userRole === 'cooperative' || userRole === 'admin'" class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
             </svg>
-            <svg *ngIf="userRole !== 'cooperative' && userRole !== 'admin'" class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg *ngIf="userRole !== 'cooperative' && userRole !== 'admin'" class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
             </svg>
           </div>
@@ -150,41 +179,22 @@
       </div>
     </div>
 
-    <!-- Admin Only Stats -->
-    <div *ngIf="isAdmin" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium opacity-90">Utilisateurs totaux</p>
-            <p class="text-3xl font-bold mt-2">{{ stats.totalUsers }}</p>
-          </div>
-          <svg class="w-10 h-10 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-          </svg>
-        </div>
+    <!-- Graphique de Performance -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Performance des ventes</h3>
+        <select class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300">
+          <option>7 derniers jours</option>
+          <option>30 derniers jours</option>
+          <option>3 derniers mois</option>
+        </select>
       </div>
-
-      <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium opacity-90">Coopératives</p>
-            <p class="text-3xl font-bold mt-2">{{ stats.totalCooperatives }}</p>
-          </div>
-          <svg class="w-10 h-10 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+      <div class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+        <div class="text-center">
+          <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
-        </div>
-      </div>
-
-      <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm font-medium opacity-90">Valeur moyenne</p>
-            <p class="text-2xl font-bold mt-2">{{ stats.averageOrderValue | number:'1.0-0' }} FCFA</p>
-          </div>
-          <svg class="w-10 h-10 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-          </svg>
+          <p class="text-sm">Graphique de performance à venir</p>
         </div>
       </div>
     </div>
@@ -207,19 +217,130 @@
       </div>
     </div>
 
-    <!-- Original Components -->
-    <div class="grid grid-cols-12 gap-4 md:gap-6">
-      <div class="col-span-12 space-y-6 xl:col-span-7">
-        <div><app-ecommerce-metrics /></div>
-        <div><app-monthly-sales-chart /></div>
+    <!-- Dernières Commandes -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Dernières commandes</h3>
+        <a routerLink="/dashboard/orders" class="text-sm text-success-600 dark:text-success-400 hover:underline">Voir tout</a>
+      </div>
+      
+      <div *ngIf="recentOrders.length === 0" class="text-center py-8">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>
+        <p class="text-gray-500 dark:text-gray-400">Aucune commande récente</p>
       </div>
 
-      <div class="col-span-12 xl:col-span-5">
-        <app-monthly-target />
+      <div *ngIf="recentOrders.length > 0" class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-700">
+              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Commande</th>
+              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Client</th>
+              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Date</th>
+              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Montant</th>
+              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of recentOrders" class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">#{{ order.id }}</td>
+              <td class="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">{{ order.customer }}</td>
+              <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{{ order.date }}</td>
+              <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">{{ order.amount }} FCFA</td>
+              <td class="py-3 px-4">
+                <span [class]="getStatusClass(order.status)" class="px-2 py-1 text-xs font-medium rounded-full">
+                  {{ order.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+  </div>
+</div>
 
-      <div class="col-span-12 xl:col-span-12">
-        <app-recent-orders />
+<!-- Modal Rapport d'activité -->
+<div *ngIf="showReportModal" class="fixed inset-0 z-50 overflow-y-auto" (click)="closeReportModal()">
+  <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Overlay -->
+    <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75"></div>
+
+    <!-- Modal -->
+    <div (click)="$event.stopPropagation()" class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 dark:bg-orange-900/30 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+              Télécharger un rapport d'activité
+            </h3>
+            <div class="mt-4 space-y-4">
+              <!-- Type de rapport -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Type de rapport
+                </label>
+                <select [(ngModel)]="reportType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                  <option value="sales">Ventes</option>
+                  <option value="products">Produits</option>
+                  <option value="orders">Commandes</option>
+                  <option value="customers">Clients</option>
+                  <option value="complete">Rapport complet</option>
+                </select>
+              </div>
+
+              <!-- Période -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Période
+                </label>
+                <select [(ngModel)]="reportPeriod" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                  <option value="today">Aujourd'hui</option>
+                  <option value="week">Cette semaine</option>
+                  <option value="month">Ce mois</option>
+                  <option value="quarter">Ce trimestre</option>
+                  <option value="year">Cette année</option>
+                  <option value="custom">Personnalisée</option>
+                </select>
+              </div>
+
+              <!-- Format -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Format
+                </label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button (click)="reportFormat = 'pdf'" [class]="reportFormat === 'pdf' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+                    PDF
+                  </button>
+                  <button (click)="reportFormat = 'excel'" [class]="reportFormat === 'excel' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+                    Excel
+                  </button>
+                  <button (click)="reportFormat = 'csv'" [class]="reportFormat === 'csv' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+                    CSV
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 dark:bg-gray-900/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button (click)="downloadReport()" type="button" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          Télécharger
+        </button>
+        <button (click)="closeReportModal()" type="button" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+          Annuler
+        </button>
       </div>
     </div>
   </div>

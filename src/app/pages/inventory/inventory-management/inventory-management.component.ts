@@ -14,6 +14,7 @@ interface InventoryItem {
   price: number;
   status: 'in_stock' | 'low_stock' | 'out_of_stock';
   lastUpdated: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -32,6 +33,7 @@ export class InventoryManagementComponent implements OnInit {
   searchTerm = '';
   selectedCategory = '';
   selectedStatus = '';
+  isAdmin = false;
 
   categoryOptions = [
     { value: '', label: 'Toutes les catégories' },
@@ -62,7 +64,14 @@ export class InventoryManagementComponent implements OnInit {
       const { user } = await this.authService.getCurrentUser();
       if (!user) return;
 
-      const products = await this.productService.getProducts({ userId: user.id });
+      // Vérifier si l'utilisateur est admin
+      const email = user.email;
+      this.isAdmin = email ? (email.endsWith('@octus-agency.com') || email.endsWith('@digicoops.com')) : false;
+
+      // Si admin, charger tous les produits, sinon uniquement ceux de l'utilisateur
+      const products = this.isAdmin 
+        ? await this.productService.getProducts() // Tous les produits pour admin
+        : await this.productService.getProducts({ userId: user.id }); // Seulement ses produits pour non-admin
       
       this.inventory = products.map(p => ({
         id: p.id || '',
@@ -72,9 +81,11 @@ export class InventoryManagementComponent implements OnInit {
         minStock: 10,
         price: p.regular_price || 0,
         status: this.getStockStatus(p.stock_quantity || 0, 10),
-        lastUpdated: p.updated_at || p.created_at || new Date().toISOString()
+        lastUpdated: p.updated_at || p.created_at || new Date().toISOString(),
+        imageUrl: p.main_image?.url
       }));
 
+      console.log(`Inventaire chargé: ${this.inventory.length} produits (Admin: ${this.isAdmin})`);
       this.applyFilters();
     } catch (error) {
       console.error('Erreur chargement inventaire:', error);
@@ -155,5 +166,14 @@ export class InventoryManagementComponent implements OnInit {
 
   getOutOfStockCount(): number {
     return this.inventory.filter(item => item.status === 'out_of_stock').length;
+  }
+
+  async refreshInventory() {
+    await this.loadInventory();
+  }
+
+  onImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
   }
 }

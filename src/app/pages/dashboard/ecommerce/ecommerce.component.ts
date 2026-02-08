@@ -1,24 +1,24 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EcommerceMetricsComponent } from '../../../shared/components/ecommerce/ecommerce-metrics/ecommerce-metrics.component';
-import { MonthlySalesChartComponent } from '../../../shared/components/ecommerce/monthly-sales-chart/monthly-sales-chart.component';
-import { MonthlyTargetComponent } from '../../../shared/components/ecommerce/monthly-target/monthly-target.component';
-import { StatisticsChartComponent } from '../../../shared/components/ecommerce/statics-chart/statics-chart.component';
-import { DemographicCardComponent } from '../../../shared/components/ecommerce/demographic-card/demographic-card.component';
-import { RecentOrdersComponent } from "../../recent-orders/recent-orders.component";
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { DashboardStatsService, DashboardStats } from '../../../core/services/dashboard/dashboard-stats.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
+
+interface RecentOrder {
+  id: string;
+  customer: string;
+  date: string;
+  amount: number;
+  status: 'En attente' | 'Livrée' | 'Annulée';
+}
 
 @Component({
   selector: 'app-ecommerce',
   imports: [
     CommonModule,
-    EcommerceMetricsComponent,
-    MonthlySalesChartComponent,
-    MonthlyTargetComponent,
-    StatisticsChartComponent,
-    DemographicCardComponent,
-    RecentOrdersComponent,
+    RouterLink,
+    FormsModule,
   ],
   templateUrl: './ecommerce.component.html',
 })
@@ -31,10 +31,17 @@ export class EcommerceComponent implements OnInit {
   errorMessage = '';
   userRole: 'admin' | 'cooperative' | 'personal' = 'personal';
   isAdmin = false;
+  recentOrders: RecentOrder[] = [];
+  
+  showReportModal = false;
+  reportType = 'sales';
+  reportPeriod = 'month';
+  reportFormat = 'pdf';
 
   async ngOnInit() {
     await this.loadUserRole();
     await this.loadStats();
+    this.loadRecentOrders();
   }
 
   private async loadUserRole() {
@@ -70,5 +77,45 @@ export class EcommerceComponent implements OnInit {
 
   async refreshStats() {
     await this.loadStats();
+    this.loadRecentOrders();
+  }
+
+  private loadRecentOrders() {
+    // TODO: Remplacer par des données réelles depuis l'API
+    this.recentOrders = [];
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'Livrée':
+        return 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400';
+      case 'En attente':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      case 'Annulée':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+    }
+  }
+
+  openReportModal() {
+    this.showReportModal = true;
+  }
+
+  closeReportModal() {
+    this.showReportModal = false;
+  }
+
+  downloadReport() {
+    console.log('Téléchargement du rapport:', {
+      type: this.reportType,
+      period: this.reportPeriod,
+      format: this.reportFormat
+    });
+    
+    // TODO: Implémenter la génération et le téléchargement du rapport
+    alert(`Rapport ${this.reportType} (${this.reportPeriod}) en format ${this.reportFormat.toUpperCase()} sera téléchargé.\n\nFonctionnalité à implémenter.`);
+    
+    this.closeReportModal();
   }
 }

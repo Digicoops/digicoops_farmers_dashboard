@@ -168,6 +168,20 @@ export class UsersManagementComponent implements OnInit {
     this.applyFilters();
   }
 
+  getUserStats() {
+    const total = this.users.length;
+    const active = this.users.filter(u => u.account_status === 'active').length;
+    const admins = this.users.filter(u => u.profile === 'admin').length;
+    const pending = this.users.filter(u => u.account_status === 'pending').length;
+
+    return {
+      total,
+      active,
+      admins,
+      pending
+    };
+  }
+
   getProfileBadgeClass(profile: string): string {
     const classes: { [key: string]: string } = {
       'admin': 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
