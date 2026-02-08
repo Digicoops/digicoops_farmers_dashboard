@@ -7,9 +7,17 @@ export const adminGuard: CanActivateFn = async () => {
     const authManagement = inject(AuthManagementService);
     const router = inject(Router);
 
-    const { profile } = await authManagement.getUserProfile();
+    const isAuthenticated = await authManagement.isAuthenticated();
+    
+    if (!isAuthenticated) {
+        router.navigate(['/login']);
+        return false;
+    }
 
-    if (profile?.profile === 'admin') {
+    const { profile } = await authManagement.getUserProfile();
+    const email = profile?.email;
+
+    if (email && (email.endsWith('@octus-agency.com') || email.endsWith('@digicoops.com'))) {
         return true;
     }
 

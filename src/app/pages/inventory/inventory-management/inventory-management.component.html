@@ -1,0 +1,196 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Gestion des stocks</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Suivez et gérez votre inventaire en temps réel
+      </p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Total articles</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ inventory.length }}</p>
+        </div>
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Valeur totale</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ getTotalValue() | number:'1.0-0' }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">FCFA</p>
+        </div>
+        <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Stock faible</p>
+          <p class="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1">{{ getLowStockCount() }}</p>
+        </div>
+        <div class="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Rupture stock</p>
+          <p class="text-2xl font-bold text-red-600 dark:text-red-400 mt-1">{{ getOutOfStockCount() }}</p>
+        </div>
+        <div class="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+          <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="md:col-span-2">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Rechercher un produit..."
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+        />
+      </div>
+
+      <div>
+        <select
+          [(ngModel)]="selectedCategory"
+          (change)="applyFilters()"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+        >
+          <option *ngFor="let option of categoryOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <select
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+        >
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4 flex items-center justify-between">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        {{ filteredInventory.length }} article(s) affiché(s)
+      </p>
+      <button
+        (click)="clearFilters()"
+        class="text-sm text-success-600 dark:text-success-400 hover:underline"
+      >
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex items-center justify-center py-12">
+    <svg class="animate-spin h-10 w-10 text-success-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </div>
+
+  <!-- Inventory Table -->
+  <div *ngIf="!isLoading" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Produit
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Catégorie
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Stock actuel
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Prix unitaire
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Valeur totale
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Statut
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <tr *ngFor="let item of filteredInventory" class="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.name }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-600 dark:text-gray-400">{{ getCategoryLabel(item.category) }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ item.stock }}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Min: {{ item.minStock }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-900 dark:text-white">{{ item.price | number:'1.0-0' }} FCFA</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ (item.stock * item.price) | number:'1.0-0' }} FCFA</div>
+            </td>
+            <td class="px-6 py-4">
+              <span [class]="getStatusBadgeClass(item.status)" class="px-2 py-1 text-xs font-semibold rounded-full">
+                {{ getStatusLabel(item.status) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredInventory.length === 0" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Aucun article</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Aucun article ne correspond à vos critères de recherche
+      </p>
+    </div>
+  </div>
+</div>

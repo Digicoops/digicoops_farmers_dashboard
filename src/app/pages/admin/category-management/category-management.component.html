@@ -1,0 +1,303 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Gestion des catégories</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        Gérez les catégories de produits de votre marketplace
+      </p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="px-4 py-2 bg-success-600 hover:bg-success-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Nouvelle catégorie
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+      <p class="text-sm font-medium opacity-90">Total catégories</p>
+      <p class="text-3xl font-bold mt-2">{{ categories.length }}</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+      <p class="text-sm font-medium opacity-90">Catégories actives</p>
+      <p class="text-3xl font-bold mt-2">{{ getActiveCategories() }}</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
+      <p class="text-sm font-medium opacity-90">Total produits</p>
+      <p class="text-3xl font-bold mt-2">{{ getTotalProducts() }}</p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+      placeholder="Rechercher une catégorie..."
+      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+    />
+  </div>
+
+  <!-- Categories Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      *ngFor="let category of filteredCategories"
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+    >
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <span class="text-4xl">{{ category.icon }}</span>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ category.name }}</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ category.slug }}</p>
+          </div>
+        </div>
+        <button
+          (click)="toggleStatus(category)"
+          [class]="category.isActive ? 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400' : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'"
+          class="px-2 py-1 text-xs font-semibold rounded-full"
+        >
+          {{ category.isActive ? 'Actif' : 'Inactif' }}
+        </button>
+      </div>
+
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ category.description }}</p>
+
+      <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
+          {{ category.productsCount }} produit(s)
+        </span>
+        <div class="flex items-center gap-2">
+          <button
+            (click)="openEditSidebar(category)"
+            class="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+            title="Modifier"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </button>
+          <button
+            (click)="deleteCategory(category)"
+            class="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            title="Supprimer"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredCategories.length === 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+    <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune catégorie</h3>
+    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Commencez par créer votre première catégorie</p>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div *ngIf="showAddModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 999998; padding: 1rem;">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6" style="position: relative; z-index: 999999;">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Nouvelle catégorie</h3>
+    
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
+        <input
+          type="text"
+          [(ngModel)]="newCategory.name"
+          (input)="generateSlug(newCategory.name)"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+          placeholder="Ex: Fruits"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+        <input
+          type="text"
+          [(ngModel)]="newCategory.slug"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+          placeholder="fruits"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+        <textarea
+          [(ngModel)]="newCategory.description"
+          rows="3"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+          placeholder="Description de la catégorie"
+        ></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Icône</label>
+        <div class="grid grid-cols-8 gap-2">
+          <button
+            *ngFor="let icon of categoryIcons"
+            (click)="newCategory.icon = icon"
+            [class]="newCategory.icon === icon ? 'ring-2 ring-success-500' : ''"
+            class="text-2xl p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          >
+            {{ icon }}
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          [(ngModel)]="newCategory.isActive"
+          id="newActive"
+          class="w-4 h-4 text-success-600 rounded"
+        />
+        <label for="newActive" class="text-sm text-gray-700 dark:text-gray-300">Catégorie active</label>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 mt-6">
+      <button
+        (click)="saveCategory()"
+        class="flex-1 px-4 py-2 bg-success-600 hover:bg-success-700 text-white rounded-lg font-medium transition-colors"
+      >
+        Créer
+      </button>
+      <button
+        (click)="closeAddModal()"
+        class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+      >
+        Annuler
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Right Sidebar for Editing -->
+<ng-container *ngIf="showRightSidebar">
+  <!-- Backdrop -->
+  <div (click)="closeEditSidebar()" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 999998;"></div>
+
+  <!-- Sidebar -->
+  <div style="position: fixed; right: 0; top: 0; bottom: 0; width: 100%; max-width: 28rem; background: white; box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2); z-index: 999999; overflow-y: auto;" class="dark:bg-gray-800">
+    <div class="p-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Modifier la catégorie</h3>
+        <button
+          (click)="closeEditSidebar()"
+          class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+        >
+          <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <div *ngIf="selectedCategory" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nom</label>
+          <input
+            type="text"
+            [(ngModel)]="selectedCategory.name"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug</label>
+          <input
+            type="text"
+            [(ngModel)]="selectedCategory.slug"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+          <textarea
+            [(ngModel)]="selectedCategory.description"
+            rows="4"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Icône</label>
+          <div class="grid grid-cols-6 gap-2">
+            <button
+              *ngFor="let icon of categoryIcons"
+              (click)="selectedCategory.icon = icon"
+              [class]="selectedCategory.icon === icon ? 'ring-2 ring-success-500 bg-success-50 dark:bg-success-900/20' : ''"
+              class="text-3xl p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            >
+              {{ icon }}
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <div>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">Catégorie active</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rendre cette catégorie visible</p>
+          </div>
+          <input
+            type="checkbox"
+            [(ngModel)]="selectedCategory.isActive"
+            class="w-5 h-5 text-success-600 rounded focus:ring-2 focus:ring-success-500"
+          />
+        </div>
+
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-blue-900 dark:text-blue-300">Information</p>
+              <p class="text-sm text-blue-800 dark:text-blue-400 mt-1">
+                Cette catégorie contient {{ selectedCategory.productsCount }} produit(s).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button
+          (click)="updateCategory()"
+          class="flex-1 px-6 py-3 bg-success-600 hover:bg-success-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Enregistrer
+        </button>
+        <button
+          (click)="closeEditSidebar()"
+          class="px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+        >
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

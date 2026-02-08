@@ -552,8 +552,6 @@ export class AuthService {
     //         hash.includes('error_code=otp_expired');
     //
     //     console.log('Is recovery URL:', isRecoveryUrl);
-    //     return isRecoveryUrl;
-    // }
 
     isRecoverySession(): boolean {
         // La façon la plus simple : vérifier l'URL complète
@@ -567,6 +565,89 @@ export class AuthService {
         return isRecovery;
     }
 
+    /** GET ALL USERS FROM DATABASE (Admin only) */
+    async getAllUsers(): Promise<{ users: any[] | null; error: PostgrestError | null }> {
+        try {
+            const { data, error } = await this.supabase
+                .from('users')
+                .select('*')
+                .order('created_at', { ascending: false });
 
+            if (error) {
+                console.error('❌ Error fetching users from public.users:', error);
+                return { users: null, error };
+            }
+
+            console.log(`✅ ${data.length} utilisateurs récupérés depuis public.users`);
+            return { users: data, error: null };
+        } catch (error) {
+            console.error('Error in getAllUsers:', error);
+            return { users: null, error: error as PostgrestError };
+        }
+    }
+
+    /** UPDATE USER STATUS (Admin only) */
+    async updateUserStatus(userId: string, status: string): Promise<{ success: boolean; error: PostgrestError | null }> {
+        try {
+            const bannedUntil = status === 'inactive' ? new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000).toISOString() : null;
+            
+            const { error } = await this.supabase
+                .from('users')
+                .update({ banned_until: bannedUntil })
+                .eq('id', userId);
+
+            if (error) {
+                console.error('Error updating user status:', error);
+                return { success: false, error };
+            }
+
+            return { success: true, error: null };
+        } catch (error) {
+            console.error('Error in updateUserStatus:', error);
+            return { success: false, error: error as PostgrestError };
+        }
+    }
+
+    /** DELETE USER (Admin only) */
+    async deleteUser(userId: string): Promise<{ success: boolean; error: PostgrestError | null }> {
+        try {
+            const { error } = await this.supabase
+                .from('users')
+                .delete()
+                .eq('id', userId);
+
+            if (error) {
+                console.error('Error deleting user:', error);
+                return { success: false, error };
+            }
+
+            return { success: true, error: null };
+        } catch (error) {
+            console.error('Error in deleteUser:', error);
+            return { success: false, error: error as PostgrestError };
+        }
+    }
+
+    /** FORCE SYNC ALL USERS (Admin only) */
+    async forceSyncAllUsers(): Promise<{ synced_count: number | null; error: PostgrestError | null }> {
+        try {
+            console.log('🔄 Démarrage de la synchronisation forcée...');
+            
+            const { data, error } = await this.supabase
+                .rpc('force_sync_all_users');
+
+            if (error) {
+                console.error('❌ Erreur lors de la synchronisation:', error);
+                return { synced_count: null, error };
+            }
+
+            const count = data as number;
+            console.log(`✅ Synchronisation terminée: ${count} utilisateurs synchronisés`);
+            return { synced_count: count, error: null };
+        } catch (error) {
+            console.error('Error in forceSyncAllUsers:', error);
+            return { synced_count: null, error: error as PostgrestError };
+        }
+    }
 
 }

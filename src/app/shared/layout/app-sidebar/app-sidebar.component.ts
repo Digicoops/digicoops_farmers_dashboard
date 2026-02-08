@@ -80,6 +80,27 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
                 },
             ],
         },
+        {
+            name: "Gestion boutique",
+            icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>`,
+            subItems: [
+                {
+                    name: "Gestion des commandes",
+                    icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>`,
+                    path: '/dashboard/orders'
+                },
+                {
+                    name: "Gestion des stocks",
+                    icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>`,
+                    path: '/dashboard/inventory'
+                },
+                {
+                    name: "Rapports de ventes",
+                    icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>`,
+                    path: '/dashboard/reports'
+                },
+            ],
+        },
     ];
 
     private readonly producerMenu: NavItem = {
@@ -95,6 +116,33 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
                 name: "Liste des producteurs",
                 icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H18.5001C19.7427 20.75 20.7501 19.7426 20.7501 18.5V5.5C20.7501 4.25736 19.7427 3.25 18.5001 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H18.5001C18.9143 4.75 19.2501 5.08579 19.2501 5.5V18.5C19.2501 18.9142 18.9143 19.25 18.5001 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V5.5ZM6.25005 9.7143C6.25005 9.30008 6.58583 8.9643 7.00005 8.9643L17 8.96429C17.4143 8.96429 17.75 9.30008 17.75 9.71429C17.75 10.1285 17.4143 10.4643 17 10.4643L7.00005 10.4643C6.58583 10.4643 6.25005 10.1285 6.25005 9.7143ZM6.25005 14.2857C6.25005 13.8715 6.58583 13.5357 7.00005 13.5357H17C17.4143 13.5357 17.75 13.8715 17.75 14.2857C17.75 14.6999 17.4143 15.0357 17 15.0357H7.00005C6.58583 15.0357 6.25005 14.6999 6.25005 14.2857Z" fill="currentColor"></path></svg>`,
                 path: '/dashboard/list-producers'
+            },
+        ],
+    };
+
+    private readonly adminMenu: NavItem = {
+        name: "Administration",
+        icon: `<svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>`,
+        subItems: [
+            {
+                name: "Gestion des utilisateurs",
+                icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`,
+                path: '/dashboard/admin/users'
+            },
+            {
+                name: "Gestion des catégories",
+                icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>`,
+                path: '/dashboard/admin/categories'
+            },
+            {
+                name: "Gestion des newsletters",
+                icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>`,
+                path: '/dashboard/admin/newsletters'
+            },
+            {
+                name: "Paramètres système",
+                icon: `<svg width="1em" height="1em" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`,
+                path: '/dashboard/admin/settings'
             },
         ],
     };
@@ -157,13 +205,18 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
             // 2. Récupérer le profil COMPLET depuis la base de données
             const { profile, error: profileError } = await this.authManagement.getUserProfile();
 
+            const email = profile?.email || this.userProfile.email;
+            
+            // Vérifier si l'utilisateur est admin basé sur le domaine email
+            this.isAdmin = email ? (email.endsWith('@octus-agency.com') || email.endsWith('@digicoops.com')) : false;
+            
+            // Vérifier si l'utilisateur est cooperative basé sur le profil
             this.isCooperative = this.userProfile.user_metadata?.['profile'] === 'cooperative';
-            this.isAdmin = this.userProfile.user_metadata?.['profile'] === 'admin';
 
-            console.log('Profil chargé:', this.userProfile.user_metadata?.['profile'], 'isCooperative:', this.isCooperative, 'isAdmin:', this.isAdmin);
+            console.log('Email:', email, 'isAdmin:', this.isAdmin, 'isCooperative:', this.isCooperative);
         } catch (error) {
             console.error('Erreur chargement profil:', error);
-            this.isCooperative = false; // Par défaut, afficher le menu Personal
+            this.isCooperative = false;
             this.isAdmin = false;
         }
     }
@@ -178,6 +231,12 @@ export class AppSidebarComponent implements OnInit, OnDestroy {
             this.navItems.push(this.producerMenu);
         } else {
             console.log('Menu Producteurs NON ajouté (Personal)');
+        }
+
+        // Ajouter le menu Administration seulement pour les Admin
+        if (this.isAdmin) {
+            console.log('Ajout du menu Administration (Admin uniquement)');
+            this.navItems.push(this.adminMenu);
         }
 
         console.log('Menus finaux:', this.navItems);

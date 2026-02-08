@@ -40,6 +40,17 @@ import {AddCustomProductForm} from "./pages/add-custom-product-form/add-custom-p
 import {EditCustomProduct} from "./pages/edit-custom-product/edit-custom-product.component";
 import {AdminSignInComponent} from "./pages/admin-auth/admin-sign-in/admin-sign-in.component";
 import {AdminSignUpComponent} from "./pages/admin-auth/admin-sign-up/admin-sign-up.component";
+import {adminGuard} from "./core/guard/admin.guard";
+import {UsersManagementComponent} from "./pages/admin/users-management/users-management.component";
+import {SystemSettingsComponent} from "./pages/admin/system-settings/system-settings.component";
+import {CategoryManagementComponent} from "./pages/admin/category-management/category-management.component";
+import {NewsletterManagementComponent} from "./pages/admin/newsletter-management/newsletter-management.component";
+import {PersonalInfoSettingsComponent} from "./pages/admin/settings/personal-info-settings/personal-info-settings.component";
+import {NotificationsSettingsComponent} from "./pages/admin/settings/notifications-settings/notifications-settings.component";
+import {FinancesSettingsComponent} from "./pages/admin/settings/finances-settings/finances-settings.component";
+import {OrdersManagementComponent} from "./pages/orders/orders-management/orders-management.component";
+import {InventoryManagementComponent} from "./pages/inventory/inventory-management/inventory-management.component";
+import {SalesReportsComponent} from "./pages/reports/sales-reports/sales-reports.component";
 
 export const routes: Routes = [
   {
@@ -184,6 +195,63 @@ export const routes: Routes = [
         path:'support',
         component:SupportComponent,
         title:'Tableau de bord DIGICOOP | Modifier un produit'
+      },
+      {
+        path:'admin/users',
+        component:UsersManagementComponent,
+        title:'Gestion des utilisateurs | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/categories',
+        component:CategoryManagementComponent,
+        title:'Gestion des catégories | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/newsletters',
+        component:NewsletterManagementComponent,
+        title:'Gestion des newsletters | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/settings',
+        component:SystemSettingsComponent,
+        title:'Paramètres système | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/settings/personal-info',
+        component:PersonalInfoSettingsComponent,
+        title:'Personal Information | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/settings/notifications',
+        component:NotificationsSettingsComponent,
+        title:'Notifications | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'admin/settings/finances',
+        component:FinancesSettingsComponent,
+        title:'Finances | Digicoop Admin',
+        canActivate: [adminGuard]
+      },
+      {
+        path:'orders',
+        component:OrdersManagementComponent,
+        title:'Gestion des commandes | Digicoop'
+      },
+      {
+        path:'inventory',
+        component:InventoryManagementComponent,
+        title:'Gestion des stocks | Digicoop'
+      },
+      {
+        path:'reports',
+        component:SalesReportsComponent,
+        title:'Rapports de ventes | Digicoop'
       },
     ],
     canActivate: [AuthGuard],
