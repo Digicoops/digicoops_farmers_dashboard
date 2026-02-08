@@ -55,7 +55,7 @@ export class ProductManagementService {
             const productData: Omit<AgriculturalProduct, 'id' | 'created_at' | 'updated_at'> = {
                 product_name: formData.product_name,
                 category: formData.category,
-                assigned_producer_id: formData.assigned_producer_id,
+                assigned_producer_id: userProfile === 'cooperative' ? formData.assigned_producer_id : undefined,
                 created_by: currentUser.id, // AJOUT: champ requis
                 created_by_profile: userProfile as 'personal' | 'cooperative', // AJOUT: champ requis
                 quality: formData.quality,
