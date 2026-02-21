@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../../shared/components/ui/button/button.component';
 import { ProductService } from '../../../core/services/products/product.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { ImageService, ImageFile, ProductImagesResponse } from '../../../core/services/images/image.service';
+import { DjangoImageService, DjangoImageResponse } from '../../../core/services/cloudflare/django-image.service';
 
 interface InventoryItem {
   id: string;
@@ -36,10 +36,12 @@ interface EditableProduct {
   main_image?: {
     url: string;
     name: string;
+    id?: number;
   };
   additional_images?: Array<{
     url: string;
     name: string;
+    id?: number;
   }>;
 }
 
@@ -52,7 +54,7 @@ interface EditableProduct {
 export class InventoryManagementComponent implements OnInit {
   private productService = inject(ProductService);
   private authService = inject(AuthService);
-  private imageService = inject(ImageService);
+  private djangoImageService = inject(DjangoImageService);
   private cdr = inject(ChangeDetectorRef);
 
   inventory: InventoryItem[] = [];
@@ -72,6 +74,11 @@ export class InventoryManagementComponent implements OnInit {
   // Image upload state
   isUploadingImage = false;
   imageUploadProgress = 0;
+
+  // Modal de suppression
+  showDeleteModal = false;
+  productToDelete: InventoryItem | null = null;
+  isDeleting = false;
 
   // Snackbar state
   showSnackbar = false;
@@ -119,51 +126,31 @@ export class InventoryManagementComponent implements OnInit {
         ? await this.productService.getProducts() // Tous les produits pour admin
         : await this.productService.getProducts({ userId: user.id }); // Seulement ses produits pour non-admin
       
-      // Charger les images pour chaque produit
-      const productsWithImages = await Promise.all(
-        products.map(async (p) => {
-          let imageUrl = undefined;
-          
-          // Essayer de charger les images depuis l'API Django
-          try {
-            console.log(`Tentative de chargement des images pour le produit ${p.id}`);
-            const response = await this.imageService.getProductImages(user.id, p.id!).toPromise();
-            console.log(`Réponse API pour ${p.id}:`, response);
-            
-            if (response?.main_image) {
-              imageUrl = response.main_image.url;
-              console.log(`Image principale trouvée pour ${p.id}:`, imageUrl);
-            } else {
-              console.log(`Pas d'image principale pour ${p.id}`);
-            }
-          } catch (error) {
-            // Silencieux - l'API peut être indisponible
-            console.log(`Info: Impossible de charger les images pour le produit ${p.id}:`, error);
-          }
-          
-          const finalItem = {
-            id: p.id || '',
-            name: p.product_name || 'Sans nom',
-            category: p.category || 'autres',
-            stock: p.stock_quantity || 0,
-            minStock: 10,
-            price: p.regular_price || 0,
-            status: this.getStockStatus(p.stock_quantity || 0, 10),
-            lastUpdated: p.updated_at || p.created_at || new Date().toISOString(),
-            imageUrl: imageUrl || p.main_image?.url, // Fallback vers l'image dans Supabase
-            // Ajouter un timestamp pour forcer la détection de changements
-            _timestamp: forceRefresh ? Date.now() : (p.updated_at ? new Date(p.updated_at).getTime() : Date.now())
-          };
-          
-          console.log(`Produit final ${p.id}:`, {
-            name: finalItem.name,
-            imageUrl: finalItem.imageUrl,
-            hasImage: !!finalItem.imageUrl
-          });
-          
-          return finalItem;
-        })
-      );
+      // Utiliser directement les données de Supabase sans appeler l'API Django
+      const productsWithImages = products.map((p) => {
+        const imageUrl = p.main_image?.url; // Utiliser seulement l'image de Supabase si elle existe
+        
+        const finalItem = {
+          id: p.id || '',
+          name: p.product_name || 'Sans nom',
+          category: p.category || 'autres',
+          stock: p.stock_quantity || 0,
+          minStock: 10,
+          price: p.regular_price || 0,
+          status: this.getStockStatus(p.stock_quantity || 0, 10),
+          lastUpdated: p.updated_at || p.created_at || new Date().toISOString(),
+          imageUrl: imageUrl, // Plus d'appel API Django
+          // Ajouter un timestamp pour forcer la détection de changements
+          _timestamp: forceRefresh ? Date.now() : (p.updated_at ? new Date(p.updated_at).getTime() : Date.now())
+        };
+        
+        console.log(`Produit ${p.id}:`, {
+          name: finalItem.name,
+          hasImage: !!finalItem.imageUrl
+        });
+        
+        return finalItem;
+      });
       
       // Forcer la mise à jour en créant un nouveau tableau
       if (forceRefresh) {
@@ -341,35 +328,38 @@ export class InventoryManagementComponent implements OnInit {
     if (!this.currentUserId || !this.selectedProduct) return;
 
     try {
-      const response = await this.imageService.getProductImages(this.currentUserId, productId).toPromise();
+      console.log('Chargement des images pour l\'édition du produit:', productId);
+      const response = await this.djangoImageService.getProductImages(this.currentUserId, productId);
       
-      console.log('Images reçues pour le produit:', productId, response);
+      console.log('Images reçues pour l\'édition:', productId, response);
       
-      if (response?.main_image) {
-        console.log('Image principale trouvée:', response.main_image);
-        this.selectedProduct.main_image = {
-          url: response.main_image.url,
-          name: `main-image-${response.main_image.id}`
-        };
-        console.log('Image principale assignée:', this.selectedProduct.main_image);
-      }
-      
-      if (response?.variant_images && response.variant_images.length > 0) {
-        console.log('Images variantes trouvées:', response.variant_images);
-        this.selectedProduct.additional_images = response.variant_images.map(img => ({
-          url: img.url,
-          name: `variant-image-${img.id}`
-        }));
-        console.log('Images variantes assignées:', this.selectedProduct.additional_images);
-      }
-      
-      if (!response?.main_image && (!response?.variant_images || response.variant_images.length === 0)) {
-        console.log('Aucune image trouvée pour ce produit');
+      if (response && response.length > 0) {
+        // Trouver l'image principale (is_main: true)
+        const mainImage = response.find(img => img.is_main);
+        if (mainImage) {
+          console.log('Image principale trouvée pour édition:', mainImage);
+          this.selectedProduct.main_image = {
+            url: mainImage.url,
+            name: `main-image-${mainImage.id}`
+          };
+          console.log('Image principale assignée pour édition:', this.selectedProduct.main_image);
+        }
+        
+        // Ajouter les autres images comme variantes
+        const variantImages = response.filter(img => !img.is_main);
+        if (variantImages.length > 0) {
+          console.log('Images variantes trouvées pour édition:', variantImages);
+          this.selectedProduct.additional_images = variantImages.map(img => ({
+            url: img.url,
+            name: `variant-image-${img.id}`
+          }));
+          console.log('Images variantes assignées pour édition:', this.selectedProduct.additional_images);
+        }
+      } else {
+        console.log('Aucune image trouvée pour ce produit (édition)');
       }
     } catch (error) {
-      console.log('Info: Impossible de charger les images existantes (API peut être indisponible)');
-      // Ne pas afficher d'erreur car c'est normal si l'API n'est pas accessible
-      // Les images existantes resteront vides mais l'utilisateur peut en uploader de nouvelles
+      console.error('Erreur lors du chargement des images pour édition:', error);
     }
   }
 
@@ -453,125 +443,306 @@ export class InventoryManagementComponent implements OnInit {
 
   // === Méthodes de gestion des images ===
   
-  onMainImageUpload(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.uploadImage(input.files[0], 'main');
-    }
-  }
-
-  onAdditionalImageUpload(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.uploadImage(input.files[0], 'additional');
-    }
-  }
-
-  async uploadImage(file: File, type: 'main' | 'additional') {
-    if (!this.selectedProduct || !this.currentUserId) return;
+  // Upload de l'image principale
+  async onMainImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (!file || !this.selectedProduct || !this.currentUserId) return;
 
     try {
       this.isUploadingImage = true;
-      this.imageUploadProgress = 0;
+      this.imageUploadProgress = 50;
 
-      let mainImageFile: File | undefined;
-      let variantFiles: File[] = [];
+      console.log('Upload image principale:', file.name);
 
-      if (type === 'main') {
-        mainImageFile = file;
-      } else if (type === 'additional') {
-        // Si on upload une variante mais qu'il n'y a pas d'image principale,
-        // on la met comme principale temporairement pour éviter l'erreur 400
-        if (!this.selectedProduct.main_image) {
-          mainImageFile = file; // Devient temporairement l'image principale
-          console.log('Pas d\'image principale existante, la variante deviendra principale temporairement');
-        } else {
-          variantFiles = [file];
-        }
-      }
-
-      // Utiliser l'API réelle
-      this.imageService.uploadImagesWithProgress(
+      // Upload vers l'API Django
+      const uploadResponse = await this.djangoImageService.uploadImages(
         this.currentUserId,
         this.selectedProduct.id,
-        mainImageFile,
-        variantFiles,
-        (progress) => {
-          this.imageUploadProgress = progress;
-        }
-      ).subscribe({
-        next: (response) => {
-          if (!this.selectedProduct || !response) return;
-          
-          if (type === 'main' && response?.main_image) {
-            this.selectedProduct.main_image = {
-              url: response.main_image.url,
-              name: file.name
-            };
-          } else if (type === 'additional') {
-            if (!this.selectedProduct.additional_images) {
-              this.selectedProduct.additional_images = [];
-            }
-            
-            // Si pas d'image principale existante, la nouvelle devient principale
-            if (!this.selectedProduct.main_image && response?.main_image) {
-              this.selectedProduct.main_image = {
-                url: response.main_image.url,
-                name: file.name
-              };
-              console.log('Variante devenue image principale:', this.selectedProduct.main_image);
-            }
-            
-            // Ajouter les variantes
-            if (response?.variant_images?.length) {
-              response.variant_images.forEach((img: any) => {
-                if (img?.url) {
-                  this.selectedProduct!.additional_images!.push({
-                    url: img.url,
-                    name: file.name
-                  });
-                }
-              });
-            }
-          }
-          
-          this.isUploadingImage = false;
-          this.imageUploadProgress = 0;
-          this.showSnackbarMessage('Image uploadée avec succès !', 'success');
-        },
-        error: (error) => {
-          console.error('Erreur lors de l\'upload de l\'image:', error);
-          this.isUploadingImage = false;
-          
-          // Message d'erreur plus informatif
-          let errorMessage = 'Erreur lors de l\'upload de l\'image';
-          if (error.status === 0) {
-            errorMessage = 'Serveur d\'images indisponible. Veuillez réessayer plus tard.';
-          } else if (error.status === 400) {
-            errorMessage = 'Format d\'image invalide ou fichier trop volumineux, ou image principale requise.';
-          } else if (error.status === 500) {
-            errorMessage = 'Erreur serveur. Veuillez réessayer plus tard.';
-          }
-          
-          this.showSnackbarMessage(errorMessage, 'error');
-        }
-      });
-    } catch (error) {
-      console.error('Erreur lors de l\'upload de l\'image:', error);
-      this.isUploadingImage = false;
+        file,
+        []
+      );
+
+      console.log('Upload response:', uploadResponse);
+
+      // Mettre à jour l'interface avec la nouvelle image
+      if (uploadResponse.main_image) {
+        this.selectedProduct.main_image = {
+          url: uploadResponse.main_image.url,
+          name: `main-image-${uploadResponse.main_image.id}`,
+          id: uploadResponse.main_image.id
+        };
+        
+        // Mettre à jour Supabase avec la nouvelle URL
+        await this.updateProductImagesInSupabase();
+        
+        console.log('Image principale mise à jour:', this.selectedProduct.main_image);
+      }
+
+      this.imageUploadProgress = 100;
+      this.showSnackbarMessage('Image principale uploadée avec succès !', 'success');
+
+    } catch (error: any) {
+      console.error('Erreur lors de l\'upload de l\'image principale:', error);
       this.showSnackbarMessage('Erreur lors de l\'upload de l\'image', 'error');
+    } finally {
+      this.isUploadingImage = false;
+      this.imageUploadProgress = 0;
+      event.target.value = '';
     }
   }
 
-  removeMainImage() {
-    if (this.selectedProduct) {
+  // Upload d'images additionnelles
+  async onAdditionalImageUpload(event: any) {
+    const file = event.target.files[0];
+    if (!file || !this.selectedProduct || !this.currentUserId) return;
+
+    try {
+      this.isUploadingImage = true;
+      this.imageUploadProgress = 50;
+
+      console.log('Upload image additionnelle:', file.name);
+
+      // Upload vers l'API Django comme variante
+      const uploadResponse = await this.djangoImageService.uploadImages(
+        this.currentUserId,
+        this.selectedProduct.id,
+        undefined,
+        [file]
+      );
+
+      console.log('Upload response:', uploadResponse);
+
+      // Ajouter les nouvelles images variantes
+      if (uploadResponse.variant_images && uploadResponse.variant_images.length > 0) {
+        if (!this.selectedProduct.additional_images) {
+          this.selectedProduct.additional_images = [];
+        }
+        
+        uploadResponse.variant_images.forEach((img: DjangoImageResponse) => {
+          this.selectedProduct!.additional_images!.push({
+            url: img.url,
+            name: `variant-image-${img.id}`,
+            id: img.id
+          });
+        });
+        
+        // Mettre à jour Supabase avec les nouvelles URLs
+        await this.updateProductImagesInSupabase();
+        
+        console.log('Images variantes ajoutées:', this.selectedProduct.additional_images);
+      }
+
+      this.imageUploadProgress = 100;
+      this.showSnackbarMessage('Image additionnelle uploadée avec succès !', 'success');
+
+    } catch (error: any) {
+      console.error('Erreur lors de l\'upload de l\'image additionnelle:', error);
+      this.showSnackbarMessage('Erreur lors de l\'upload de l\'image', 'error');
+    } finally {
+      this.isUploadingImage = false;
+      this.imageUploadProgress = 0;
+      event.target.value = '';
+    }
+  }
+
+  async removeMainImage() {
+    if (!this.selectedProduct || !this.selectedProduct.main_image || !this.currentUserId) return;
+
+    try {
+      // Extraire l'ID de l'image
+      const imageId = (this.selectedProduct.main_image as any).id || 
+                      parseInt(this.selectedProduct.main_image.name.split('-').pop() || '0');
+      
+      if (imageId) {
+        // Supprimer de l'API Django
+        await this.djangoImageService.deleteImage(imageId);
+        console.log('Image principale supprimée de l\'API:', imageId);
+      }
+      
+      // Mettre à jour l'interface
       this.selectedProduct.main_image = undefined;
+      
+      // Mettre à jour Supabase
+      await this.updateProductImagesInSupabase();
+      
+      this.showSnackbarMessage('Image principale supprimée avec succès', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'image principale:', error);
+      this.showSnackbarMessage('Erreur lors de la suppression de l\'image', 'error');
     }
   }
 
-  removeAdditionalImage(index: number) {
-    if (this.selectedProduct && this.selectedProduct.additional_images) {
+  async removeAdditionalImage(index: number) {
+    if (!this.selectedProduct || !this.selectedProduct.additional_images || !this.currentUserId) return;
+
+    try {
+      const imageToRemove = this.selectedProduct.additional_images[index];
+      
+      // Extraire l'ID de l'image
+      const imageId = (imageToRemove as any).id || 
+                      parseInt(imageToRemove.name.split('-').pop() || '0');
+      
+      if (imageId) {
+        // Supprimer de l'API Django
+        await this.djangoImageService.deleteImage(imageId);
+        console.log('Image variante supprimée de l\'API:', imageId);
+      }
+      
+      // Mettre à jour l'interface
       this.selectedProduct.additional_images.splice(index, 1);
+      
+      // Mettre à jour Supabase
+      await this.updateProductImagesInSupabase();
+      
+      this.showSnackbarMessage('Image variante supprimée avec succès', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'image variante:', error);
+      this.showSnackbarMessage('Erreur lors de la suppression de l\'image', 'error');
+    }
+  }
+
+  // Promouvoir une image variante en image principale
+  async setImageAsMain(index: number) {
+    if (!this.selectedProduct || !this.selectedProduct.additional_images || !this.currentUserId) return;
+
+    try {
+      const imageToPromote = this.selectedProduct.additional_images[index];
+      const imageId = (imageToPromote as any).id || 
+                      parseInt(imageToPromote.name.split('-').pop() || '0');
+      
+      if (!imageId) {
+        this.showSnackbarMessage('Impossible de promouvoir cette image', 'error');
+        return;
+      }
+
+      console.log('Promotion de l\'image variante en principale:', imageId);
+
+      // Appeler l'endpoint set-main de l'API Django
+      const response = await this.djangoImageService.setAsMain(imageId);
+      
+      console.log('Réponse set-main:', response);
+
+      // Recharger les images depuis l'API pour avoir l'état à jour
+      await this.loadProductImages(this.selectedProduct.id);
+      
+      // Mettre à jour Supabase
+      await this.updateProductImagesInSupabase();
+      
+      this.showSnackbarMessage('Image définie comme principale avec succès', 'success');
+    } catch (error) {
+      console.error('Erreur lors de la promotion de l\'image:', error);
+      this.showSnackbarMessage('Erreur lors de la promotion de l\'image', 'error');
+    }
+  }
+
+  // Mettre à jour les images dans Supabase après modification
+  private async updateProductImagesInSupabase() {
+    if (!this.selectedProduct) return;
+
+    try {
+      console.log('Mise à jour des images dans Supabase...');
+
+      // Préparer les données d'images pour Supabase
+      const updates: any = {};
+
+      // Image principale
+      if (this.selectedProduct.main_image?.url) {
+        updates.main_image = {
+          url: this.selectedProduct.main_image.url,
+          name: this.selectedProduct.main_image.name
+        };
+      } else {
+        updates.main_image = null;
+      }
+
+      // Images variantes
+      if (this.selectedProduct.additional_images && this.selectedProduct.additional_images.length > 0) {
+        updates.variant_images = this.selectedProduct.additional_images.map(img => ({
+          url: img.url,
+          name: img.name
+        }));
+      } else {
+        updates.variant_images = [];
+      }
+
+      console.log('Données à envoyer à Supabase:', updates);
+
+      // Mettre à jour dans Supabase
+      await this.productService.updateProduct(this.selectedProduct.id, updates);
+      
+      console.log('Images mises à jour dans Supabase avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des images dans Supabase:', error);
+      throw error;
+    }
+  }
+
+  // === Méthodes de suppression ===
+  
+  openDeleteModal(item: InventoryItem) {
+    this.productToDelete = item;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.productToDelete = null;
+  }
+
+  async confirmDelete() {
+    if (!this.productToDelete || !this.currentUserId) return;
+
+    try {
+      this.isDeleting = true;
+
+      console.log(`Suppression du produit: ${this.productToDelete.id} - ${this.productToDelete.name}`);
+
+      // 1. Supprimer les images associées depuis l'API Django
+      try {
+        // Récupérer toutes les images du produit
+        const images = await this.djangoImageService.getProductImages(this.currentUserId, this.productToDelete.id);
+        
+        // Supprimer chaque image individuellement
+        for (const image of images) {
+          await this.djangoImageService.deleteImage(image.id);
+        }
+        console.log('Images supprimées avec succès');
+      } catch (imageError) {
+        console.warn('Erreur lors de la suppression des images:', imageError);
+        // Continuer même si les images ne peuvent pas être supprimées
+      }
+
+      // 2. Supprimer le produit depuis Supabase
+      await this.productService.deleteProduct(this.productToDelete.id);
+      console.log('Produit supprimé avec succès');
+
+      // 3. Recharger l'inventaire
+      await this.loadInventory(true);
+
+      // 4. Afficher le message de succès
+      this.showSnackbarMessage(
+        `Le produit "${this.productToDelete.name}" a été supprimé avec succès !`,
+        'success'
+      );
+
+      // 5. Fermer le modal
+      this.closeDeleteModal();
+
+    } catch (error: any) {
+      console.error('Erreur lors de la suppression du produit:', error);
+      
+      let errorMessage = 'Erreur lors de la suppression du produit';
+      if (error?.message?.includes('foreign key constraint')) {
+        errorMessage = 'Impossible de supprimer ce produit car il est utilisé dans d\'autres enregistrements';
+      } else if (error?.message?.includes('network')) {
+        errorMessage = 'Erreur réseau. Veuillez vérifier votre connexion';
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      this.showSnackbarMessage(errorMessage, 'error');
+    } finally {
+      this.isDeleting = false;
     }
   }
 }
