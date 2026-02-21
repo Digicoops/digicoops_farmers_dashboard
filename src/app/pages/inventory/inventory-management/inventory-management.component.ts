@@ -80,6 +80,11 @@ export class InventoryManagementComponent implements OnInit {
   productToDelete: InventoryItem | null = null;
   isDeleting = false;
 
+  // Sélection multiple
+  selectedProducts: Set<string> = new Set();
+  showBulkDeleteModal = false;
+  isDeletingBulk = false;
+
   // Snackbar state
   showSnackbar = false;
   snackbarMessage = '';
@@ -743,6 +748,124 @@ export class InventoryManagementComponent implements OnInit {
       this.showSnackbarMessage(errorMessage, 'error');
     } finally {
       this.isDeleting = false;
+    }
+  }
+
+  // === Méthodes de sélection multiple ===
+
+  toggleProductSelection(productId: string) {
+    if (this.selectedProducts.has(productId)) {
+      this.selectedProducts.delete(productId);
+    } else {
+      this.selectedProducts.add(productId);
+    }
+  }
+
+  isProductSelected(productId: string): boolean {
+    return this.selectedProducts.has(productId);
+  }
+
+  toggleSelectAll() {
+    if (this.isAllSelected()) {
+      this.selectedProducts.clear();
+    } else {
+      this.filteredInventory.forEach(item => {
+        this.selectedProducts.add(item.id);
+      });
+    }
+  }
+
+  isAllSelected(): boolean {
+    return this.filteredInventory.length > 0 && 
+           this.filteredInventory.every(item => this.selectedProducts.has(item.id));
+  }
+
+  isSomeSelected(): boolean {
+    return this.selectedProducts.size > 0 && !this.isAllSelected();
+  }
+
+  getSelectedCount(): number {
+    return this.selectedProducts.size;
+  }
+
+  clearSelection() {
+    this.selectedProducts.clear();
+  }
+
+  openBulkDeleteModal() {
+    if (this.selectedProducts.size === 0) return;
+    this.showBulkDeleteModal = true;
+  }
+
+  closeBulkDeleteModal() {
+    this.showBulkDeleteModal = false;
+  }
+
+  async confirmBulkDelete() {
+    if (this.selectedProducts.size === 0 || !this.currentUserId) return;
+
+    try {
+      this.isDeletingBulk = true;
+      const productIds = Array.from(this.selectedProducts);
+      const totalProducts = productIds.length;
+      let successCount = 0;
+      let errorCount = 0;
+
+      console.log(`Suppression de ${totalProducts} produits...`);
+
+      // Supprimer chaque produit
+      for (const productId of productIds) {
+        try {
+          // 1. Supprimer les images associées
+          try {
+            const images = await this.djangoImageService.getProductImages(this.currentUserId, productId);
+            for (const image of images) {
+              await this.djangoImageService.deleteImage(image.id);
+            }
+          } catch (imageError) {
+            console.warn(`Erreur lors de la suppression des images du produit ${productId}:`, imageError);
+          }
+
+          // 2. Supprimer le produit
+          await this.productService.deleteProduct(productId);
+          successCount++;
+          console.log(`Produit ${productId} supprimé (${successCount}/${totalProducts})`);
+        } catch (error) {
+          console.error(`Erreur lors de la suppression du produit ${productId}:`, error);
+          errorCount++;
+        }
+      }
+
+      // 3. Recharger l'inventaire
+      await this.loadInventory(true);
+
+      // 4. Afficher le message de succès/erreur
+      if (errorCount === 0) {
+        this.showSnackbarMessage(
+          `${successCount} produit${successCount > 1 ? 's' : ''} supprimé${successCount > 1 ? 's' : ''} avec succès !`,
+          'success'
+        );
+      } else if (successCount > 0) {
+        this.showSnackbarMessage(
+          `${successCount} produit${successCount > 1 ? 's' : ''} supprimé${successCount > 1 ? 's' : ''}, ${errorCount} erreur${errorCount > 1 ? 's' : ''}`,
+          'error'
+        );
+      } else {
+        this.showSnackbarMessage(
+          `Erreur lors de la suppression des produits`,
+          'error'
+        );
+      }
+
+      // 5. Réinitialiser la sélection et fermer le modal
+      this.clearSelection();
+      this.closeBulkDeleteModal();
+
+    } catch (error: any) {
+      console.error('Erreur lors de la suppression multiple:', error);
+      this.showSnackbarMessage('Erreur lors de la suppression des produits', 'error');
+    } finally {
+      this.isDeletingBulk = false;
     }
   }
 }

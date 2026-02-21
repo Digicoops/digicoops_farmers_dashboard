@@ -1,0 +1,45 @@
+<!-- Modal de confirmation de suppression multiple -->
+<div *ngIf="showBulkDeleteModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 999998; padding: 1rem;" (click)="closeBulkDeleteModal()">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-xl max-w-lg w-full p-6" style="position: relative; z-index: 999999;" (click)="$event.stopPropagation()">
+    <!-- En-tête avec icône -->
+    <div class="flex items-start gap-4 mb-4">
+      <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+        <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Supprimer plusieurs produits</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Êtes-vous sûr de vouloir supprimer 
+          <span class="font-semibold text-gray-900 dark:text-white">{{ getSelectedCount() }} produit{{ getSelectedCount() > 1 ? 's' : '' }}</span> ?
+        </p>
+        <p class="text-sm text-red-600 dark:text-red-400 mt-2">
+          ⚠️ Cette action est irréversible et supprimera également toutes les images associées à ces produits.
+        </p>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex gap-3 mt-6">
+      <button 
+        (click)="confirmBulkDelete()" 
+        [disabled]="isDeletingBulk"
+        class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+      >
+        <svg *ngIf="isDeletingBulk" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        {{ isDeletingBulk ? 'Suppression en cours...' : 'Supprimer tout' }}
+      </button>
+      <button 
+        (click)="closeBulkDeleteModal()" 
+        [disabled]="isDeletingBulk"
+        class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+      >
+        Annuler
+      </button>
+    </div>
+  </div>
+</div>
