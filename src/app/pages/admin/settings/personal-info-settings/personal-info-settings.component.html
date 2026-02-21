@@ -13,7 +13,7 @@
   </div>
 
   <!-- Form Card -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <form (ngSubmit)="saveSettings()" class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -22,7 +22,7 @@
             type="text"
             [(ngModel)]="personalSettings.firstName"
             name="firstName"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
             required
           />
         </div>
@@ -33,7 +33,7 @@
             type="text"
             [(ngModel)]="personalSettings.lastName"
             name="lastName"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
             required
           />
         </div>
@@ -45,7 +45,7 @@
           type="email"
           [(ngModel)]="personalSettings.email"
           name="email"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           required
         />
       </div>
@@ -56,7 +56,7 @@
           type="tel"
           [(ngModel)]="personalSettings.phone"
           name="phone"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
         />
       </div>
 

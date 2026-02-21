@@ -278,7 +278,7 @@ a                            ></app-select>
         (close)="closeImportResultModal()"
         className="max-w-2xl max-h-[90vh] m-4"
 >
-    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8">
+    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-background-dark lg:p-8">
         <div class="px-2">
             <div class="flex items-center justify-between mb-6">
                 <h4 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -297,7 +297,7 @@ a                            ></app-select>
             <div class="space-y-6">
                 <!-- Résumé -->
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div class="p-4 text-center bg-gray-50 rounded-2xl dark:bg-gray-800">
+                    <div class="p-4 text-center bg-gray-50 rounded-2xl dark:bg-background-dark-card">
                         <div class="text-3xl font-bold text-gray-800 dark:text-white">{{ importResult?.total || 0 }}</div>
                         <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">Producteurs traités</div>
                     </div>
@@ -319,7 +319,7 @@ a                            ></app-select>
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
                             <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-800">
+                            <tr class="bg-gray-100 dark:bg-background-dark-card">
                                 <th class="px-4 py-3 text-left">Ligne</th>
                                 <th class="px-4 py-3 text-left">Producteur</th>
                                 <th class="px-4 py-3 text-left">Erreur</th>

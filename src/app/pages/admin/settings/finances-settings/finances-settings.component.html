@@ -11,35 +11,35 @@
     </div>
   </div>
 
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <form (ngSubmit)="saveSettings()" class="space-y-6">
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Platform Commission (%)</label>
-        <input type="number" [(ngModel)]="financeSettings.platformCommission" name="platformCommission" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
+        <input type="number" [(ngModel)]="financeSettings.platformCommission" name="platformCommission" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tax Rate (%)</label>
-        <input type="number" [(ngModel)]="financeSettings.taxRate" name="taxRate" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
+        <input type="number" [(ngModel)]="financeSettings.taxRate" name="taxRate" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Currency</label>
-        <input type="text" [(ngModel)]="financeSettings.currency" name="currency" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
+        <input type="text" [(ngModel)]="financeSettings.currency" name="currency" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500" />
       </div>
 
       <div>
         <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Payment Methods</p>
         <div class="space-y-3">
-          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-background-dark/50 rounded-lg">
             <input type="checkbox" [(ngModel)]="financeSettings.paymentMethods.mobileMoney" name="mobileMoney" class="w-5 h-5 text-success-600 rounded" />
             <label class="text-sm text-gray-700 dark:text-gray-300">Mobile Money</label>
           </div>
-          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-background-dark/50 rounded-lg">
             <input type="checkbox" [(ngModel)]="financeSettings.paymentMethods.bankTransfer" name="bankTransfer" class="w-5 h-5 text-success-600 rounded" />
             <label class="text-sm text-gray-700 dark:text-gray-300">Bank Transfer</label>
           </div>
-          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-background-dark/50 rounded-lg">
             <input type="checkbox" [(ngModel)]="financeSettings.paymentMethods.cashOnDelivery" name="cashOnDelivery" class="w-5 h-5 text-success-600 rounded" />
             <label class="text-sm text-gray-700 dark:text-gray-300">Cash on Delivery</label>
           </div>

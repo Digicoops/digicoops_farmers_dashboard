@@ -24,10 +24,10 @@ export class ThemeService {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-      document.body.classList.add('dark:bg-gray-900');
+      document.body.style.backgroundColor = '#102217';
     } else {
       document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark:bg-gray-900');
+      document.body.style.backgroundColor = '';
     }
   }
 }

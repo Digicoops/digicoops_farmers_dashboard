@@ -175,7 +175,7 @@ export class OrdersManagementComponent implements OnInit {
       'delivered': 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400',
       'cancelled': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
     };
-    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-background-dark/30 dark:text-gray-400';
   }
 
   getStatusLabel(status: string): string {
@@ -195,7 +195,7 @@ export class OrdersManagementComponent implements OnInit {
       'paid': 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400',
       'failed': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
     };
-    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-background-dark/30 dark:text-gray-400';
   }
 
   getPaymentStatusLabel(status: string): string {

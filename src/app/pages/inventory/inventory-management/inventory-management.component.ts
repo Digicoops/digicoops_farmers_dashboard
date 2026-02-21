@@ -162,7 +162,7 @@ export class InventoryManagementComponent implements OnInit {
       'low_stock': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
       'out_of_stock': 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
     };
-    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+    return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-background-dark/30 dark:text-gray-400';
   }
 
   getStatusLabel(status: string): string {

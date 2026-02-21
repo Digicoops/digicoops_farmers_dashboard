@@ -18,7 +18,7 @@ export class ChartTabComponent {
 
   getButtonClass(option: TabOption): string {
     return this.selected === option
-      ? 'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800'
+      ? 'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-background-dark-card'
       : 'text-gray-500 dark:text-gray-400';
   }
 }

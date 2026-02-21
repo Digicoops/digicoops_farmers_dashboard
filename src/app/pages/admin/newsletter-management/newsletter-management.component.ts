@@ -167,7 +167,7 @@ export class NewsletterManagementComponent implements OnInit {
 
   getStatusBadgeClass(status: string): string {
     const classes: { [key: string]: string } = {
-      'draft': 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+      'draft': 'bg-gray-100 text-gray-800 dark:bg-background-dark/30 dark:text-gray-400',
       'scheduled': 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
       'sent': 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400'
     };

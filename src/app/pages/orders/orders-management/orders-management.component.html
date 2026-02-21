@@ -22,7 +22,7 @@
 
   <!-- Statistiques rapides -->
   <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Total commandes</p>
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">En attente</p>
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Livrées</p>
@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Revenu total</p>
@@ -80,7 +80,7 @@
   </div>
 
   <!-- Filters -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
     <div class="space-y-4">
       <!-- Première ligne de filtres -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -93,7 +93,7 @@
               [(ngModel)]="searchTerm"
               (input)="onSearch()"
               placeholder="Numéro, client, email..."
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
             />
             <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -107,7 +107,7 @@
           <select
             [(ngModel)]="selectedStatus"
             (change)="applyFilters()"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           >
             <option *ngFor="let option of statusOptions" [value]="option.value">
               {{ option.label }}
@@ -121,7 +121,7 @@
           <select
             [(ngModel)]="selectedPaymentStatus"
             (change)="applyFilters()"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           >
             <option *ngFor="let option of paymentStatusOptions" [value]="option.value">
               {{ option.label }}
@@ -139,7 +139,7 @@
             type="date"
             [(ngModel)]="startDate"
             (change)="applyFilters()"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           />
         </div>
 
@@ -150,7 +150,7 @@
             type="date"
             [(ngModel)]="endDate"
             (change)="applyFilters()"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           />
         </div>
 
@@ -162,7 +162,7 @@
             [(ngModel)]="minAmount"
             (input)="applyFilters()"
             placeholder="0"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           />
         </div>
 
@@ -174,7 +174,7 @@
             [(ngModel)]="maxAmount"
             (input)="applyFilters()"
             placeholder="999999"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -190,7 +190,7 @@
             <select
               [(ngModel)]="sortBy"
               (change)="applySorting()"
-              class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+              class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
             >
               <option value="date-desc">Date (plus récent)</option>
               <option value="date-asc">Date (plus ancien)</option>
@@ -222,7 +222,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!isLoading && filteredOrders.length === 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12">
+  <div *ngIf="!isLoading && filteredOrders.length === 0" class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12">
     <div class="text-center">
       <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -238,10 +238,10 @@
   </div>
 
   <!-- Orders Table -->
-  <div *ngIf="!isLoading && filteredOrders.length > 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div *ngIf="!isLoading && filteredOrders.length > 0" class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full">
-        <thead class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+        <thead class="bg-gray-50 dark:bg-background-dark/50 border-b border-gray-200 dark:border-gray-700">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               N° Commande
@@ -336,7 +336,7 @@
     <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-sm text-gray-600 dark:text-gray-400">Afficher</span>
-        <select [(ngModel)]="itemsPerPage" (change)="onPageSizeChange()" class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+        <select [(ngModel)]="itemsPerPage" (change)="onPageSizeChange()" class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-background-dark text-gray-900 dark:text-white">
           <option [value]="10">10</option>
           <option [value]="25">25</option>
           <option [value]="50">50</option>
@@ -368,7 +368,7 @@
   </div>
 
   <!-- Actions groupées -->
-  <div *ngIf="getSelectedOrders().length > 0" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-800 text-white rounded-lg shadow-xl px-6 py-4 flex items-center gap-4 z-50">
+  <div *ngIf="getSelectedOrders().length > 0" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-background-dark-card text-white rounded-lg shadow-xl px-6 py-4 flex items-center gap-4 z-50">
     <span class="text-sm font-medium">{{ getSelectedOrders().length }} commande(s) sélectionnée(s)</span>
     <div class="flex items-center gap-2">
       <button (click)="bulkUpdateStatus('confirmed')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors">

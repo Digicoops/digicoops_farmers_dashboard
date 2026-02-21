@@ -17,7 +17,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
           class="block transition duration-150 ease-linear h-6 w-11 rounded-full"
           [ngClass]="
             (disabled
-              ? 'bg-gray-100 pointer-events-none dark:bg-gray-800'
+              ? 'bg-gray-100 pointer-events-none dark:bg-background-dark-card'
               : switchColors.background)
           "
         ></div>

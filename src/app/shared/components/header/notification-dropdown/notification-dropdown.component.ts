@@ -11,7 +11,7 @@ import { DropdownItemComponent } from '../../ui/dropdown/dropdown-item/dropdown-
 })
 export class NotificationDropdownComponent {
   isOpen = false;
-  notifying = true;
+  notifying = false;
 
   toggleDropdown() {
     this.isOpen = !this.isOpen;

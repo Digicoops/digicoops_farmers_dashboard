@@ -4,7 +4,7 @@
         (close)="closeModal()"
         className="max-w-3xl max-h-[90vh] m-4 overflow-scroll"
 >
-    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8">
+    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-background-dark lg:p-8">
         <div class="px-2">
             <div class="flex items-center justify-between mb-6">
                 <h4 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -30,7 +30,7 @@
                         [class.bg-success-50]="selectedFile"
                         [class.bg-error-50]="hasError"
                         [class.bg-gray-50]="!selectedFile && !hasError"
-                        [class.dark:bg-gray-800]="!selectedFile && !hasError"
+                        [class.dark:bg-background-dark-card]="!selectedFile && !hasError"
                         (drop)="onFileDrop($event)"
                         (dragover)="onDragOver($event)"
                         (dragleave)="onDragLeave($event)"
@@ -85,7 +85,7 @@
                             </div>
 
                             <!-- Prévisualisation du fichier -->
-                            <div *ngIf="selectedFile" class="w-full max-w-md p-4 mt-4 bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                            <div *ngIf="selectedFile" class="w-full max-w-md p-4 mt-4 bg-white rounded-lg shadow-sm dark:bg-background-dark-card">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <div class="p-2 rounded-lg bg-success-100 dark:bg-success-900/30">
@@ -123,7 +123,7 @@
 
                 <!-- Prévisualisation des données -->
                 <div *ngIf="showPreview && previewData.length > 0" class="w-full">
-                    <div class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+                    <div class="p-4 bg-gray-50 rounded-lg dark:bg-background-dark-card">
                         <div class="flex items-center justify-between mb-3">
                             <h6 class="font-medium text-gray-800 dark:text-white/90">
                                 Aperçu des données ({{ previewData.length }} premières lignes)
@@ -163,7 +163,7 @@
                 </div>
 
                 <!-- Guide de format -->
-                <div class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-800/50">
+                <div class="p-5 rounded-2xl bg-gray-50 dark:bg-background-dark-card/50">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="p-2 rounded-lg bg-primary-100 dark:bg-primary-900/30">
@@ -203,38 +203,38 @@
 <!--                                </tr>-->
 <!--                                </thead>-->
 <!--                                <tbody>-->
-<!--                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                                <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                                    <td class="px-4 py-3 font-medium">first_name</td>-->
 <!--                                    <td class="px-4 py-3">Prénom du producteur</td>-->
 <!--                                    <td class="px-4 py-3"><span class="text-red-500">✓</span></td>-->
 <!--                                    <td class="px-4 py-3">Jean</td>-->
 <!--                                </tr>-->
-<!--                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                                <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                                    <td class="px-4 py-3 font-medium">last_name</td>-->
 <!--                                    <td class="px-4 py-3">Nom du producteur</td>-->
 <!--                                    <td class="px-4 py-3"><span class="text-red-500">✓</span></td>-->
 <!--                                    <td class="px-4 py-3">Dupont</td>-->
 <!--                                </tr>-->
-<!--                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                                <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                                    <td class="px-4 py-3 font-medium">email</td>-->
 <!--                                    <td class="px-4 py-3">Email professionnel</td>-->
 <!--                                    <td class="px-4 py-3"><span class="text-red-500">✓</span></td>-->
 <!--                                    <td class="px-4 py-3">jean.dupont@email.com</td>-->
 <!--                                </tr>-->
-<!--                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                                <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                                    <td class="px-4 py-3 font-medium">phone</td>-->
 <!--                                    <td class="px-4 py-3">Téléphone</td>-->
 <!--                                    <td class="px-4 py-3"><span class="text-yellow-500">✗</span></td>-->
 <!--                                    <td class="px-4 py-3">+221 77 123 45 67</td>-->
 <!--                                </tr>-->
-<!--                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                                <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                                    <td class="px-4 py-3 font-medium">farm_name</td>-->
 <!--                                    <td class="px-4 py-3">Nom de l'exploitation</td>-->
 <!--                                    <td class="px-4 py-3"><span class="text-red-500">✓</span></td>-->
 <!--                                    <td class="px-4 py-3">Ferme du Soleil</td>-->
 <!--                                </tr>-->
 
-<!--                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">-->
+<!--                    <tr class="bg-white border-b dark:bg-background-dark-card dark:border-gray-700">-->
 <!--                        <td class="px-4 py-3 font-medium">production_type</td>-->
 <!--                        <td class="px-4 py-3">Type de production</td>-->
 <!--                        <td class="px-4 py-3"><span class="text-yellow-500">✗</span></td>-->
@@ -314,7 +314,7 @@
         (close)="closeResultModal()"
         className="max-w-2xl max-h-[90vh] m-4"
 >
-    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-8">
+    <div class="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-background-dark lg:p-8">
         <div class="px-2">
             <div class="flex items-center justify-between mb-6">
                 <h4 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
@@ -333,7 +333,7 @@
             <div class="space-y-6">
                 <!-- Résumé -->
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div class="p-4 text-center bg-gray-50 rounded-2xl dark:bg-gray-800">
+                    <div class="p-4 text-center bg-gray-50 rounded-2xl dark:bg-background-dark-card">
                         <div class="text-3xl font-bold text-gray-800 dark:text-white">{{ importResult?.total || 0 }}</div>
                         <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">Producteurs traités</div>
                     </div>
@@ -355,7 +355,7 @@
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
                             <thead>
-                            <tr class="bg-gray-100 dark:bg-gray-800">
+                            <tr class="bg-gray-100 dark:bg-background-dark-card">
                                 <th class="px-4 py-3 text-left">Ligne</th>
                                 <th class="px-4 py-3 text-left">Producteur</th>
                                 <th class="px-4 py-3 text-left">Erreur</th>

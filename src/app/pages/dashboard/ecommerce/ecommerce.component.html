@@ -32,7 +32,7 @@
         <span *ngIf="userRole === 'cooperative'" class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
           Coopérative
         </span>
-        <span *ngIf="userRole === 'personal'" class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+        <span *ngIf="userRole === 'personal'" class="px-3 py-1 text-xs font-semibold rounded-full bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
           Particulier
         </span>
         <button (click)="refreshStats()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
@@ -46,71 +46,79 @@
     <!-- CTA Rapides -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Créer un produit -->
-      <a routerLink="/dashboard/add-product" class="group relative overflow-hidden bg-gradient-to-br from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Créer un produit</h3>
-            <p class="text-sm opacity-90">Ajouter un nouveau produit</p>
-          </div>
-          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
+      <a routerLink="/dashboard/add-product" class="block">
+        <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Créer un produit</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Ajouter un nouveau produit</p>
+            </div>
+            <div class="p-3 bg-success-100 dark:bg-success-900/30 rounded-lg">
+              <svg class="w-6 h-6 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </a>
 
       <!-- Liste des commandes -->
-      <a routerLink="/dashboard/orders" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Commandes</h3>
-            <p class="text-sm opacity-90">Gérer vos commandes</p>
-          </div>
-          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-            </svg>
+      <a routerLink="/dashboard/orders" class="block">
+        <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Commandes</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Gérer vos commandes</p>
+            </div>
+            <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+              <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </a>
 
       <!-- Paramètres -->
-      <a href="http://localhost:4200/dashboard/profile" class="group relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Paramètres</h3>
-            <p class="text-sm opacity-90">Configurer votre profil</p>
-          </div>
-          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
+      <a href="http://localhost:4200/dashboard/profile" class="block">
+        <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Paramètres</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Configurer votre profil</p>
+            </div>
+            <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
           </div>
         </div>
       </a>
 
       <!-- Rapport d'activité -->
-      <button (click)="openReportModal()" class="group relative overflow-hidden bg-gradient-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white text-left">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Rapport d'activité</h3>
-            <p class="text-sm opacity-90">Télécharger un rapport</p>
-          </div>
-          <div class="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
+      <div class="block">
+        <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer" (click)="openReportModal()">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Rapport d'activité</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Télécharger un rapport</p>
+            </div>
+            <div class="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+              <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
           </div>
         </div>
-      </button>
+      </div>
     </div>
 
     <!-- Stats Cards Grid -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Total Products -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 dark:text-gray-400">Produits totaux</p>
@@ -125,7 +133,7 @@
       </div>
 
       <!-- Published Products -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 dark:text-gray-400">Produits publiés</p>
@@ -141,7 +149,7 @@
       </div>
 
       <!-- Total Revenue -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 dark:text-gray-400">Revenu total</p>
@@ -157,7 +165,7 @@
       </div>
 
       <!-- Total Orders or Producers -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -180,7 +188,7 @@
     </div>
 
     <!-- Graphique de Performance -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Performance des ventes</h3>
         <select class="px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300">
@@ -200,7 +208,7 @@
     </div>
 
     <!-- Top Categories -->
-    <div *ngIf="stats.topCategories.length > 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div *ngIf="stats.topCategories.length > 0" class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Catégories</h3>
       <div class="space-y-4">
         <div *ngFor="let category of stats.topCategories" class="flex items-center">
@@ -218,7 +226,7 @@
     </div>
 
     <!-- Dernières Commandes -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Dernières commandes</h3>
         <a routerLink="/dashboard/orders" class="text-sm text-success-600 dark:text-success-400 hover:underline">Voir tout</a>
@@ -263,14 +271,14 @@
 
 <!-- Modal Rapport d'activité -->
 <div *ngIf="showReportModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 999998; padding: 1rem;" (click)="closeReportModal()">
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full p-6" style="position: relative; z-index: 999999;" (click)="$event.stopPropagation()">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-xl max-w-lg w-full p-6" style="position: relative; z-index: 999999;" (click)="$event.stopPropagation()">
     <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Télécharger un rapport d'activité</h3>
     
     <div class="space-y-4">
       <!-- Type de rapport -->
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type de rapport</label>
-        <select [(ngModel)]="reportType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+        <select [(ngModel)]="reportType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white">
           <option value="sales">Ventes</option>
           <option value="products">Produits</option>
           <option value="orders">Commandes</option>
@@ -282,7 +290,7 @@
       <!-- Période -->
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Période</label>
-        <select [(ngModel)]="reportPeriod" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+        <select [(ngModel)]="reportPeriod" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white">
           <option value="today">Aujourd'hui</option>
           <option value="week">Cette semaine</option>
           <option value="month">Ce mois</option>
@@ -296,13 +304,13 @@
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Format</label>
         <div class="grid grid-cols-3 gap-2">
-          <button (click)="reportFormat = 'pdf'" [class]="reportFormat === 'pdf' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+          <button (click)="reportFormat = 'pdf'" [class]="reportFormat === 'pdf' ? 'bg-success-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-success-500 hover:text-white">
             PDF
           </button>
-          <button (click)="reportFormat = 'excel'" [class]="reportFormat === 'excel' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+          <button (click)="reportFormat = 'excel'" [class]="reportFormat === 'excel' ? 'bg-success-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-success-500 hover:text-white">
             Excel
           </button>
-          <button (click)="reportFormat = 'csv'" [class]="reportFormat === 'csv' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+          <button (click)="reportFormat = 'csv'" [class]="reportFormat === 'csv' ? 'bg-success-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-success-500 hover:text-white">
             CSV
           </button>
         </div>
@@ -311,7 +319,7 @@
 
     <!-- Boutons -->
     <div class="flex gap-3 mt-6">
-      <button (click)="downloadReport()" class="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
+      <button (click)="downloadReport()" class="flex-1 px-4 py-2 bg-success-600 hover:bg-success-700 text-white rounded-lg font-medium transition-colors">
         Télécharger
       </button>
       <button (click)="closeReportModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors">

@@ -5,23 +5,23 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">Your most recent invoices list</p>
     </div>
     <div class="flex gap-3.5">
-      <div class="hidden h-11 items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 lg:inline-flex dark:bg-gray-900">
+      <div class="hidden h-11 items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 lg:inline-flex dark:bg-background-dark">
         <button
           (click)="setFilterStatus('All')"
           class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium hover:text-gray-900 dark:hover:text-white"
-          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800': filterStatus === 'All', 'text-gray-500 dark:text-gray-400': filterStatus !== 'All'}">
+          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-background-dark-card': filterStatus === 'All', 'text-gray-500 dark:text-gray-400': filterStatus !== 'All'}">
           All Invoices
         </button>
         <button
           (click)="setFilterStatus('Unpaid')"
           class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium hover:text-gray-900 dark:hover:text-white"
-          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800': filterStatus === 'Unpaid', 'text-gray-500 dark:text-gray-400': filterStatus !== 'Unpaid'}">
+          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-background-dark-card': filterStatus === 'Unpaid', 'text-gray-500 dark:text-gray-400': filterStatus !== 'Unpaid'}">
           Unpaid
         </button>
         <button
           (click)="setFilterStatus('Draft')"
           class="text-theme-sm h-10 rounded-md px-3 py-2 font-medium hover:text-gray-900 dark:hover:text-white"
-          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800': filterStatus === 'Draft', 'text-gray-500 dark:text-gray-400': filterStatus !== 'Draft'}">
+          [ngClass]="{'shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-background-dark-card': filterStatus === 'Draft', 'text-gray-500 dark:text-gray-400': filterStatus !== 'Draft'}">
           Draft
         </button>
       </div>
@@ -35,12 +35,12 @@
           <input
             type="text"
             placeholder="Search..."
-            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden xl:w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden xl:w-[300px] dark:border-gray-700 dark:bg-background-dark dark:text-white/90 dark:placeholder:text-white/30"
             [(ngModel)]="search">
         </div>
         <div class="relative filter-dropdown">
           <button
-            class="shadow-theme-xs flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 sm:w-auto sm:min-w-[100px] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+            class="shadow-theme-xs flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 sm:w-auto sm:min-w-[100px] dark:border-gray-700 dark:bg-background-dark-card dark:text-gray-400"
             (click)="toggleFilter()"
             type="button">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -49,26 +49,26 @@
             Filter
           </button>
           @if (showFilter) {
-            <div class="absolute right-0 z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+            <div class="absolute right-0 z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-background-dark-card">
               <div class="mb-5">
                 <label class="mb-2 block text-xs font-medium text-gray-700 dark:text-gray-300">Category</label>
                 <input
                   type="text"
-                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-background-dark dark:text-white/90 dark:placeholder:text-white/30"
                   placeholder="Search category...">
               </div>
               <div class="mb-5">
                 <label class="mb-2 block text-xs font-medium text-gray-700 dark:text-gray-300">Customer</label>
                 <input
                   type="text"
-                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-background-dark dark:text-white/90 dark:placeholder:text-white/30"
                   placeholder="Search customer...">
               </div>
               <button class="bg-brand-500 hover:bg-brand-600 h-10 w-full rounded-lg px-3 py-2 text-sm font-medium text-white">Apply</button>
             </div>
           }
         </div>
-        <button class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-[11px] text-sm font-medium text-gray-700 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+        <button class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-[11px] text-sm font-medium text-gray-700 sm:w-auto dark:border-gray-700 dark:bg-background-dark-card dark:text-gray-400">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M16.6671 13.3333V15.4166C16.6671 16.1069 16.1074 16.6666 15.4171 16.6666H4.58301C3.89265 16.6666 3.33301 16.1069 3.33301 15.4166V13.3333M10.0013 3.33325L10.0013 13.3333M6.14553 7.18708L9.99958 3.33549L13.8539 7.18708" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
@@ -267,7 +267,7 @@
     </div>
     <div class="flex items-center justify-between p-4 sm:p-0 rounded-lg w-full sm:w-auto bg-gray-50 dark:bg-white/[0.03] dark:sm:bg-transparent sm:bg-transparent gap-2 sm:justify-normal">
       <button
-        class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-background-dark-card dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
         [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === 1}"
         (click)="previousPage()"
         [disabled]="currentPage === 1">
@@ -305,7 +305,7 @@
         }
       </ul>
       <button
-        class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+        class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-background-dark-card dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
         [ngClass]="{'opacity-50 cursor-not-allowed': currentPage === totalPages}"
         (click)="nextPage()"
         [disabled]="currentPage === totalPages">

@@ -21,7 +21,7 @@
 
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Total articles</p>
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Valeur totale</p>
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Stock faible</p>
@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 dark:text-gray-400">Rupture stock</p>
@@ -80,7 +80,7 @@
   </div>
 
   <!-- Filters -->
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+  <div class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="md:col-span-2">
         <input
@@ -88,7 +88,7 @@
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
           placeholder="Rechercher un produit..."
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
         />
       </div>
 
@@ -96,7 +96,7 @@
         <select
           [(ngModel)]="selectedCategory"
           (change)="applyFilters()"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
         >
           <option *ngFor="let option of categoryOptions" [value]="option.value">
             {{ option.label }}
@@ -108,7 +108,7 @@
         <select
           [(ngModel)]="selectedStatus"
           (change)="applyFilters()"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-background-dark text-gray-900 dark:text-white focus:ring-2 focus:ring-success-500 focus:border-transparent"
         >
           <option *ngFor="let option of statusOptions" [value]="option.value">
             {{ option.label }}
@@ -139,10 +139,10 @@
   </div>
 
   <!-- Inventory Table -->
-  <div *ngIf="!isLoading" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+  <div *ngIf="!isLoading" class="bg-white dark:bg-background-dark-card rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full">
-        <thead class="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+        <thead class="bg-gray-50 dark:bg-background-dark/50 border-b border-gray-200 dark:border-gray-700">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Image
@@ -275,7 +275,7 @@
           <input 
             type="text" 
             [(ngModel)]="selectedProduct.product_name" 
-            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
+            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
             placeholder="Ex: Tomates cerises"
           />
         </div>
@@ -290,7 +290,7 @@
           </label>
           <select 
             [(ngModel)]="selectedProduct.category" 
-            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
+            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             <option *ngFor="let option of categoryOptions" [value]="option.value">
               {{ option.label }}
@@ -311,7 +311,7 @@
               type="number" 
               [(ngModel)]="selectedProduct.stock_quantity" 
               min="0"
-              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
+              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
               placeholder="0"
             />
           </div>
@@ -326,7 +326,7 @@
               type="number" 
               [(ngModel)]="selectedProduct.regular_price" 
               min="0"
-              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
+              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md" 
               placeholder="0"
             />
           </div>
@@ -338,7 +338,7 @@
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Unité</label>
             <select 
               [(ngModel)]="selectedProduct.unit" 
-              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
+              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <option value="kg">Kilogramme (kg)</option>
               <option value="g">Gramme (g)</option>
@@ -352,7 +352,7 @@
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Qualité</label>
             <select 
               [(ngModel)]="selectedProduct.quality" 
-              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
+              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <option value="standard">Standard</option>
               <option value="bio">Biologique</option>
@@ -373,7 +373,7 @@
           <textarea 
             [(ngModel)]="selectedProduct.description" 
             rows="3"
-            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md resize-none" 
+            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md resize-none" 
             placeholder="Description du produit..."
           ></textarea>
         </div>
@@ -388,7 +388,7 @@
           </label>
           <select 
             [(ngModel)]="selectedProduct.availability_status" 
-            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
+            class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-background-dark-card text-gray-900 dark:text-white focus:ring-2 focus:ring-success-600 focus:border-success-600 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             <option value="disponible">Disponible</option>
             <option value="indisponible">Indisponible</option>
