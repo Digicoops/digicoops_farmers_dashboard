@@ -153,6 +153,20 @@ layer(base);
 
   --color-theme-purple-500: #7a5af8;
 
+  /* Couleur personnalisée #ffcc00 */
+  --color-yellow-25: #fffef0;
+  --color-yellow-50: #fffde0;
+  --color-yellow-100: #fffac0;
+  --color-yellow-200: #fff580;
+  --color-yellow-300: #ffec1c;
+  --color-yellow-400: #ffcc00;  /* votre couleur #ffcc00 */
+  --color-yellow-500: #e6b800;
+  --color-yellow-600: #cc9900;
+  --color-yellow-700: #b37700;
+  --color-yellow-800: #995500;
+  --color-yellow-900: #804400;
+  --color-yellow-950: #663300;
+
   --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
     0px 2px 4px -2px rgba(16, 24, 40, 0.06);
   --shadow-theme-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),

@@ -8,11 +8,11 @@
               alt="User"
               class="w-full h-full object-cover"
       /> -->
-       <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+       <div class="w-full h-full bg-success-600 flex items-center justify-center text-white font-semibold text-lg">
         {{ getUserInitials() }}
     </div>
   <ng-template #avatarInitials>
-    <div class="w-full h-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg">
+    <div class="w-full h-full bg-success-600 flex items-center justify-center text-white font-semibold text-lg">
         {{ getUserInitials() }}
     </div>
 </ng-template>
@@ -39,7 +39,7 @@
         <div>
             <!-- Loading state -->
             <div *ngIf="isLoading" class="flex items-center justify-center py-4">
-                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-success-600"></div>
             </div>
 
             <!-- Données utilisateur -->

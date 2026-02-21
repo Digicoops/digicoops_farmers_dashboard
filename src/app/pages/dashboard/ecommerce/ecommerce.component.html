@@ -46,7 +46,7 @@
     <!-- CTA Rapides -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Créer un produit -->
-      <a routerLink="/dashboard/products/create" class="group relative overflow-hidden bg-gradient-to-br from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
+      <a routerLink="/dashboard/add-product" class="group relative overflow-hidden bg-gradient-to-br from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white">
         <div class="flex items-center justify-between">
           <div>
             <h3 class="text-lg font-semibold mb-1">Créer un produit</h3>
@@ -92,7 +92,7 @@
       </a>
 
       <!-- Rapport d'activité -->
-      <button (click)="openReportModal()" class="group relative overflow-hidden bg-gradient-to-br from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white text-left">
+      <button (click)="openReportModal()" class="group relative overflow-hidden bg-gradient-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 text-white text-left">
         <div class="flex items-center justify-between">
           <div>
             <h3 class="text-lg font-semibold mb-1">Rapport d'activité</h3>
@@ -262,86 +262,61 @@
 </div>
 
 <!-- Modal Rapport d'activité -->
-<div *ngIf="showReportModal" class="fixed inset-0 z-50 overflow-y-auto" (click)="closeReportModal()">
-  <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-    <!-- Overlay -->
-    <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75"></div>
+<div *ngIf="showReportModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 999998; padding: 1rem;" (click)="closeReportModal()">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full p-6" style="position: relative; z-index: 999999;" (click)="$event.stopPropagation()">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Télécharger un rapport d'activité</h3>
+    
+    <div class="space-y-4">
+      <!-- Type de rapport -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type de rapport</label>
+        <select [(ngModel)]="reportType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <option value="sales">Ventes</option>
+          <option value="products">Produits</option>
+          <option value="orders">Commandes</option>
+          <option value="customers">Clients</option>
+          <option value="complete">Rapport complet</option>
+        </select>
+      </div>
 
-    <!-- Modal -->
-    <div (click)="$event.stopPropagation()" class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-      <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <div class="sm:flex sm:items-start">
-          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 dark:bg-orange-900/30 sm:mx-0 sm:h-10 sm:w-10">
-            <svg class="h-6 w-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-          </div>
-          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-              Télécharger un rapport d'activité
-            </h3>
-            <div class="mt-4 space-y-4">
-              <!-- Type de rapport -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Type de rapport
-                </label>
-                <select [(ngModel)]="reportType" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                  <option value="sales">Ventes</option>
-                  <option value="products">Produits</option>
-                  <option value="orders">Commandes</option>
-                  <option value="customers">Clients</option>
-                  <option value="complete">Rapport complet</option>
-                </select>
-              </div>
+      <!-- Période -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Période</label>
+        <select [(ngModel)]="reportPeriod" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <option value="today">Aujourd'hui</option>
+          <option value="week">Cette semaine</option>
+          <option value="month">Ce mois</option>
+          <option value="quarter">Ce trimestre</option>
+          <option value="year">Cette année</option>
+          <option value="custom">Personnalisée</option>
+        </select>
+      </div>
 
-              <!-- Période -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Période
-                </label>
-                <select [(ngModel)]="reportPeriod" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                  <option value="today">Aujourd'hui</option>
-                  <option value="week">Cette semaine</option>
-                  <option value="month">Ce mois</option>
-                  <option value="quarter">Ce trimestre</option>
-                  <option value="year">Cette année</option>
-                  <option value="custom">Personnalisée</option>
-                </select>
-              </div>
-
-              <!-- Format -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Format
-                </label>
-                <div class="grid grid-cols-3 gap-2">
-                  <button (click)="reportFormat = 'pdf'" [class]="reportFormat === 'pdf' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
-                    PDF
-                  </button>
-                  <button (click)="reportFormat = 'excel'" [class]="reportFormat === 'excel' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
-                    Excel
-                  </button>
-                  <button (click)="reportFormat = 'csv'" [class]="reportFormat === 'csv' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
-                    CSV
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+      <!-- Format -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Format</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button (click)="reportFormat = 'pdf'" [class]="reportFormat === 'pdf' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+            PDF
+          </button>
+          <button (click)="reportFormat = 'excel'" [class]="reportFormat === 'excel' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+            Excel
+          </button>
+          <button (click)="reportFormat = 'csv'" [class]="reportFormat === 'csv' ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'" class="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-orange-400 hover:text-white">
+            CSV
+          </button>
         </div>
       </div>
-      <div class="bg-gray-50 dark:bg-gray-900/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-        <button (click)="downloadReport()" type="button" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-          </svg>
-          Télécharger
-        </button>
-        <button (click)="closeReportModal()" type="button" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
-          Annuler
-        </button>
-      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="flex gap-3 mt-6">
+      <button (click)="downloadReport()" class="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
+        Télécharger
+      </button>
+      <button (click)="closeReportModal()" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors">
+        Annuler
+      </button>
     </div>
   </div>
 </div>

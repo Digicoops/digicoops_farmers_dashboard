@@ -17,6 +17,19 @@ interface InventoryItem {
   imageUrl?: string;
 }
 
+interface EditableProduct {
+  id: string;
+  product_name: string;
+  category: string;
+  stock_quantity: number;
+  regular_price: number;
+  description?: string;
+  unit: string;
+  quality: string;
+  availability_status: string;
+  status: 'draft' | 'published' | 'archived';
+}
+
 @Component({
   selector: 'app-inventory-management',
   standalone: true,
@@ -34,6 +47,16 @@ export class InventoryManagementComponent implements OnInit {
   selectedCategory = '';
   selectedStatus = '';
   isAdmin = false;
+  
+  // Sidebar state
+  showEditSidebar = false;
+  selectedProduct: EditableProduct | null = null;
+  isSaving = false;
+
+  // Snackbar state
+  showSnackbar = false;
+  snackbarMessage = '';
+  snackbarType: 'success' | 'error' = 'success';
 
   categoryOptions = [
     { value: '', label: 'Toutes les catégories' },
@@ -170,6 +193,94 @@ export class InventoryManagementComponent implements OnInit {
 
   async refreshInventory() {
     await this.loadInventory();
+  }
+
+  // === Méthodes d'édition ===
+  
+  editProduct(item: InventoryItem) {
+    // Convertir InventoryItem en EditableProduct
+    this.selectedProduct = {
+      id: item.id,
+      product_name: item.name,
+      category: item.category,
+      stock_quantity: item.stock,
+      regular_price: item.price,
+      unit: 'kg', // Valeur par défaut
+      quality: 'standard', // Valeur par défaut
+      availability_status: item.status === 'in_stock' ? 'disponible' : 'indisponible',
+      status: 'published'
+    };
+    this.showEditSidebar = true;
+  }
+
+  closeEditSidebar() {
+    this.showEditSidebar = false;
+    this.selectedProduct = null;
+  }
+
+  async saveProductChanges() {
+    if (!this.selectedProduct) return;
+
+    try {
+      this.isSaving = true;
+
+      // Récupérer le produit existant pour obtenir total_quantity
+      const existingProduct = await this.productService.getProductById(this.selectedProduct.id);
+      
+      // Préparer les données pour la mise à jour
+      const updates: any = {
+        product_name: this.selectedProduct.product_name,
+        category: this.selectedProduct.category,
+        stock_quantity: this.selectedProduct.stock_quantity,
+        regular_price: this.selectedProduct.regular_price,
+        unit: this.selectedProduct.unit,
+        quality: this.selectedProduct.quality,
+        availability_status: this.selectedProduct.availability_status,
+        updated_at: new Date().toISOString()
+      };
+
+      // S'assurer que stock_quantity ne dépasse pas total_quantity
+      if (this.selectedProduct.stock_quantity > (existingProduct.total_quantity || 0)) {
+        updates.total_quantity = this.selectedProduct.stock_quantity;
+      }
+
+      // Mettre à jour le produit via le service
+      await this.productService.updateProduct(this.selectedProduct.id, updates);
+
+      // Fermer la sidebar et recharger l'inventaire
+      this.closeEditSidebar();
+      await this.loadInventory();
+
+      this.showSnackbarMessage('Produit mis à jour avec succès !', 'success');
+    } catch (error: any) {
+      console.error('Erreur lors de la mise à jour du produit:', error);
+      
+      // Gérer l'erreur de contrainte check_quantities
+      if (error?.code === '23514' && error?.message?.includes('check_quantities')) {
+        this.showSnackbarMessage('Erreur: La quantité en stock ne peut pas dépasser la quantité totale.', 'error');
+      } else {
+        this.showSnackbarMessage('Erreur lors de la mise à jour du produit', 'error');
+      }
+    } finally {
+      this.isSaving = false;
+    }
+  }
+
+  // === Méthodes Snackbar ===
+  
+  showSnackbarMessage(message: string, type: 'success' | 'error' = 'success') {
+    this.snackbarMessage = message;
+    this.snackbarType = type;
+    this.showSnackbar = true;
+    
+    // Auto-cacher après 4 secondes
+    setTimeout(() => {
+      this.hideSnackbar();
+    }, 4000);
+  }
+
+  hideSnackbar() {
+    this.showSnackbar = false;
   }
 
   onImageError(event: Event) {

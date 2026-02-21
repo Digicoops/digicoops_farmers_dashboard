@@ -29,16 +29,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div
                                 *ngFor="let type of productTypeOptions"
-                                class="border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                                [class.border-blue-500]="selectedProductType === type.value"
+                                class="border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-success-600 hover:bg-success-50 dark:hover:bg-success-900/20"
+                                [class.border-success-600]="selectedProductType === type.value"
                                 [class.border-gray-200]="selectedProductType !== type.value"
-                                [class.bg-blue-50]="selectedProductType === type.value"
-                                [class.dark:bg-blue-900/20]="selectedProductType === type.value"
+                                [class.bg-success-50]="selectedProductType === type.value"
+                                [class.dark:bg-success-900/20]="selectedProductType === type.value"
                         (click)="onProductTypeSelect(type.value)"
                         >
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                                    <span class="text-blue-600 dark:text-blue-300">
+                            <div class="w-10 h-10 rounded-full bg-success-100 dark:bg-success-900 flex items-center justify-center">
+                                    <span class="text-success-600 dark:text-success-300">
                                         {{ getTypeIcon(type.value) }}
                                     </span>
                             </div>
@@ -170,7 +170,7 @@
                                             [id]="field.name"
                                             [checked]="getFieldValue(field.name)"
                                             (change)="onSpecificFieldChange(field.name, $event.target.checked)"
-                                            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                            class="h-4 w-4 rounded border-gray-300 text-success-600 focus:ring-success-500 dark:border-gray-600 dark:bg-gray-700"
                                     >
                                     <app-label [for]="field.name" class="text-sm font-medium text-gray-700 dark:text-gray-300">
                                         {{ field.label }}
@@ -221,7 +221,7 @@
                                     type="checkbox"
                                     id="enable-promotion"
                                     [(ngModel)]="isPromotionEnabled"
-                                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+                                    class="h-4 w-4 rounded border-gray-300 text-success-600 focus:ring-success-500 dark:border-gray-600 dark:bg-gray-700"
                                     (change)="onPromotionToggle($event)"
                             >
                             <app-label for="enable-promotion" class="text-sm font-medium text-gray-700 dark:text-gray-300">
