@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DashboardStatsService, DashboardStats } from '../../../core/services/dashboard/dashboard-stats.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
@@ -25,6 +25,7 @@ interface RecentOrder {
 export class EcommerceComponent implements OnInit {
   private dashboardStatsService = inject(DashboardStatsService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   stats: DashboardStats | null = null;
   isLoading = true;
@@ -117,5 +118,25 @@ export class EcommerceComponent implements OnInit {
     alert(`Rapport ${this.reportType} (${this.reportPeriod}) en format ${this.reportFormat.toUpperCase()} sera téléchargé.\n\nFonctionnalité à implémenter.`);
     
     this.closeReportModal();
+  }
+
+  async logout() {
+    try {
+      console.log('Déconnexion en cours...');
+      const { error } = await this.authService.signOut();
+      
+      if (error) {
+        console.error('Erreur lors de la déconnexion:', error);
+        alert('Erreur lors de la déconnexion. Veuillez réessayer.');
+        return;
+      }
+      
+      console.log('Déconnexion réussie');
+      // Rediriger vers la page de connexion
+      await this.router.navigate(['/auth/login']);
+    } catch (error) {
+      console.error('Erreur inattendue lors de la déconnexion:', error);
+      alert('Erreur inattendue. Veuillez réessayer.');
+    }
   }
 }
